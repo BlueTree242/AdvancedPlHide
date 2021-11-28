@@ -31,22 +31,11 @@ public class PacketListener extends PacketAdapter {
 
         Suggestions matchedCommands = matchModifier.read(0);
         Suggestions allowedCommands = new Suggestions(matchedCommands.getRange(), new ArrayList<>(matchedCommands.getList()));
-        List<String> tohide = new ArrayList<>();
-        for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins()) {
-            tohide.add(plugin.getName().toLowerCase() + ":");
-        }
-        tohide.add("paper");
-        tohide.add("spigot");
-        tohide.add("bukkit");
-        tohide.add("purpur");
-        tohide.add("airplane");
-        tohide.add("minecraft");
-        tohide.add("votingpluginvaluerequestinput");
+        if (matchedCommands.getRange().getStart() != 1) return;
         for (Suggestion matchedCommand : matchedCommands.getList()) {
-            for (String hide : tohide) {
-                if (matchedCommand.getText().startsWith(hide)) {
-                    allowedCommands.getList().remove(matchedCommand);
-                }
+            String[] split = matchedCommand.getText().split(":");
+            if (split.length >= 2) {
+                allowedCommands.getList().remove(matchedCommand);
             }
         }
         matchModifier.write(0, allowedCommands);
