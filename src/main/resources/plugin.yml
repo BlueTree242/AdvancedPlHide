@@ -1,0 +1,8 @@
+name: AdvancedPlHide
+version: @version@
+main: me.bluetree.advancedplhide.AdvancedPlHide
+author: BlueTree242
+api-version: 1.13
+
+depend:
+  - ProtocolLib
