@@ -18,19 +18,35 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class PacketListener extends PacketAdapter {
-
+    private    AdvancedPlHide core;
     public PacketListener(AdvancedPlHide core) {
-        super(core, ListenerPriority.NORMAL, PacketType.Play.Server.TAB_COMPLETE, PacketType.Play.Server.COMMANDS);
+        super(core, ListenerPriority.NORMAL, PacketType.Play.Server.TAB_COMPLETE,PacketType.Play.Client.TAB_COMPLETE, PacketType.Play.Server.COMMANDS);
+        this.core = core;
     }
+    private final HashMap<UUID, String> incomingCommand = new HashMap<>();
 
     @Override
     public void onPacketSending(PacketEvent e) {
         if (e.getPlayer() == null || e.getPlayer() instanceof TemporaryPlayer) return;
         PacketContainer packetContainer = e.getPacket();
         if (e.getPacketType() == PacketType.Play.Server.TAB_COMPLETE) {
+            if (core.isLegacy()) {
+                StructureModifier<String[]> matchModifier = packetContainer.getSpecificModifier(String[].class);
+                String[] matchedCommands = matchModifier.read(0);
+                ArrayList<String> allowedCommands = new ArrayList(Arrays.asList((Object[])matchedCommands));
+                String str = this.incomingCommand.get(e.getPlayer().getUniqueId());
+                if (str.contains(" ") || !str.startsWith("/")) return;
 
-            StructureModifier<Suggestions> matchModifier = packetContainer.getSpecificModifier(Suggestions.class);
-            Suggestions matchedCommands = matchModifier.read(0);
+                for (String matchedCommand : new ArrayList<>(allowedCommands)) {
+                    String[] split = matchedCommand.split(":");
+                    if (split.length >= 2) {
+                        allowedCommands.remove(matchedCommand);
+                    }
+                }
+                matchModifier.write(0, allowedCommands.toArray(new String[allowedCommands.size()]));
+            } else {
+                StructureModifier<Suggestions> matchModifier = packetContainer.getSpecificModifier(Suggestions.class);
+                Suggestions matchedCommands = matchModifier.read(0);
             Suggestions allowedCommands = new Suggestions(matchedCommands.getRange(), new ArrayList<>(matchedCommands.getList()));
             if (matchedCommands.getRange().getStart() != 1) return;
             for (Suggestion matchedCommand : matchedCommands.getList()) {
@@ -39,7 +55,8 @@ public class PacketListener extends PacketAdapter {
                     allowedCommands.getList().remove(matchedCommand);
                 }
             }
-            matchModifier.write(0, allowedCommands);
+                matchModifier.write(0, allowedCommands);
+            }
         } else {
             StructureModifier<RootCommandNode> matchModifier = packetContainer.getSpecificModifier(RootCommandNode.class);
             RootCommandNode matchedCommands = matchModifier.read(0);
@@ -50,6 +67,15 @@ public class PacketListener extends PacketAdapter {
                 if (split.length >= 2) {
                     map.remove(matchedCommand);
                 }
+            }
+        }
+    }
+
+    public void onPacketReceiving(PacketEvent paramPacketEvent) {
+        if (paramPacketEvent.getPacketType() == PacketType.Play.Client.TAB_COMPLETE) {
+            if (core.isLegacy()) {
+                this.incomingCommand.put(paramPacketEvent.getPlayer().getUniqueId(), paramPacketEvent.getPacket().getStrings()
+                        .read(0).trim());
             }
         }
     }
