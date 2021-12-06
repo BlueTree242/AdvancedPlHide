@@ -105,7 +105,7 @@ public class PacketListener extends PacketAdapter {
             for (String suggestion : commands.toArray(new String[0])) {
                 for (String s : core.config.groups().keySet()) {
                     Group group = core.config.groups().get(s);
-                    if (!group.blacklist.contains(suggestion) || group.blacklist.contains(prefix + suggestion)) {
+                    if (!group.blacklist.contains(suggestion) || !group.blacklist.contains(prefix + suggestion)) {
                         if (player.hasPermission("plhide.group." + s))
                             commands.remove(suggestion);
                     }
