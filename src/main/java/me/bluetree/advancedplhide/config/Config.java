@@ -1,19 +1,17 @@
 package me.bluetree.advancedplhide.config;
 
 import me.bluetree.advancedplhide.Group;
-import net.bytebuddy.implementation.bind.annotation.Default;
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
+import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public interface Config {
 
     @AnnotationBasedSorter.Order(10)
+    @ConfKey("blacklist-mode")
     @ConfComments("#true if we hide the commands, false if we show the commands only")
     @ConfDefault.DefaultBoolean(true)
     Boolean blacklist();

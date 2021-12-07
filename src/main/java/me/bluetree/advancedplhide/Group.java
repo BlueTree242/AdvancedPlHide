@@ -1,10 +1,10 @@
 package me.bluetree.advancedplhide;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Group {
     public final List<String> blacklist;
+
     public Group(List<String> blacklist) {
         this.blacklist = blacklist;
     }

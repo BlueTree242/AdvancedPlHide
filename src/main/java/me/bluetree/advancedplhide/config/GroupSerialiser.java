@@ -10,10 +10,10 @@ import space.arim.dazzleconf.serialiser.ValueSerialiser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class GroupSerialiser implements ValueSerialiser<Group> {
     public AdvancedPlHide core = (AdvancedPlHide) Bukkit.getPluginManager().getPlugin("AdvancedPlHide");
+
     @Override
     public Class<Group> getTargetClass() {
         return Group.class;

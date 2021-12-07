@@ -17,11 +17,18 @@ import java.util.List;
 import java.util.Map;
 
 public class AdvancedPlHide extends JavaPlugin implements Listener {
+    public Config config;
+    protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     private ProtocolManager protocolManager;
     private PacketListener listener = new PacketListener(this);
     private boolean isLegacy = false;
-    protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
-    public Config config;
+
+    public static Map<String, Group> defaultMap() {
+        Map<String, Group> map = new HashMap<>();
+        map.put("default", new Group(List.of("example1", "example2")));
+        return map;
+    }
+
     public void onLoad() {
         protocolManager = ProtocolLibrary.getProtocolManager();
     }
@@ -34,11 +41,6 @@ public class AdvancedPlHide extends JavaPlugin implements Listener {
         String str = Bukkit.getServer().getClass().getPackage().getName();
         str = str.substring(str.lastIndexOf("v"));
         isLegacy = (str.equals("v1_8_R3") || str.contains("v1_9_R") || str.contains("v1_10_R1") || str.contains("v1_11_R1") || str.contains("v1_12_R1"));
-    }
-    public static Map<String, Group> defaultMap() {
-        Map<String, Group> map = new HashMap<>();
-        map.put("default", new Group(List.of("example1", "example2")));
-        return map;
     }
 
     public void onDisable() {

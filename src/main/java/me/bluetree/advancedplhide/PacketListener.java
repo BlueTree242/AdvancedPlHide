@@ -11,20 +11,17 @@ import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public class PacketListener extends PacketAdapter {
-    private    AdvancedPlHide core;
+    private final HashMap<UUID, String> incomingCommand = new HashMap<>();
+    private AdvancedPlHide core;
+
     public PacketListener(AdvancedPlHide core) {
-        super(core, ListenerPriority.NORMAL, PacketType.Play.Server.TAB_COMPLETE,PacketType.Play.Client.TAB_COMPLETE, PacketType.Play.Server.COMMANDS);
+        super(core, ListenerPriority.NORMAL, PacketType.Play.Server.TAB_COMPLETE, PacketType.Play.Client.TAB_COMPLETE, PacketType.Play.Server.COMMANDS);
         this.core = core;
     }
-    private final HashMap<UUID, String> incomingCommand = new HashMap<>();
 
     @Override
     public void onPacketSending(PacketEvent e) {
@@ -34,7 +31,7 @@ public class PacketListener extends PacketAdapter {
             if (core.isLegacy()) {
                 StructureModifier<String[]> matchModifier = packetContainer.getSpecificModifier(String[].class);
                 String[] matchedCommands = matchModifier.read(0);
-                ArrayList<String> allowedCommands = new ArrayList(Arrays.asList((Object[])matchedCommands));
+                ArrayList<String> allowedCommands = new ArrayList(Arrays.asList((Object[]) matchedCommands));
                 String str = this.incomingCommand.get(e.getPlayer().getUniqueId());
                 if (str.contains(" ") || !str.startsWith("/")) return;
 
@@ -44,20 +41,20 @@ public class PacketListener extends PacketAdapter {
                         allowedCommands.remove(matchedCommand);
                     }
                 }
-                removeBlacklist(allowedCommands, str, e.getPlayer());
+                Editor.removeBlacklist(allowedCommands, str, e.getPlayer());
                 matchModifier.write(0, allowedCommands.toArray(new String[allowedCommands.size()]));
             } else {
                 StructureModifier<Suggestions> matchModifier = packetContainer.getSpecificModifier(Suggestions.class);
                 Suggestions matchedCommands = matchModifier.read(0);
-            Suggestions allowedCommands = new Suggestions(matchedCommands.getRange(), new ArrayList<>(matchedCommands.getList()));
-            if (matchedCommands.getRange().getStart() != 1) return;
-            for (Suggestion matchedCommand : matchedCommands.getList()) {
-                String[] split = matchedCommand.getText().split(":");
-                if (split.length >= 2) {
-                    allowedCommands.getList().remove(matchedCommand);
+                Suggestions allowedCommands = new Suggestions(matchedCommands.getRange(), new ArrayList<>(matchedCommands.getList()));
+                if (matchedCommands.getRange().getStart() != 1) return;
+                for (Suggestion matchedCommand : matchedCommands.getList()) {
+                    String[] split = matchedCommand.getText().split(":");
+                    if (split.length >= 2) {
+                        allowedCommands.getList().remove(matchedCommand);
+                    }
+                    Editor.removeBlacklist(allowedCommands, e.getPlayer());
                 }
-                removeBlacklist(allowedCommands, e.getPlayer());
-            }
 
                 matchModifier.write(0, allowedCommands);
             }
@@ -73,7 +70,7 @@ public class PacketListener extends PacketAdapter {
                     map.remove(matchedCommand);
                 }
             }
-            removeBlacklist(map, Arrays.asList(map.toArray(new Object[map.size()])), e.getPlayer());
+            Editor.removeBlacklist(map, Arrays.asList(map.toArray(new Object[map.size()])), e.getPlayer());
         }
     }
 
@@ -86,91 +83,5 @@ public class PacketListener extends PacketAdapter {
         }
     }
 
-    private void  removeBlacklist(List<String> commands,String prefix , Player player) {
-        if (player.hasPermission("plhide.bypassblacklist")) return;
-        if (core.config.blacklist()) {
-            core.config.groups().forEach((key, val) -> {
-                if (player.hasPermission("plhide.group." + key.toLowerCase())) {
-                    for (String s : val.blacklist) {
-                        for (String suggestion : commands.toArray(new String[0])) {
 
-                            if (suggestion.equalsIgnoreCase(s)|| (prefix + suggestion).equalsIgnoreCase(s)) {
-                                commands.remove(suggestion);
-                            }
-                        }
-                    }
-                }
-            });
-        } else {
-            for (String suggestion : commands.toArray(new String[0])) {
-                for (String s : core.config.groups().keySet()) {
-                    Group group = core.config.groups().get(s);
-                    if (!group.blacklist.contains(suggestion) || !group.blacklist.contains(prefix + suggestion)) {
-                        if (player.hasPermission("plhide.group." + s))
-                            commands.remove(suggestion);
-                    }
-                }
-
-            }
-        }
-    }
-
-    private void removeBlacklist(Collection realSuggestions, Collection suggestions, Player player) {
-        if (player.hasPermission("plhide.bypassblacklist")) return;
-        if (core.config.blacklist()) {
-            core.config.groups().forEach((key, val) -> {
-                if (player.hasPermission("plhide.group." + key.toLowerCase())) {
-                    for (String s : val.blacklist) {
-                        for (Object st : suggestions) {
-                            CommandNode suggestion = (CommandNode) st;
-
-                            if (suggestion.getName().equalsIgnoreCase(s) ) {
-                                realSuggestions.remove(suggestion);
-                            }
-                        }
-                    }
-                }
-            });
-        } else {
-            for (Object st : suggestions) {
-                CommandNode suggestion = (CommandNode) st;
-                for (String s : core.config.groups().keySet()) {
-                    Group group = core.config.groups().get(s);
-                    if (!group.blacklist.contains(suggestion.getName())) {
-                        if (player.hasPermission("plhide.group." + s))
-                            realSuggestions.remove(suggestion);
-                    }
-                }
-
-            }
-        }
-    }
-
-    private void removeBlacklist(Suggestions suggestions, Player player) {
-        if (player.hasPermission("plhide.bypassblacklist")) return;
-        if (core.config.blacklist()) {
-            core.config.groups().forEach((key, val) -> {
-                if (player.hasPermission("plhide.group." + key.toLowerCase())) {
-                    for (String s : val.blacklist) {
-                        for (Suggestion suggestion : suggestions.getList().toArray(new Suggestion[0])) {
-                            if (suggestion.getText().equalsIgnoreCase(s)) {
-                                suggestions.getList().remove(suggestion);
-                            }
-                        }
-                    }
-                }
-            });
-        } else {
-            for (Suggestion suggestion : suggestions.getList().toArray(new Suggestion[0])) {
-                for (String s : core.config.groups().keySet()) {
-                    Group group = core.config.groups().get(s);
-                    if (!group.blacklist.contains(suggestion.getText())) {
-                        if (player.hasPermission("plhide.group." + s))
-                        suggestions.getList().remove(suggestion);
-                    }
-                }
-
-            }
-        }
-    }
 }
