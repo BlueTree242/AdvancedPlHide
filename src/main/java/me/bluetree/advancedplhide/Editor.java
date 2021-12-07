@@ -20,19 +20,24 @@ public class Editor {
             if (player.hasPermission("plhide.group." + name)) {
                 if (core.config.blacklist()) {
                     for (String s : cmds.blacklist) {
-                        blacklist.add(s);
+                        blacklist.add("/" +s);
                     }
                 } else {
                     for (String s : cmds.blacklist) {
-                        blacklist.remove(s);
+                        blacklist.remove("/" +s);
                     }
                 }
             }
         });
         for (String command : commands.toArray(new String[0])) {
-            if (blacklist.contains(command) || blacklist.contains(prefix + command)) commands.remove(command);
+            if (blacklist.contains(command) ){
+                commands.remove(command);
+            } else if (blacklist.contains(prefix + command)) {
+                commands.remove(command);
+            }
         }
     }
+
 
     public static void removeBlacklist(Collection realSuggestions, Collection suggestions, Player player) {
         AdvancedPlHide core = (AdvancedPlHide) Bukkit.getPluginManager().getPlugin("AdvancedPlHide");
