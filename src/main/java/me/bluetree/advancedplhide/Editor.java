@@ -30,7 +30,7 @@ public class Editor {
             }
         });
         for (String command : commands.toArray(new String[0])) {
-            if (blacklist.contains(command)) commands.remove(command);
+            if (blacklist.contains(command) || blacklist.contains(prefix + command)) commands.remove(command);
         }
     }
 
