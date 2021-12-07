@@ -54,7 +54,8 @@ public class AdvancedPlHide extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
         if (e.getPlayer().hasPermission("plhide.command")) return;
-        if (e.getMessage().startsWith("/plugins") || e.getMessage().startsWith("/pl") || e.getMessage().startsWith("/bukkit:pl") || e.getMessage().startsWith("/bukkit:plugins")) {
+        String msg = e.getMessage().toLowerCase();
+        if (msg.startsWith("/plugins") || msg.startsWith("/pl") || msg.startsWith("/bukkit:pl") || msg.startsWith("/bukkit:plugins")) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(ChatColor.RED + "We won't show you the plugin list for sure");
         }
