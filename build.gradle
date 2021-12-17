@@ -11,6 +11,6 @@ shadowJar {
     classifier ''
 }
 dependencies {
-    implementation project(":bukkit")
+    implementation project(":Bukkit")
 }
 
