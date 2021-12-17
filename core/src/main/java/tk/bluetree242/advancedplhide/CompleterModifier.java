@@ -9,4 +9,8 @@ public class CompleterModifier {
             if (completer.getName().contains(":")) completer.remove();
         }
     }
+
+    public static void handleCompleter(CommandCompleterList list) {
+        removePluginPrefix(list);
+    }
 }

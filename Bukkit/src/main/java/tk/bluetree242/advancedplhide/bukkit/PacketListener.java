@@ -7,8 +7,8 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.mojang.brigadier.suggestion.Suggestions;
 import tk.bluetree242.advancedplhide.CompleterModifier;
-import tk.bluetree242.advancedplhide.bukkit.impl.StringCommandCompleterList;
-import tk.bluetree242.advancedplhide.bukkit.impl.SuggestionCommandCompleterList;
+import tk.bluetree242.advancedplhide.bukkit.impl.cmd.StringCommandCompleterList;
+import tk.bluetree242.advancedplhide.bukkit.impl.cmd.SuggestionCommandCompleterList;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -36,7 +36,7 @@ public class PacketListener extends PacketAdapter {
             Suggestions suggestionsOrigin = matchModifier.read(0);
             SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
             if (suggestionsOrigin.getRange().getStart() == 1) {
-                CompleterModifier.removePluginPrefix(suggestions);
+                CompleterModifier.handleCompleter(suggestions);
             }
             matchModifier.write(0, suggestions.export());
         } else {
@@ -45,7 +45,7 @@ public class PacketListener extends PacketAdapter {
             StringCommandCompleterList suggestions = new StringCommandCompleterList(suggestionsOrigin);
             String str = this.commandsWaiting.get(e.getPlayer().getUniqueId());
             if (!str.contains(" ") && str.startsWith("/")) {
-                CompleterModifier.removePluginPrefix(suggestions);
+                CompleterModifier.handleCompleter(suggestions);
             }
             matchModifier.write(0, suggestions.export());
         }

@@ -2,6 +2,7 @@ name: AdvancedPlHide
 depend:
   - ProtocolLib
 version: @version@
+description: @description@
 authors:
   - BlueTree242
 main: tk.bluetree242.advancedplhide.bukkit.AdvancedPlHideBukkit

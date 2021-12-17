@@ -1,4 +1,4 @@
-package tk.bluetree242.advancedplhide.bukkit.impl;
+package tk.bluetree242.advancedplhide.bukkit.impl.cmd;
 
 import com.mojang.brigadier.suggestion.Suggestion;
 import tk.bluetree242.advancedplhide.CommandCompleter;
