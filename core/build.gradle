@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow'
+}
+
+group 'me.bluetree242.advancedplhide'
+rootProject.shadowJar {
+    relocate 'space.arim.dazzleconf', "tk.bluetree242.advancedplhide.dependencies.dazzleconf"
+    relocate 'org.yaml', "tk.bluetree242.advancedplhide.dependencies.yaml"
+}
+
+repositories {
+    mavenCentral()
+}
+dependencies {
+    implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2'
+
+}
+
+
+test {
+    useJUnitPlatform()
+}

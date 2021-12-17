@@ -1,0 +1,4 @@
+rootProject.name = 'AdvancedPlHide'
+include 'core'
+include 'bukkit'
+
