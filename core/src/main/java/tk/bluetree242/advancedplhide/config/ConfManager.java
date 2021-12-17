@@ -1,6 +1,5 @@
-package me.bluetree.advancedplhide.config;
+package tk.bluetree242.advancedplhide.config;
 
-import me.bluetree.advancedplhide.exceptions.ConfigurationLoadException;
 import space.arim.dazzleconf.ConfigurationFactory;
 import space.arim.dazzleconf.ConfigurationOptions;
 import space.arim.dazzleconf.error.ConfigFormatSyntaxException;
@@ -10,6 +9,7 @@ import space.arim.dazzleconf.ext.snakeyaml.SnakeYamlConfigurationFactory;
 import space.arim.dazzleconf.ext.snakeyaml.SnakeYamlOptions;
 import space.arim.dazzleconf.helper.ConfigurationHelper;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
+import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -30,7 +30,7 @@ public class ConfManager<C> extends ConfigurationHelper<C> {
                 // Enables writing YAML comments
                 .build();
         ConfManager val = new ConfManager<>(configFolder, fileName,
-                new SnakeYamlConfigurationFactory<>(configClass, new ConfigurationOptions.Builder().sorter(new AnnotationBasedSorter()).addSerialiser(new GroupSerialiser()).build(), yamlOptions));
+                new SnakeYamlConfigurationFactory<>(configClass, new ConfigurationOptions.Builder().sorter(new AnnotationBasedSorter()).build(), yamlOptions));
         val.confname = fileName;
         return val;
     }

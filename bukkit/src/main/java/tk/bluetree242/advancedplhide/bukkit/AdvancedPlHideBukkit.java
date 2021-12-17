@@ -1,33 +1,24 @@
-package me.bluetree.advancedplhide;
-
+package tk.bluetree242.advancedplhide.bukkit;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import me.bluetree.advancedplhide.config.ConfManager;
-import me.bluetree.advancedplhide.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import tk.bluetree242.advancedplhide.config.ConfManager;
+import tk.bluetree242.advancedplhide.config.Config;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-public class AdvancedPlHide extends JavaPlugin implements Listener {
+public class AdvancedPlHideBukkit extends JavaPlugin implements Listener {
     public Config config;
     protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     private ProtocolManager protocolManager;
     private PacketListener listener = new PacketListener(this);
-    private boolean isLegacy = false;
+    private boolean legacy = false;
 
-    public static Map<String, Group> defaultMap() {
-        Map<String, Group> map = new HashMap<>();
-        map.put("default", new Group(List.of("example1", "example2")));
-        return map;
-    }
 
     public void onLoad() {
         protocolManager = ProtocolLibrary.getProtocolManager();
@@ -40,7 +31,7 @@ public class AdvancedPlHide extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
         String str = Bukkit.getServer().getClass().getPackage().getName();
         str = str.substring(str.lastIndexOf("v"));
-        isLegacy = (str.equals("v1_8_R3") || str.contains("v1_9_R") || str.contains("v1_10_R1") || str.contains("v1_11_R1") || str.contains("v1_12_R1"));
+        legacy = (str.equals("v1_8_R3") || str.contains("v1_9_R") || str.contains("v1_10_R1") || str.contains("v1_11_R1") || str.contains("v1_12_R1"));
     }
 
     public void onDisable() {
@@ -48,16 +39,16 @@ public class AdvancedPlHide extends JavaPlugin implements Listener {
     }
 
     public boolean isLegacy() {
-        return isLegacy;
+        return legacy;
     }
 
     @EventHandler
     public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
-        if (e.getPlayer().hasPermission("plhide.command")) return;
+        if (e.getPlayer().hasPermission("plhide.command.use")) return;
         String msg = e.getMessage().toLowerCase();
         if (msg.startsWith("/plugins") || msg.startsWith("/pl") || msg.startsWith("/bukkit:pl") || msg.startsWith("/bukkit:plugins")) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(ChatColor.RED + "We won't show you the plugin list for sure");
+            e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', config.pl_message()));
         }
     }
 }

@@ -1,4 +1,4 @@
-package me.bluetree.advancedplhide.exceptions;
+package tk.bluetree242.advancedplhide.exceptions;
 
 import space.arim.dazzleconf.error.ConfigFormatSyntaxException;
 
