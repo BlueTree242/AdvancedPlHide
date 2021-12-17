@@ -2,7 +2,7 @@ package tk.bluetree242.advancedplhide;
 
 import java.util.ArrayList;
 
-public class CommandModifier {
+public class CompleterModifier {
 
     public static void removePluginPrefix(CommandCompleterList list) {
         for (CommandCompleter completer : new ArrayList<>(list)) {

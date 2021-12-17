@@ -6,7 +6,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.mojang.brigadier.suggestion.Suggestions;
-import tk.bluetree242.advancedplhide.CommandModifier;
+import tk.bluetree242.advancedplhide.CompleterModifier;
 import tk.bluetree242.advancedplhide.bukkit.impl.StringCommandCompleterList;
 import tk.bluetree242.advancedplhide.bukkit.impl.SuggestionCommandCompleterList;
 
@@ -32,13 +32,13 @@ public class PacketListener extends PacketAdapter {
             StructureModifier<Suggestions> matchModifier = e.getPacket().getSpecificModifier(Suggestions.class);
             Suggestions suggestionsOrigin = matchModifier.read(0);
             SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
-            CommandModifier.removePluginPrefix(suggestions);
+            CompleterModifier.removePluginPrefix(suggestions);
             matchModifier.write(0, suggestions.export());
         } else {
             StructureModifier<String[]> matchModifier = e.getPacket().getSpecificModifier(String[].class);
             String[] suggestionsOrigin = matchModifier.read(0);
             StringCommandCompleterList suggestions = new StringCommandCompleterList(suggestionsOrigin);
-            CommandModifier.removePluginPrefix(suggestions);
+            CompleterModifier.removePluginPrefix(suggestions);
             matchModifier.write(0, suggestions.export());
         }
     }
