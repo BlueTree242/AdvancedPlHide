@@ -32,7 +32,9 @@ public class PacketListener extends PacketAdapter {
             StructureModifier<Suggestions> matchModifier = e.getPacket().getSpecificModifier(Suggestions.class);
             Suggestions suggestionsOrigin = matchModifier.read(0);
             SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
-            CompleterModifier.removePluginPrefix(suggestions);
+            if (suggestionsOrigin.getRange().getStart() == 1) {
+                CompleterModifier.removePluginPrefix(suggestions);
+            }
             matchModifier.write(0, suggestions.export());
         } else {
             StructureModifier<String[]> matchModifier = e.getPacket().getSpecificModifier(String[].class);
