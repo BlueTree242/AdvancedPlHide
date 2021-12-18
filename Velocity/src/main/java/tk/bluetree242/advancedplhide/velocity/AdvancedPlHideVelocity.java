@@ -55,7 +55,6 @@ public class AdvancedPlHideVelocity {
             if (!e.getCommandSource().hasPermission("plhide.command.use")) {
                 Component response =  LegacyComponentSerializer.legacy('&').deserialize(config.pl_message());
                 e.getCommandSource().sendMessage(response);
-                LegacyComponentSerializer.legacy('&').deserialize(config.pl_message());
                 e.setResult(CommandExecuteEvent.CommandResult.denied());
             }
         }
