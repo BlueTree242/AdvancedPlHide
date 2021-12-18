@@ -1,5 +1,5 @@
 rootProject.name = 'AdvancedPlHide'
 include 'core'
-include 'Bukkit'
+include 'Spigot'
 include 'Velocity'
 

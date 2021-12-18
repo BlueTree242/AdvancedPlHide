@@ -12,7 +12,7 @@ shadowJar {
     classifier ''
 }
 dependencies {
-    implementation project(":Bukkit")
+    implementation project(":Spigot")
     implementation project(":Velocity")
 }
 

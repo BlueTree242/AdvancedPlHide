@@ -5,4 +5,4 @@ version: @version@
 description: @description@
 authors:
   - BlueTree242
-main: tk.bluetree242.advancedplhide.bukkit.AdvancedPlHideBukkit
+main: tk.bluetree242.advancedplhide.spigot.AdvancedPlHideSpigot

@@ -1,4 +1,4 @@
-package tk.bluetree242.advancedplhide.bukkit;
+package tk.bluetree242.advancedplhide.spigot;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
@@ -12,7 +12,7 @@ import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 
 
-public class AdvancedPlHideBukkit extends JavaPlugin implements Listener {
+public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     public Config config;
     protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     private ProtocolManager protocolManager;
@@ -25,6 +25,7 @@ public class AdvancedPlHideBukkit extends JavaPlugin implements Listener {
     }
 
     public void onEnable() {
+
         confManager.reloadConfig();
         config = confManager.getConfigData();
         protocolManager.addPacketListener(new PacketListener(this));

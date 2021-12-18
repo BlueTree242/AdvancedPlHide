@@ -1,4 +1,4 @@
-package tk.bluetree242.advancedplhide.bukkit;
+package tk.bluetree242.advancedplhide.spigot;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -7,22 +7,23 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.mojang.brigadier.suggestion.Suggestions;
 import tk.bluetree242.advancedplhide.CompleterModifier;
-import tk.bluetree242.advancedplhide.bukkit.impl.cmd.StringCommandCompleterList;
-import tk.bluetree242.advancedplhide.bukkit.impl.cmd.SuggestionCommandCompleterList;
+import tk.bluetree242.advancedplhide.spigot.impl.cmd.StringCommandCompleterList;
+import tk.bluetree242.advancedplhide.spigot.impl.cmd.SuggestionCommandCompleterList;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class PacketListener extends PacketAdapter {
 
-    private AdvancedPlHideBukkit core;
+    private AdvancedPlHideSpigot core;
     private final HashMap<UUID, String> commandsWaiting = new HashMap<>();
-    public PacketListener(AdvancedPlHideBukkit core) {
+    public PacketListener(AdvancedPlHideSpigot core) {
         super(core, ListenerPriority.NORMAL, PacketType.Play.Server.TAB_COMPLETE, PacketType.Play.Client.TAB_COMPLETE, PacketType.Play.Server.COMMANDS);
         this.core = core;
     }
 
     public void onPacketSending(PacketEvent e) {
+
         if (e.getPacketType() == PacketType.Play.Server.TAB_COMPLETE) {
             onTabcomplete(e);
         } else if (e.getPacketType() == PacketType.Play.Server.COMMANDS) {

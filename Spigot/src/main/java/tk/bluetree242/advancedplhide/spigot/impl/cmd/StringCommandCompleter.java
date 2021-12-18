@@ -1,4 +1,4 @@
-package tk.bluetree242.advancedplhide.bukkit.impl.cmd;
+package tk.bluetree242.advancedplhide.spigot.impl.cmd;
 
 import tk.bluetree242.advancedplhide.CommandCompleter;
 
