@@ -11,6 +11,7 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.ProxyServer;
+import dev.simplix.protocolize.api.Protocolize;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.slf4j.Logger;
@@ -27,7 +28,8 @@ import java.nio.file.Path;
         name = "AdvancedPlHide",
         description = AdvancedPlHideVelocity.DESCRIPTION,
         version = AdvancedPlHideVelocity.VERSION,
-        authors = {"BlueTree242"})
+        authors = {"BlueTree242"},
+        dependencies = {@Dependency(id = "protocolize")})
 public class AdvancedPlHideVelocity {
     public static final String DESCRIPTION = "{description}";
     public static final String VERSION = "{version}";
@@ -48,6 +50,7 @@ public class AdvancedPlHideVelocity {
     public void onProxyInitialization(ProxyInitializeEvent event) {
         confManager.reloadConfig();
         config = confManager.getConfigData();
+        Protocolize.listenerProvider().registerListener(new PacketListener());
     }
 
     @Subscribe
