@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 
@@ -22,6 +23,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
 
     public void onLoad() {
         protocolManager = ProtocolLibrary.getProtocolManager();
+        Platform.setPlatform(new Impl());
     }
 
     public void onEnable() {
@@ -50,6 +52,14 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         if (msg.startsWith("/plugins") || msg.startsWith("/pl") || msg.startsWith("/bukkit:pl") || msg.startsWith("/bukkit:plugins")) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', config.pl_message()));
+        }
+    }
+
+    public class Impl extends Platform{
+
+        @Override
+        public Config getConfig() {
+            return config;
         }
     }
 }

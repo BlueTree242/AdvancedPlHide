@@ -10,4 +10,9 @@ public interface Config {
     @ConfComments("#Message to send when the player tries to run /plugins, bypass: plhide.command.use")
     @ConfDefault.DefaultString("&cWe won't show you the plugin list for sure.")
     String pl_message();
+
+    @AnnotationBasedSorter.Order(20)
+    @ConfComments("#Removes the plugin:command from tabcompleter, it function better than spigot does it")
+    @ConfDefault.DefaultBoolean(true)
+    Boolean remove_plugin_prefix();
 }

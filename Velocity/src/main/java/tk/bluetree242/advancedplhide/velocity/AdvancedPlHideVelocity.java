@@ -16,6 +16,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.slf4j.Logger;
 import tk.bluetree242.advancedplhide.CompleterModifier;
+import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.impl.RootCommandCompleter;
@@ -30,7 +31,7 @@ import java.nio.file.Path;
         version = AdvancedPlHideVelocity.VERSION,
         authors = {"BlueTree242"},
         dependencies = {@Dependency(id = "protocolize")})
-public class AdvancedPlHideVelocity {
+public class AdvancedPlHideVelocity extends Platform{
     public static final String DESCRIPTION = "{description}";
     public static final String VERSION = "{version}";
     public final ProxyServer server;
@@ -44,6 +45,7 @@ public class AdvancedPlHideVelocity {
         this.logger = logger;
         this.dataDirectory = dataDirectory;
         confManager = ConfManager.create(dataDirectory, "config.yml", Config.class);
+        Platform.setPlatform(this);
     }
 
     @Subscribe
@@ -51,6 +53,11 @@ public class AdvancedPlHideVelocity {
         confManager.reloadConfig();
         config = confManager.getConfigData();
         Protocolize.listenerProvider().registerListener(new PacketListener());
+    }
+
+    @Override
+    public Config getConfig() {
+        return config;
     }
 
     @Subscribe
@@ -71,6 +78,7 @@ public class AdvancedPlHideVelocity {
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(e.getRootNode());
         CompleterModifier.handleCompleter(node);
     }
+
 
 
 }

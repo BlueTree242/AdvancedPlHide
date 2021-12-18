@@ -11,6 +11,7 @@ public class CompleterModifier {
     }
 
     public static void handleCompleter(CommandCompleterList list) {
+        if (Platform.get().getConfig().remove_plugin_prefix())
         removePluginPrefix(list);
     }
 }
