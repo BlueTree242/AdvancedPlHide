@@ -25,7 +25,7 @@ public class SuggestionCommandCompleterList extends CommandCompleterList {
     @Override
     public boolean add(CommandCompleter completer) {
         if (!canAdd)
-            throw new IllegalStateException("SuggestionCommandCompleterList does not support add()");
+            throw new IllegalStateException("May not add to this type of Completer");
         else return super.add(completer);
     }
 

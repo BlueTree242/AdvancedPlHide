@@ -14,8 +14,11 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.slf4j.Logger;
+import tk.bluetree242.advancedplhide.CompleterModifier;
 import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
+import tk.bluetree242.advancedplhide.impl.RootCommandCompleter;
+import tk.bluetree242.advancedplhide.impl.RootNodeCommandCompleter;
 
 import javax.inject.Inject;
 import java.nio.file.Path;
@@ -62,7 +65,8 @@ public class AdvancedPlHideVelocity {
 
     @Subscribe
     public void onCommands(PlayerAvailableCommandsEvent e) {
-        //TODO: handle the commands
+        RootNodeCommandCompleter node = new RootNodeCommandCompleter(e.getRootNode());
+        CompleterModifier.handleCompleter(node);
     }
 
 

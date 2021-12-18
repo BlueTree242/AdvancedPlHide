@@ -6,7 +6,10 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.tree.RootCommandNode;
 import tk.bluetree242.advancedplhide.CompleterModifier;
+import tk.bluetree242.advancedplhide.impl.RootCommandCompleter;
+import tk.bluetree242.advancedplhide.impl.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.spigot.impl.cmd.StringCommandCompleterList;
 import tk.bluetree242.advancedplhide.spigot.impl.cmd.SuggestionCommandCompleterList;
 
@@ -27,7 +30,7 @@ public class PacketListener extends PacketAdapter {
         if (e.getPacketType() == PacketType.Play.Server.TAB_COMPLETE) {
             onTabcomplete(e);
         } else if (e.getPacketType() == PacketType.Play.Server.COMMANDS) {
-
+            onCommands(e);
         }
     }
 
@@ -50,6 +53,14 @@ public class PacketListener extends PacketAdapter {
             }
             matchModifier.write(0, suggestions.export());
         }
+    }
+
+    private void onCommands(PacketEvent e) {
+        StructureModifier<RootCommandNode> matchModifier = e.getPacket().getSpecificModifier(RootCommandNode.class);
+        RootCommandNode nodeOrigin = matchModifier.read(0);
+        RootNodeCommandCompleter node = new RootNodeCommandCompleter(nodeOrigin);
+        CompleterModifier.handleCompleter(node);
+        matchModifier.write(0, node.export());
     }
 
     public void onPacketReceiving(PacketEvent e) {
