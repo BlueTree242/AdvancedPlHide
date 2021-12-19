@@ -1,0 +1,79 @@
+package tk.bluetree242.advancedplhide.velocity;
+
+import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.command.SimpleCommand;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import tk.bluetree242.advancedplhide.AdvancedPlHide;
+import tk.bluetree242.advancedplhide.Platform;
+import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+public class AdvancedPlHideCommand implements SimpleCommand {
+    private AdvancedPlHideVelocity core;
+    public AdvancedPlHideCommand(AdvancedPlHideVelocity core) {
+        this.core = core;
+    }
+    @Override
+    public void execute(Invocation e) {
+        String[] args = e.arguments();
+        CommandSource sender = e.source();
+        if (args.length == 0) {
+            sender.sendMessage(LegacyComponentSerializer.legacy('&').deserialize("&aRunning AdvancedPlHide v.&e" + AdvancedPlHideVelocity.VERSION));
+            return;
+        } else {
+            if (args.length >= 1) {
+                if (args[0].equalsIgnoreCase("reload")) {
+                    if (!sender.hasPermission("plhide.reload")) {
+                        sender.sendMessage(Component.text("You don't have permission to run this command").color(NamedTextColor.RED));
+                        return;
+                    } else {
+                        core.server.getScheduler().buildTask(core, () -> {
+                            try {
+                                Platform.get().reloadConfig();
+                                sender.sendMessage(Component.text("Configuration Reloaded").color(NamedTextColor.GREEN));
+                            } catch (ConfigurationLoadException ev) {
+                                sender.sendMessage(Component.text("Could not reload " + ev.getConfigName()).color(NamedTextColor.RED));
+                            }
+                        }).schedule();
+                        return;
+                    }
+                }
+            }
+        }
+        sender.sendMessage(Component.text("SubCommand not found").color(NamedTextColor.RED));
+        return;
+    }
+
+    @Override
+    public CompletableFuture<List<String>> suggestAsync(Invocation invocation) {
+        return CompletableFuture.supplyAsync(() -> {
+            List<String> result = new ArrayList<>();
+            if (invocation.arguments().length <= 2) {
+                List<String> arg1 = new ArrayList<>();
+                if (invocation.source().hasPermission("plhide.reload")) {
+                    arg1.add("reload");
+                }
+                for (String s : arg1) {
+                    if (invocation.arguments().length != 0) {
+                        if (s.startsWith(invocation.arguments()[0])) {
+                            result.add(s);
+                        }
+                    } else {
+                        result.add(s);
+                    }
+                }
+            }
+            return result;
+        });
+    }
+
+    @Override
+    public boolean hasPermission(Invocation invocation) {
+        return SimpleCommand.super.hasPermission(invocation);
+    }
+}

@@ -48,7 +48,7 @@ public class OfferCompleterList extends CommandCompleterList {
     @Override
     public boolean add(CommandCompleter e) {
         if (!canAdd)
-        throw new IllegalStateException("May not add to this type of Completer");
+        throw new UnsupportedOperationException();
         return super.add(e);
     }
 }

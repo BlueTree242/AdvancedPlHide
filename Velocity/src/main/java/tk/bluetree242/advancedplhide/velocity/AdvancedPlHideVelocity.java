@@ -1,9 +1,9 @@
 package tk.bluetree242.advancedplhide.velocity;
 
+import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.event.command.PlayerAvailableCommandsEvent;
-import com.velocitypowered.api.event.player.TabCompleteEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
@@ -18,6 +18,7 @@ import tk.bluetree242.advancedplhide.CompleterModifier;
 import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
+import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.RootNodeCommandCompleter;
 
 import javax.inject.Inject;
@@ -47,10 +48,15 @@ public class AdvancedPlHideVelocity extends Platform{
     }
 
     @Subscribe
-    public void onProxyInitialization(ProxyInitializeEvent event) {
-        confManager.reloadConfig();
-        config = confManager.getConfigData();
+    public void onProxyInitialization(ProxyInitializeEvent e) {
+        reloadConfig();
+        CommandMeta meta = server.getCommandManager().metaBuilder("advancedplhidevelocity")
+                // Specify other aliases (optional)
+                .aliases("aphv", "apv", "plhidev", "phv")
+                .build();
+        server.getCommandManager().register(meta, new AdvancedPlHideCommand(this));
         Protocolize.listenerProvider().registerListener(new PacketListener());
+
     }
 
     @Override
@@ -58,11 +64,17 @@ public class AdvancedPlHideVelocity extends Platform{
         return config;
     }
 
+    @Override
+    public void reloadConfig() throws ConfigurationLoadException {
+        confManager.reloadConfig();
+        config = confManager.getConfigData();
+    }
+
     @Subscribe
     public void onCommandExecute(CommandExecuteEvent e) {
         if (e.getCommandSource() instanceof ConsoleCommandSource) return;
-        String msg = "/" + e.getCommand();
-        if (msg.startsWith("/plugins") || msg.startsWith("/pl") || msg.startsWith("/bukkit:pl") || msg.startsWith("/bukkit:plugins")) {
+        String cmd = "/" + e.getCommand().split(" ")[0];
+        if (cmd.equalsIgnoreCase("/plugins") || cmd.equalsIgnoreCase("/pl") || cmd.equalsIgnoreCase("/bukkit:pl") || cmd.equalsIgnoreCase("/bukkit:plugins")) {
             if (!e.getCommandSource().hasPermission("plhide.command.use")) {
                 Component response =  LegacyComponentSerializer.legacy('&').deserialize(config.pl_message());
                 e.getCommandSource().sendMessage(response);

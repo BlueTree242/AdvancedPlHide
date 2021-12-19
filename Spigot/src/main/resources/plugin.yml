@@ -6,3 +6,7 @@ description: @description@
 authors:
   - BlueTree242
 main: tk.bluetree242.advancedplhide.spigot.AdvancedPlHideSpigot
+
+commands:
+  advancedplhide:
+    aliases: [aph, plhide, ph]
