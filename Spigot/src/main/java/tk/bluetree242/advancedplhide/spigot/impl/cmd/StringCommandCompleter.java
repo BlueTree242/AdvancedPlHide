@@ -8,7 +8,7 @@ public class StringCommandCompleter implements CommandCompleter {
 
     public StringCommandCompleter(String name, StringCommandCompleterList list) {
         this.list = list;
-        this.name = name;
+        this.name = name.replaceFirst("/", "");
     }
 
     @Override

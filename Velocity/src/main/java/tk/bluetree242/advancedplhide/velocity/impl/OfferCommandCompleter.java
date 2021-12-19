@@ -5,16 +5,17 @@ import tk.bluetree242.advancedplhide.CommandCompleter;
 
 public class OfferCommandCompleter implements CommandCompleter {
     private final OfferCompleterList list;
-    private final TabCompleteResponse.Offer offer;
+    private final String name;
 
-    public OfferCommandCompleter(TabCompleteResponse.Offer offer, OfferCompleterList list) {
+    public OfferCommandCompleter(TabCompleteResponse.Offer offer, OfferCompleterList list, boolean legacy) {
         this.list = list;
-        this.offer = offer;
+        this.name = legacy ? offer.getText().replaceFirst("/", "") : offer.getText();
+
     }
 
     @Override
     public String getName() {
-        return offer.getText();
+        return name;
     }
 
     @Override

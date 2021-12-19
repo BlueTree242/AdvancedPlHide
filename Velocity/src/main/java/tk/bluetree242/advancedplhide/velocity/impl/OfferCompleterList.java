@@ -10,11 +10,13 @@ import java.util.List;
 public class OfferCompleterList extends CommandCompleterList {
     private final List<TabCompleteResponse.Offer> offers;
     private boolean canAdd = false;
-    public OfferCompleterList(List<TabCompleteResponse.Offer> offers) {
+    private final boolean legacy;
+    public OfferCompleterList(List<TabCompleteResponse.Offer> offers, boolean legacy) {
         this.offers = offers;
+        this.legacy = legacy;
         canAdd = true;
         for (TabCompleteResponse.Offer offer : offers) {
-            add(new OfferCommandCompleter(offer, this));
+            add(new OfferCommandCompleter(offer, this, legacy));
         }
         canAdd = false;
     }
@@ -28,9 +30,16 @@ public class OfferCompleterList extends CommandCompleterList {
         if (!(e instanceof CommandCompleter)) throw new IllegalArgumentException("May only remove CommandCompleter");
         CommandCompleter completer = (CommandCompleter) e;
         for (TabCompleteResponse.Offer offer : new ArrayList<>(offers)) {
-            if (offer.getText().equalsIgnoreCase(completer.getName())) {
-                super.remove(completer);
-                return offers.remove(offer);
+            if (!legacy) {
+                if (offer.getText().equalsIgnoreCase(completer.getName())) {
+                    super.remove(completer);
+                    return offers.remove(offer);
+                }
+            } else {
+                if (offer.getText().equalsIgnoreCase("/" + completer.getName())) {
+                    super.remove(completer);
+                    return offers.remove(offer);
+                }
             }
         }
         return false;

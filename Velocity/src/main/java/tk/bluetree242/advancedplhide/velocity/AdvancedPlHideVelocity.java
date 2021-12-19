@@ -1,6 +1,5 @@
 package tk.bluetree242.advancedplhide.velocity;
 
-import com.mojang.brigadier.tree.CommandNode;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.event.command.PlayerAvailableCommandsEvent;
@@ -19,7 +18,6 @@ import tk.bluetree242.advancedplhide.CompleterModifier;
 import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
-import tk.bluetree242.advancedplhide.impl.RootCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.RootNodeCommandCompleter;
 
 import javax.inject.Inject;
@@ -78,6 +76,8 @@ public class AdvancedPlHideVelocity extends Platform{
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(e.getRootNode());
         CompleterModifier.handleCompleter(node);
     }
+
+
 
 
 

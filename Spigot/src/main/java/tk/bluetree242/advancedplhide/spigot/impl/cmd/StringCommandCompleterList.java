@@ -19,7 +19,7 @@ public class StringCommandCompleterList extends CommandCompleterList {
     public String[] export() {
         List<String> cmds = new ArrayList<>();
         for (CommandCompleter completer : this) {
-            cmds.add(completer.getName());
+            cmds.add("/" + completer.getName());
         }
         return cmds.toArray(new String[0]);
     }
