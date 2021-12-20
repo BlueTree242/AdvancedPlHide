@@ -41,7 +41,6 @@ repositories {
 dependencies {
     implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2'
     compileOnly 'com.mojang:brigadier:1.0.18'
-
 }
 
 

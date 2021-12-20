@@ -119,7 +119,7 @@ public class AdvancedPlHideVelocity extends Platform {
                 .aliases("aphv", "apv", "plhidev", "phv")
                 .build();
         server.getCommandManager().register(meta, new AdvancedPlHideCommand(this));
-        Protocolize.listenerProvider().registerListener(new PacketListener());
+        Protocolize.listenerProvider().registerListener(new PacketListener(this));
 
     }
 

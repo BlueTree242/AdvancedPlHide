@@ -31,39 +31,42 @@ import dev.simplix.protocolize.api.listener.AbstractPacketListener;
 import dev.simplix.protocolize.api.listener.PacketReceiveEvent;
 import dev.simplix.protocolize.api.listener.PacketSendEvent;
 import tk.bluetree242.advancedplhide.CompleterModifier;
+import tk.bluetree242.advancedplhide.impl.SelfExpiringHashMap;
 import tk.bluetree242.advancedplhide.velocity.impl.OfferCompleterList;
 import tk.bluetree242.advancedplhide.velocity.impl.group.VelocityGroup;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class PacketListener extends AbstractPacketListener<TabCompleteResponse> {
-    private final HashMap<UUID, String> commandsWaiting = new HashMap<>();
-
-    protected PacketListener() {
+    private final SelfExpiringHashMap<UUID, String> commandsWaiting = new SelfExpiringHashMap<>();
+    private final AdvancedPlHideVelocity core;
+    protected PacketListener(AdvancedPlHideVelocity core) {
         super(TabCompleteResponse.class, Direction.UPSTREAM, 0);
+        this.core = core;
         Protocolize.listenerProvider().registerListener(new PacketListener.RequestListener());
     }
 
+
     @Override
     public void packetReceive(PacketReceiveEvent<TabCompleteResponse> e) {
-
-        //we don't need this currently
+        //it is impossible to get this packet
     }
 
     @Override
     public void packetSend(PacketSendEvent<TabCompleteResponse> e) {
         boolean legacy = e.player().protocolVersion() <= 340;
+        Player player = core.server.getPlayer(e.player().uniqueId()).orElse(null);
         if (legacy) {
-            OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
-            CompleterModifier.handleCompleter(list, VelocityGroup.forPlayer(e.player().handle()), ((Player) e.player().handle()).hasPermission("plhide.blacklist-mode"));
-        } else if (e.packet().getStart() == 1) {
             String str = commandsWaiting.get(e.player().uniqueId());
             if (!str.contains(" ") && str.startsWith("/")) {
-                commandsWaiting.remove(e.player().uniqueId());
                 OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
-                CompleterModifier.handleCompleter(list, VelocityGroup.forPlayer(e.player().handle()), ((Player) e.player().handle()).hasPermission("plhide.blacklist-mode"));
+                CompleterModifier.handleCompleter(list, VelocityGroup.forPlayer(player), player.hasPermission("plhide.blacklist-mode"));
             }
+        } else if (e.packet().getStart() == 1) {
+            OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
+            CompleterModifier.handleCompleter(list, VelocityGroup.forPlayer(player), player.hasPermission("plhide.blacklist-mode"));
         }
     }
 
@@ -77,7 +80,7 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
         public void packetReceive(PacketReceiveEvent<TabCompleteRequest> e) {
             boolean legacy = e.player().protocolVersion() <= 340;
             if (legacy) {
-                commandsWaiting.put(e.player().uniqueId(), e.packet().getCommand());
+                commandsWaiting.put(e.player().uniqueId(), e.packet().getCommand(), 60000);
             }
         }
 
