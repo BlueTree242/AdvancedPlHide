@@ -30,10 +30,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import tk.bluetree242.advancedplhide.CommandCompleter;
+import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
+import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
+import tk.bluetree242.advancedplhide.spigot.impl.group.SpigotGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
@@ -42,7 +49,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     private ProtocolManager protocolManager;
     private PacketListener listener = new PacketListener(this);
     private boolean legacy = false;
-
+    private List<Group> groups;
 
     public void onLoad() {
         protocolManager = ProtocolLibrary.getProtocolManager();
@@ -50,9 +57,8 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     }
 
     public void onEnable() {
-
-        confManager.reloadConfig();
-        config = confManager.getConfigData();
+        reloadConfig();
+        ;
         protocolManager.addPacketListener(new PacketListener(this));
         getServer().getPluginManager().registerEvents(this, this);
         String str = Bukkit.getServer().getClass().getPackage().getName();
@@ -60,6 +66,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         legacy = (str.equals("v1_8_R3") || str.contains("v1_9_R") || str.contains("v1_10_R1") || str.contains("v1_11_R1") || str.contains("v1_12_R1"));
         getServer().getPluginCommand("advancedplhide").setExecutor(new AdvancedPlHideCommand(this));
         getServer().getPluginCommand("advancedplhide").setTabCompleter(new AdvancedPlHideCommand.TabCompleter());
+
     }
 
     public void onDisable() {
@@ -80,7 +87,45 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         }
     }
 
-    public class Impl extends Platform{
+    public List<Group> getGroups() {
+        return groups;
+    }
+
+    public void loadGroups() {
+        groups = new ArrayList<>();
+        config.groups().forEach((name, val) -> {
+            List<CommandCompleter> tabcomplete = new ArrayList<>();
+            for (String s : val.tabcomplete()) {
+                tabcomplete.add(new GroupCompleter(s));
+            }
+            if (getGroup(name) == null)
+                groups.add(new SpigotGroup(name, val.parent_groups(), val.priority(), tabcomplete, this));
+            else {
+                getLogger().warning("Group " + name + " is repeated.");
+            }
+        });
+        if (getGroup("default") == null) {
+            getLogger().warning("group default was not found, using virtual default group.");
+            groups.add(new SpigotGroup("default", new ArrayList<>(), 0, new ArrayList<>(), this));
+        }
+
+    }
+
+    public Group getGroup(String name) {
+        for (Group group : groups) {
+            if (group.getName().equals(name)) return group;
+        }
+        return null;
+    }
+
+    @Override
+    public void reloadConfig() throws ConfigurationLoadException {
+        confManager.reloadConfig();
+        config = confManager.getConfigData();
+        loadGroups();
+    }
+
+    public class Impl extends Platform {
 
         @Override
         public Config getConfig() {
@@ -89,9 +134,19 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
 
         @Override
         public void reloadConfig() throws ConfigurationLoadException {
-            confManager.reloadConfig();
-            config = confManager.getConfigData();
+            AdvancedPlHideSpigot.this.reloadConfig();
+        }
+
+        @Override
+        public List<Group> getGroups() {
+            return AdvancedPlHideSpigot.this.getGroups();
+        }
+
+        @Override
+        public Group getGroup(String name) {
+            return AdvancedPlHideSpigot.this.getGroup(name);
         }
     }
+
 
 }

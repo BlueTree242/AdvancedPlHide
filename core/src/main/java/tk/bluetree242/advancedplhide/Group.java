@@ -25,27 +25,31 @@ package tk.bluetree242.advancedplhide;
 import java.util.List;
 
 /**
- * Group that inherit some completers. Should throw {@link IllegalStateException} if one of the group parents is parent of this, to prevent infinite loops
+ * Group that inherit some completers.
+ * **Handling infinite loops of group parents:**
+ * Parent groups inherited would not be repeated.
  */
 public interface Group {
 
     /**
-     *
      * @return Name of group
      */
     String getName();
 
     /**
-     *
      * @return List of parents that this group inherit
      */
     List<Group> getParents();
 
     /**
-     *
-     * @return List of commands blacklisted, this is still same if the player is whitelist mode
      * @param all if should return all blacklisted commands even from parent groups
+     * @return List of commands for group, either used as whitelist or blacklist. The commands are considered not in a list.
      */
-    List<CommandCompleter> getCommandsBlacklisted(boolean all);
+    List<CommandCompleter> getTabComplete(boolean all);
+
+    /**
+     * @return Priority of the group
+     */
+    int getPriority();
 
 }

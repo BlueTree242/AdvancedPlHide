@@ -37,7 +37,6 @@ public abstract class CommandCompleterList extends ArrayList<CommandCompleter> {
     }
 
     /**
-     *
      * @return Exported value of the original completer list
      */
     public abstract Object export();

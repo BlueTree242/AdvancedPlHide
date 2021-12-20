@@ -36,15 +36,21 @@ import dev.simplix.protocolize.api.Protocolize;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.slf4j.Logger;
+import tk.bluetree242.advancedplhide.CommandCompleter;
 import tk.bluetree242.advancedplhide.CompleterModifier;
+import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.RootNodeCommandCompleter;
+import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
+import tk.bluetree242.advancedplhide.velocity.impl.group.VelocityGroup;
 
 import javax.inject.Inject;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 @Plugin(id = "advancedplhide",
         name = "AdvancedPlHide",
@@ -52,7 +58,7 @@ import java.nio.file.Path;
         version = AdvancedPlHideVelocity.VERSION,
         authors = {"BlueTree242"},
         dependencies = {@Dependency(id = "protocolize")})
-public class AdvancedPlHideVelocity extends Platform{
+public class AdvancedPlHideVelocity extends Platform {
     public static final String DESCRIPTION = "{description}";
     public static final String VERSION = "{version}";
     public final ProxyServer server;
@@ -60,6 +66,7 @@ public class AdvancedPlHideVelocity extends Platform{
     public final Path dataDirectory;
     public Config config;
     protected ConfManager<Config> confManager;
+    private List<Group> groups = new ArrayList<>();
     @Inject
     public AdvancedPlHideVelocity(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
         this.server = server;
@@ -67,6 +74,41 @@ public class AdvancedPlHideVelocity extends Platform{
         this.dataDirectory = dataDirectory;
         confManager = ConfManager.create(dataDirectory, "config.yml", Config.class);
         Platform.setPlatform(this);
+    }
+
+    public void loadGroups() {
+        groups = new ArrayList<>();
+        config.groups().forEach((name, val) -> {
+            List<CommandCompleter> tabcomplete = new ArrayList<>();
+            for (String s : val.tabcomplete()) {
+                tabcomplete.add(new GroupCompleter(s));
+            }
+            if (getGroup(name) == null)
+                groups.add(new VelocityGroup(name, val.parent_groups(), val.priority(), tabcomplete, this));
+            else {
+                getLogger().warn("Group " + name + " is repeated.");
+            }
+        });
+        if (getGroup("default") == null) {
+            getLogger().warn("group default was not found, using virtual default group.");
+            groups.add(new VelocityGroup("default", new ArrayList<>(), 0, new ArrayList<>(), this));
+        }
+
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public Group getGroup(String name) {
+        for (Group group : groups) {
+            if (group.getName().equals(name)) return group;
+        }
+        return null;
+    }
+
+    public List<Group> getGroups() {
+        return groups;
     }
 
     @Subscribe
@@ -90,6 +132,7 @@ public class AdvancedPlHideVelocity extends Platform{
     public void reloadConfig() throws ConfigurationLoadException {
         confManager.reloadConfig();
         config = confManager.getConfigData();
+        loadGroups();
     }
 
     @Subscribe
@@ -98,7 +141,7 @@ public class AdvancedPlHideVelocity extends Platform{
         String cmd = "/" + e.getCommand().split(" ")[0];
         if (cmd.equalsIgnoreCase("/plugins") || cmd.equalsIgnoreCase("/pl") || cmd.equalsIgnoreCase("/bukkit:pl") || cmd.equalsIgnoreCase("/bukkit:plugins")) {
             if (!e.getCommandSource().hasPermission("plhide.command.use")) {
-                Component response =  LegacyComponentSerializer.legacy('&').deserialize(config.pl_message());
+                Component response = LegacyComponentSerializer.legacy('&').deserialize(config.pl_message());
                 e.getCommandSource().sendMessage(response);
                 e.setResult(CommandExecuteEvent.CommandResult.denied());
             }
@@ -108,11 +151,8 @@ public class AdvancedPlHideVelocity extends Platform{
     @Subscribe
     public void onCommands(PlayerAvailableCommandsEvent e) {
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(e.getRootNode());
-        CompleterModifier.handleCompleter(node);
+        CompleterModifier.handleCompleter(node, VelocityGroup.forPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.blacklist-mode"));
     }
-
-
-
 
 
 }

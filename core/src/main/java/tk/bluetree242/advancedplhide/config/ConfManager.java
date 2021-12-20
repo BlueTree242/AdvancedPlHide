@@ -35,6 +35,8 @@ import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConfManager<C> extends ConfigurationHelper<C> {
     private String confname;
@@ -55,6 +57,12 @@ public class ConfManager<C> extends ConfigurationHelper<C> {
                 new SnakeYamlConfigurationFactory<>(configClass, new ConfigurationOptions.Builder().sorter(new AnnotationBasedSorter()).build(), yamlOptions));
         val.confname = fileName;
         return val;
+    }
+
+    public static Map<String, Config.Group> defaultGroups() {
+        Map<String, Config.Group> groups = new HashMap<>();
+        groups.put("default", new DefaultGroupImpl());
+        return groups;
     }
 
     public void reloadConfig() {

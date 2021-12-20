@@ -32,7 +32,9 @@ public interface CommandCompleter {
     /**
      * This method is only used if this is included in a CommandCompleterList
      *
-     * @throws IllegalStateException if this is not in a list
+     * @throws UnsupportedOperationException if this is not in a list
      */
     void remove();
+
+
 }

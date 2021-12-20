@@ -9,4 +9,4 @@ main: tk.bluetree242.advancedplhide.spigot.AdvancedPlHideSpigot
 
 commands:
   advancedplhide:
-    aliases: [aph, plhide, ph]
+    aliases: [ aph, plhide, ph ]

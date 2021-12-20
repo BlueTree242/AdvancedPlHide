@@ -24,7 +24,12 @@ package tk.bluetree242.advancedplhide.config;
 
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
+import space.arim.dazzleconf.annote.ConfKey;
+import space.arim.dazzleconf.annote.SubSection;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
+
+import java.util.List;
+import java.util.Map;
 
 public interface Config {
 
@@ -37,4 +42,22 @@ public interface Config {
     @ConfComments("#Removes the plugin:command from tabcompleter, it function better than spigot does it")
     @ConfDefault.DefaultBoolean(true)
     Boolean remove_plugin_prefix();
+
+    @AnnotationBasedSorter.Order(30)
+    @ConfComments("") //space between the groups and the conf options up
+    @ConfDefault.DefaultObject("tk.bluetree242.advancedplhide.config.ConfManager.defaultGroups")
+    Map<String, @SubSection Group> groups();
+
+    interface Group {
+        @AnnotationBasedSorter.Order(10)
+        List<String> tabcomplete();
+
+        @AnnotationBasedSorter.Order(20)
+        @ConfComments("# If player has 2 groups, the one with higher priority will be chosen")
+        Integer priority();
+
+        @AnnotationBasedSorter.Order(30)
+        @ConfKey("parent-groups")
+        List<String> parent_groups();
+    }
 }

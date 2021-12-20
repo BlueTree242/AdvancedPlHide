@@ -27,8 +27,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
-import tk.bluetree242.advancedplhide.AdvancedPlHide;
 import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 
@@ -37,6 +35,7 @@ import java.util.List;
 
 public class AdvancedPlHideCommand implements CommandExecutor {
     private final AdvancedPlHideSpigot core;
+
     public AdvancedPlHideCommand(AdvancedPlHideSpigot core) {
         this.core = core;
     }
@@ -45,8 +44,8 @@ public class AdvancedPlHideCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
-         sender.sendMessage(ChatColor.GREEN + "Running AdvancedPlHide v." + ChatColor.YELLOW + core.getDescription().getVersion());
-         return true;
+            sender.sendMessage(ChatColor.GREEN + "Running AdvancedPlHide v." + ChatColor.YELLOW + core.getDescription().getVersion());
+            return true;
         } else {
             if (args.length >= 1) {
                 if (args[0].equalsIgnoreCase("reload")) {
@@ -65,7 +64,7 @@ public class AdvancedPlHideCommand implements CommandExecutor {
                         return true;
                     }
                 }
-                }
+            }
         }
         sender.sendMessage(ChatColor.RED + "SubCommand not found");
         return true;
@@ -78,9 +77,9 @@ public class AdvancedPlHideCommand implements CommandExecutor {
             List<String> result = new ArrayList<>();
             List<String> arg1 = new ArrayList<>();
             if (args.length == 1)
-            if (sender.hasPermission("plhide.reload")) {
-                arg1.add("reload");
-            }
+                if (sender.hasPermission("plhide.reload")) {
+                    arg1.add("reload");
+                }
             for (String s : arg1) {
                 if (s.startsWith(args[0])) {
                     result.add(s);

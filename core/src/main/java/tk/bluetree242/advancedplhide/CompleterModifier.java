@@ -33,8 +33,8 @@ public class CompleterModifier {
     }
 
 
-    public static void handleCompleter(CommandCompleterList list) {
+    public static void handleCompleter(CommandCompleterList list, Group playerGroup, boolean blacklist) {
         if (Platform.get().getConfig().remove_plugin_prefix())
-        removePluginPrefix(list);
+            removePluginPrefix(list);
     }
 }

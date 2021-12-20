@@ -19,24 +19,35 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  *  END
  */
-plugins {
-    id 'java'
-    id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
-}
-repositories {
-    mavenCentral()
 
-}
-shadowJar {
-    classifier ''
-}
-dependencies {
-    implementation project(":Spigot")
-    implementation project(":Velocity")
-}
-java.sourceCompatibility = JavaVersion.VERSION_11
-java.targetCompatibility = JavaVersion.VERSION_11
+package tk.bluetree242.advancedplhide.config;
 
+import java.util.ArrayList;
+import java.util.List;
 
+public class DefaultGroupImpl implements Config.Group {
+    protected DefaultGroupImpl() {
+    }
 
+    @Override
+    public List<String> tabcomplete() {
+        List<String> result = new ArrayList<>();
+        result.add("serverlistplus");
+        result.add("pl");
+        result.add("plugins");
+        result.add("version");
+        result.add("example1");
+        result.add("example2");
+        return result;
+    }
+
+    @Override
+    public Integer priority() {
+        return 0;
+    }
+
+    @Override
+    public List<String> parent_groups() {
+        return new ArrayList<>();
+    }
+}

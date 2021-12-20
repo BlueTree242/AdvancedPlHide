@@ -27,7 +27,6 @@ import com.velocitypowered.api.command.SimpleCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import tk.bluetree242.advancedplhide.AdvancedPlHide;
 import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 
@@ -37,9 +36,11 @@ import java.util.concurrent.CompletableFuture;
 
 public class AdvancedPlHideCommand implements SimpleCommand {
     private AdvancedPlHideVelocity core;
+
     public AdvancedPlHideCommand(AdvancedPlHideVelocity core) {
         this.core = core;
     }
+
     @Override
     public void execute(Invocation e) {
         String[] args = e.arguments();
