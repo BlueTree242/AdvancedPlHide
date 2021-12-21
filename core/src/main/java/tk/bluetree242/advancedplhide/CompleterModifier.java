@@ -38,6 +38,7 @@ public class CompleterModifier {
         if (Platform.get().getConfig().remove_plugin_prefix())
             removePluginPrefix(list);
 
+        if (playerGroup != null)
         if (!blacklist) applyBlacklist(list, playerGroup.getTabComplete(true)); else applyWhitelist(list, playerGroup.getTabComplete(true));
     }
 
