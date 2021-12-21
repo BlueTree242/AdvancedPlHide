@@ -150,6 +150,10 @@ public class AdvancedPlHideVelocity extends Platform {
 
     @Subscribe
     public void onCommands(PlayerAvailableCommandsEvent e) {
+        if (!e.getPlayer().isActive()) {
+            e.getRootNode().getChildren().removeAll(e.getRootNode().getChildren());
+            return;
+        }
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(e.getRootNode());
         CompleterModifier.handleCompleter(node, VelocityGroup.forPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.blacklist-mode"));
     }

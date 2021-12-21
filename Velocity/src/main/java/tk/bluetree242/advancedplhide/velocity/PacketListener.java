@@ -58,6 +58,10 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
     public void packetSend(PacketSendEvent<TabCompleteResponse> e) {
         boolean legacy = e.player().protocolVersion() <= 340;
         Player player = core.server.getPlayer(e.player().uniqueId()).orElse(null);
+        if (!player.isActive()) {
+            e.cancelled(true);
+            return;
+        }
         if (legacy) {
             String str = commandsWaiting.get(e.player().uniqueId());
             if (!str.contains(" ") && str.startsWith("/")) {
