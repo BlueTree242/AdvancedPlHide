@@ -64,10 +64,7 @@ public class SpigotGroup implements Group {
             }
         });
         Group group = groups.get(0);
-        if (group.getName().equals("default") && group.getPriority() == 0 && groups.size() != 1) {
-            //uhh, conflict on the player, 2 groups but still group is default, instead of letting the user think it is a bug, fix it ourself, this solution is not effective
-            group = groups.get(1);
-        }
+
         return group;
     }
 
