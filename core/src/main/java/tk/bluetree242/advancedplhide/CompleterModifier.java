@@ -43,22 +43,22 @@ public class CompleterModifier {
     }
 
     public static void applyBlacklist(CommandCompleterList list, List<CommandCompleter> toBlacklist) {
+        List<String> commands = new ArrayList<>();
+        for (CommandCompleter completer : toBlacklist) {
+            commands.add(completer.getName());
+        }
         for (CommandCompleter completer : new ArrayList<>(list)) {
-            for (CommandCompleter commandCompleter : toBlacklist) {
-                if (commandCompleter.getName().equals(completer.getName())) {
-                    completer.remove();
-                }
-            }
+            if (commands.contains(completer.getName())) completer.remove();
         }
     }
 
     public static void applyWhitelist(CommandCompleterList list, List<CommandCompleter> toWhitelist) {
+        List<String> commands = new ArrayList<>();
+        for (CommandCompleter completer : toWhitelist) {
+            commands.add(completer.getName());
+        }
         for (CommandCompleter completer : new ArrayList<>(list)) {
-            boolean found = false;
-            for (CommandCompleter commandCompleter : toWhitelist) {
-                if (commandCompleter.getName().equals(completer.getName())) found = true;
-            }
-            if (!found) completer.remove();
+            if (!commands.contains(completer.getName())) completer.remove();
         }
     }
 }
