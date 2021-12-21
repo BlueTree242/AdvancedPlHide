@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 /*
  *  LICENSE
  * AdvancedPlHide
@@ -27,6 +29,17 @@ plugins {
 repositories {
     mavenCentral()
 
+}
+subprojects {
+    apply plugin: 'java'
+    project.jar {
+        archivesBaseName = 'AdvancedPlHide-' + project.name
+    }
+    project.processResources {
+        from(sourceSets.main.resources.srcDirs) {
+            filter ReplaceTokens, tokens: [version: version, description: rootProject.description]
+        }
+    }
 }
 shadowJar {
     classifier ''

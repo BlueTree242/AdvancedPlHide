@@ -23,13 +23,17 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow'
 }
 
 group 'me.bluetree242.advancedplhide'
-rootProject.shadowJar {
-    relocate 'space.arim.dazzleconf', "tk.bluetree242.advancedplhide.dependencies.dazzleconf"
-    relocate 'org.yaml', "tk.bluetree242.advancedplhide.dependencies.yaml"
+rootProject.allprojects {
+    apply plugin: 'java'
+    plugins.apply("com.github.johnrengelman.shadow")
+    project.shadowJar {
+        classifier ''
+        relocate 'space.arim.dazzleconf', "tk.bluetree242.advancedplhide.dependencies.dazzleconf"
+        relocate 'org.yaml', "tk.bluetree242.advancedplhide.dependencies.yaml"
+    }
 }
 
 repositories {

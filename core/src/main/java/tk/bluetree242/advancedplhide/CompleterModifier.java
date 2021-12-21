@@ -23,6 +23,7 @@
 package tk.bluetree242.advancedplhide;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CompleterModifier {
 
@@ -36,5 +37,27 @@ public class CompleterModifier {
     public static void handleCompleter(CommandCompleterList list, Group playerGroup, boolean blacklist) {
         if (Platform.get().getConfig().remove_plugin_prefix())
             removePluginPrefix(list);
+
+        if (!blacklist) applyBlacklist(list, playerGroup.getTabComplete(true)); else applyWhitelist(list, playerGroup.getTabComplete(true));
+    }
+
+    public static void applyBlacklist(CommandCompleterList list, List<CommandCompleter> toBlacklist) {
+        for (CommandCompleter completer : new ArrayList<>(list)) {
+            for (CommandCompleter commandCompleter : toBlacklist) {
+                if (commandCompleter.getName().equals(completer.getName())) {
+                    completer.remove();
+                }
+            }
+        }
+    }
+
+    public static void applyWhitelist(CommandCompleterList list, List<CommandCompleter> toWhitelist) {
+        for (CommandCompleter completer : new ArrayList<>(list)) {
+            boolean found = false;
+            for (CommandCompleter commandCompleter : toWhitelist) {
+                if (commandCompleter.getName().equals(completer.getName())) found = true;
+            }
+            if (!found) completer.remove();
+        }
     }
 }
