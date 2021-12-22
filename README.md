@@ -1,6 +1,6 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
-<img alt="LibertyBans" src="./.github/banner.png" />
+<img alt="AdvancePlHide" src="./.github/banner.png" />
 
 <!-- Shields -->
 [Document (not finshed)]:https://img.shields.io/badge/-Document-blue.svg?logo=Wikipedia&style=for-the-badge&logoColor=black
