@@ -26,9 +26,14 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandMap;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import tk.bluetree242.advancedplhide.CommandCompleter;
 import tk.bluetree242.advancedplhide.Group;
@@ -39,6 +44,7 @@ import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
 import tk.bluetree242.advancedplhide.spigot.impl.group.SpigotGroup;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,6 +131,17 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         loadGroups();
     }
 
+    public CommandMap getCommandMap() {
+        try {
+            final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+
+            bukkitCommandMap.setAccessible(true);
+            CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
+            return commandMap;
+        } catch(Exception e) {
+            return null;
+        }
+    }
     public class Impl extends Platform {
 
         @Override
@@ -145,6 +162,15 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         @Override
         public Group getGroup(String name) {
             return AdvancedPlHideSpigot.this.getGroup(name);
+        }
+
+        @Override
+        public String getPluginForCommand(String s) {
+            Command command = getCommandMap().getCommand(s);
+            if (!(command instanceof PluginIdentifiableCommand)) return "minecraft";
+            Plugin plugin = ((PluginIdentifiableCommand) command).getPlugin();
+            if (plugin == null) return null;
+            return plugin.getName();
         }
     }
 

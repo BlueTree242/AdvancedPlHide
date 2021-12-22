@@ -22,14 +22,20 @@
 
 package tk.bluetree242.advancedplhide.bungee;
 
+import com.google.common.collect.Multimap;
 import dev.simplix.protocolize.api.Protocolize;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
+import net.md_5.bungee.api.event.ProxyReloadEvent;
+import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.api.plugin.PluginManager;
+import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.event.EventHandler;
+import org.yaml.snakeyaml.Yaml;
 import tk.bluetree242.advancedplhide.CommandCompleter;
 import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.Platform;
@@ -39,15 +45,23 @@ import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.ProxySelector;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.jar.JarFile;
 
 public class AdvancedPlHideBungee extends Plugin implements Listener {
     public Config config;
     protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     private PacketListener listener;
-    ;
+    private Map<String, String> map = new HashMap<>();
     private List<Group> groups = new ArrayList<>();
 
     public void onEnable() {
@@ -63,7 +77,6 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
     public void onDisable() {
         Protocolize.listenerProvider().unregisterListener(listener);
     }
-
 
     public void loadGroups() {
         groups = new ArrayList<>();
@@ -100,6 +113,7 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
         confManager.reloadConfig();
         config = confManager.getConfigData();
         loadGroups();
+
     }
 
     public class Impl extends Platform {
@@ -122,6 +136,12 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
         @Override
         public Group getGroup(String name) {
             return AdvancedPlHideBungee.this.getGroup(name);
+        }
+
+        @Override
+        public String getPluginForCommand(String s) {
+
+            return null;
         }
     }
 

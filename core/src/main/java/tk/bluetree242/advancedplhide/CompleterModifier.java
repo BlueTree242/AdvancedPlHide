@@ -45,21 +45,32 @@ public class CompleterModifier {
 
     public static void applyBlacklist(CommandCompleterList list, List<CommandCompleter> toBlacklist) {
         List<String> commands = new ArrayList<>();
+        List<String> plugins = new ArrayList<>();
         for (CommandCompleter completer : toBlacklist) {
+            if (!completer.getName().startsWith("from:"))
             commands.add(completer.getName());
+            else {
+                String name = completer.getName().replaceFirst("from:", "");
+                plugins.add(name);
+            }
         }
         for (CommandCompleter completer : new ArrayList<>(list)) {
-            if (commands.contains(completer.getName())) completer.remove();
+            if (commands.contains(completer.getName()) || plugins.contains(Platform.get().getPluginForCommand(completer.getName()))) completer.remove();
         }
     }
 
     public static void applyWhitelist(CommandCompleterList list, List<CommandCompleter> toWhitelist) {
         List<String> commands = new ArrayList<>();
+        List<String> plugins = new ArrayList<>();
         for (CommandCompleter completer : toWhitelist) {
-            commands.add(completer.getName());
-        }
+            if (!completer.getName().startsWith("from:"))
+                commands.add(completer.getName());
+            else {
+                String name = completer.getName().replaceFirst("from:", "");
+                plugins.add(name);
+            }        }
         for (CommandCompleter completer : new ArrayList<>(list)) {
-            if (!commands.contains(completer.getName())) completer.remove();
+            if (!commands.contains(completer.getName()) && !plugins.contains(Platform.get().getPluginForCommand(completer.getName()))) completer.remove();
         }
     }
 }

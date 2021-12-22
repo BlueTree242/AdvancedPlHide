@@ -108,6 +108,11 @@ public class AdvancedPlHideVelocity extends Platform {
         return null;
     }
 
+    @Override
+    public String getPluginForCommand(String s) {
+        return null;
+    }
+
     public List<Group> getGroups() {
         return groups;
     }

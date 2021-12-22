@@ -52,4 +52,6 @@ public abstract class Platform {
     public abstract List<Group> getGroups();
 
     public abstract Group getGroup(String name);
+
+    public abstract String getPluginForCommand(String s);
 }
