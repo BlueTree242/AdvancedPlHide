@@ -23,7 +23,15 @@
 package tk.bluetree242.advancedplhide.bungee;
 
 import dev.simplix.protocolize.api.Protocolize;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.ChatEvent;
+import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.chat.BaseComponentSerializer;
+import net.md_5.bungee.chat.ComponentSerializer;
+import net.md_5.bungee.event.EventHandler;
 import tk.bluetree242.advancedplhide.CommandCompleter;
 import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.Platform;
@@ -36,7 +44,7 @@ import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdvancedPlHideBungee extends Plugin {
+public class AdvancedPlHideBungee extends Plugin implements Listener {
     public Config config;
     protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     private PacketListener listener;
@@ -47,6 +55,8 @@ public class AdvancedPlHideBungee extends Plugin {
         reloadConfig();
         Protocolize.listenerProvider().registerListener(listener = new PacketListener(this));
         Platform.setPlatform(new Impl());
+        ProxyServer.getInstance().getPluginManager().registerListener(this, this);
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new AdvancedPlHideCommand(this));
     }
 
     public void onDisable() {
@@ -114,5 +124,19 @@ public class AdvancedPlHideBungee extends Plugin {
         }
     }
 
+    @EventHandler
+    public void onChat(ChatEvent e) {
+        if (e.getMessage().startsWith("/")) {
+            if (e.getSender() instanceof ProxiedPlayer) {
+                ProxiedPlayer sender = (ProxiedPlayer) e.getSender();
+                if (sender.hasPermission("plhide.command.use")) return;
+                String cmd = e.getMessage().toLowerCase().split(" ")[0];
+                if (cmd.equalsIgnoreCase("/plugins") || cmd.equalsIgnoreCase("/pl") || cmd.equalsIgnoreCase("/bukkit:pl") || cmd.equalsIgnoreCase("/bukkit:plugins")) {
+                    e.setCancelled(true);
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', config.pl_message()));
+                }
+            }
+        }
+    }
 
 }
