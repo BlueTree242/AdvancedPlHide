@@ -13,7 +13,7 @@
 [CodeSize]:https://img.shields.io/github/languages/code-size/BlueTree242/AdvancedPlHide
 <!-- Shields -->
 [![Discord]](https://discordsrvutils.xyz/support)
-[![Spigot]](https://spigotmc.org/resources/81063)
+[![Spigot]](https://spigotmc.org/resources/(spigotid))
 <br><br>[![TestedVersion]](https://spigotmc.org/resources/(spigotid) ![SpigotRating]
 <br>![License] ![GitHubStar] ![CodeSize]
 </div>
@@ -40,7 +40,8 @@
 
 ### Requirements
 
-* Java 11 (or higher)
+* Java 11 (or higher) (for Velocity)
+* Java 8 (or higher) (bungee and spigot)
 * ProtocolLib(spigot) 
 * Protocolize(proxy)
 * Luckperms or some other perm plugin
