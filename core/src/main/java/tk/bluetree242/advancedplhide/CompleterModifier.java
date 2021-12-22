@@ -39,7 +39,8 @@ public class CompleterModifier {
             removePluginPrefix(list);
 
         if (playerGroup != null)
-        if (!blacklist) applyBlacklist(list, playerGroup.getTabComplete(true)); else applyWhitelist(list, playerGroup.getTabComplete(true));
+            if (!blacklist) applyBlacklist(list, playerGroup.getTabComplete(true));
+            else applyWhitelist(list, playerGroup.getTabComplete(true));
     }
 
     public static void applyBlacklist(CommandCompleterList list, List<CommandCompleter> toBlacklist) {

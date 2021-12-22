@@ -19,11 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  *  END
  */
-
-import org.apache.tools.ant.filters.ReplaceTokens
-
-
-
 repositories {
     mavenCentral()
     maven {
@@ -49,7 +44,6 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-
 
 
 java.sourceCompatibility = JavaVersion.VERSION_1_8

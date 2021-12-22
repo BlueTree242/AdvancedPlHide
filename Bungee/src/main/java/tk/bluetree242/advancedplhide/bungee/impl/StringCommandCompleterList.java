@@ -30,6 +30,7 @@ import java.util.List;
 
 public class StringCommandCompleterList extends CommandCompleterList {
     private final List<String> list;
+
     public StringCommandCompleterList(List<String> list) {
         this.list = list;
         for (String s : list) {

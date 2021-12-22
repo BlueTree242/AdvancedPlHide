@@ -35,13 +35,12 @@ import tk.bluetree242.advancedplhide.impl.SelfExpiringHashMap;
 import tk.bluetree242.advancedplhide.velocity.impl.OfferCompleterList;
 import tk.bluetree242.advancedplhide.velocity.impl.group.VelocityGroup;
 
-import java.time.Duration;
-import java.util.HashMap;
 import java.util.UUID;
 
 public class PacketListener extends AbstractPacketListener<TabCompleteResponse> {
     private final SelfExpiringHashMap<UUID, String> commandsWaiting = new SelfExpiringHashMap<>();
     private final AdvancedPlHideVelocity core;
+
     protected PacketListener(AdvancedPlHideVelocity core) {
         super(TabCompleteResponse.class, Direction.UPSTREAM, 0);
         this.core = core;

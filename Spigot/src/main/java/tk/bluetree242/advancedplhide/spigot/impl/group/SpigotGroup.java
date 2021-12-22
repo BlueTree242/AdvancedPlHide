@@ -47,7 +47,7 @@ public class SpigotGroup implements Group {
         this.core = core;
     }
 
-    public static Group forPlayer( Player player) {
+    public static Group forPlayer(Player player) {
         Platform core = Platform.get();
         if (player.hasPermission("plhide.no-group")) return null;
         List<Group> groups = new ArrayList<>();

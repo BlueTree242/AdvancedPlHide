@@ -22,7 +22,6 @@
 
 package tk.bluetree242.advancedplhide.bungee;
 
-import com.mojang.brigadier.tree.CommandNode;
 import dev.simplix.protocolize.api.Direction;
 import dev.simplix.protocolize.api.Protocolize;
 import dev.simplix.protocolize.api.listener.AbstractPacketListener;
@@ -36,16 +35,16 @@ import net.md_5.bungee.protocol.packet.TabCompleteResponse;
 import tk.bluetree242.advancedplhide.CompleterModifier;
 import tk.bluetree242.advancedplhide.bungee.impl.StringCommandCompleterList;
 import tk.bluetree242.advancedplhide.bungee.impl.group.BungeeGroup;
-import tk.bluetree242.advancedplhide.impl.RootCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.SelfExpiringHashMap;
 import tk.bluetree242.advancedplhide.impl.SuggestionCommandCompleterList;
 
 import java.util.UUID;
 
-public class PacketListener extends AbstractPacketListener<TabCompleteResponse>{
+public class PacketListener extends AbstractPacketListener<TabCompleteResponse> {
     private final SelfExpiringHashMap<UUID, String> commandsWaiting = new SelfExpiringHashMap<>();
     private final AdvancedPlHideBungee core;
+
     protected PacketListener(AdvancedPlHideBungee core) {
         super(TabCompleteResponse.class, Direction.UPSTREAM, 0);
         this.core = core;
@@ -82,47 +81,48 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse>{
         }
     }
 
-        public class RequestListener extends AbstractPacketListener<TabCompleteRequest> {
+    public class RequestListener extends AbstractPacketListener<TabCompleteRequest> {
 
-            protected RequestListener() {
-                super(TabCompleteRequest.class, Direction.UPSTREAM, 0);
-            }
+        protected RequestListener() {
+            super(TabCompleteRequest.class, Direction.UPSTREAM, 0);
+        }
 
-            @Override
-            public void packetReceive(PacketReceiveEvent<TabCompleteRequest> e) {
-                boolean legacy = e.player().protocolVersion() <= 340;
-                if (legacy) {
-                    commandsWaiting.put(e.player().uniqueId(), e.packet().getCursor(), 60000);
-                }
-            }
-
-            @Override
-            public void packetSend(PacketSendEvent<TabCompleteRequest> e) {
-
+        @Override
+        public void packetReceive(PacketReceiveEvent<TabCompleteRequest> e) {
+            boolean legacy = e.player().protocolVersion() <= 340;
+            if (legacy) {
+                commandsWaiting.put(e.player().uniqueId(), e.packet().getCursor(), 60000);
             }
         }
-        public class CommandsListener extends AbstractPacketListener<Commands> {
 
-            protected CommandsListener() {
-                super(Commands.class, Direction.UPSTREAM, 0);
-            }
+        @Override
+        public void packetSend(PacketSendEvent<TabCompleteRequest> e) {
 
-            @Override
-            public void packetReceive(PacketReceiveEvent<Commands> e) {
-
-            }
-
-            @Override
-            public void packetSend(PacketSendEvent<Commands> e) {
-                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(e.player().uniqueId());
-                if (player == null || !player.isConnected()) {
-                    e.cancelled(true);
-                    return;
-                }
-                Commands packet = e.packet();
-                RootNodeCommandCompleter completer = new RootNodeCommandCompleter(packet.getRoot());
-                CompleterModifier.handleCompleter(completer, BungeeGroup.forPlayer(player), player.hasPermission("plhide.blacklist-mode"));
-            }
         }
     }
+
+    public class CommandsListener extends AbstractPacketListener<Commands> {
+
+        protected CommandsListener() {
+            super(Commands.class, Direction.UPSTREAM, 0);
+        }
+
+        @Override
+        public void packetReceive(PacketReceiveEvent<Commands> e) {
+
+        }
+
+        @Override
+        public void packetSend(PacketSendEvent<Commands> e) {
+            ProxiedPlayer player = ProxyServer.getInstance().getPlayer(e.player().uniqueId());
+            if (player == null || !player.isConnected()) {
+                e.cancelled(true);
+                return;
+            }
+            Commands packet = e.packet();
+            RootNodeCommandCompleter completer = new RootNodeCommandCompleter(packet.getRoot());
+            CompleterModifier.handleCompleter(completer, BungeeGroup.forPlayer(player), player.hasPermission("plhide.blacklist-mode"));
+        }
+    }
+}
 

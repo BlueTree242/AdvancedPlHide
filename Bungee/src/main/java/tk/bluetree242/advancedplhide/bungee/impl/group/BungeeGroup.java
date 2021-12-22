@@ -23,7 +23,6 @@
 package tk.bluetree242.advancedplhide.bungee.impl.group;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-
 import tk.bluetree242.advancedplhide.CommandCompleter;
 import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.Platform;

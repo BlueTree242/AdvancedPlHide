@@ -37,5 +37,4 @@ public interface CommandCompleter {
     void remove();
 
 
-
 }

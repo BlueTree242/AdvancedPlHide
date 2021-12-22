@@ -23,7 +23,6 @@
 package tk.bluetree242.advancedplhide.bungee;
 
 import dev.simplix.protocolize.api.Protocolize;
-import net.md_5.bungee.api.event.TabCompleteEvent;
 import net.md_5.bungee.api.plugin.Plugin;
 import tk.bluetree242.advancedplhide.CommandCompleter;
 import tk.bluetree242.advancedplhide.Group;
@@ -39,9 +38,11 @@ import java.util.List;
 
 public class AdvancedPlHideBungee extends Plugin {
     public Config config;
+    protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     private PacketListener listener;
-    protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);;
+    ;
     private List<Group> groups = new ArrayList<>();
+
     public void onEnable() {
         reloadConfig();
         Protocolize.listenerProvider().registerListener(listener = new PacketListener(this));
@@ -89,6 +90,7 @@ public class AdvancedPlHideBungee extends Plugin {
         config = confManager.getConfigData();
         loadGroups();
     }
+
     public class Impl extends Platform {
 
         @Override

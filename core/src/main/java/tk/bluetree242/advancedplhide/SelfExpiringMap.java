@@ -22,15 +22,7 @@
 
 package tk.bluetree242.advancedplhide;
 
-import java.util.Collection;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.DelayQueue;
-import java.util.concurrent.Delayed;
-import java.util.concurrent.TimeUnit;
 
 public interface SelfExpiringMap<K, V> extends Map<K, V> {
 
