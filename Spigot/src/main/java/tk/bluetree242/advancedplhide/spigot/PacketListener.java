@@ -32,7 +32,7 @@ import com.mojang.brigadier.tree.RootCommandNode;
 import tk.bluetree242.advancedplhide.CompleterModifier;
 import tk.bluetree242.advancedplhide.impl.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.spigot.impl.cmd.StringCommandCompleterList;
-import tk.bluetree242.advancedplhide.spigot.impl.cmd.SuggestionCommandCompleterList;
+import tk.bluetree242.advancedplhide.impl.SuggestionCommandCompleterList;
 import tk.bluetree242.advancedplhide.spigot.impl.group.SpigotGroup;
 
 import java.util.HashMap;

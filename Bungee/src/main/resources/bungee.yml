@@ -1,0 +1,7 @@
+name: AdvancedPlHide
+main: tk.bluetree242.advancedplhide.bungee.AdvancedPlHideBungee
+version: @version@
+description: @description@
+author: BlueTree242
+depends:
+  - Protocolize

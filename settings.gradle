@@ -24,4 +24,5 @@ rootProject.name = 'AdvancedPlHide'
 include 'core'
 include 'Spigot'
 include 'Velocity'
+include 'Bungee'
 

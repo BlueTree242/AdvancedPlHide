@@ -20,23 +20,22 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.spigot.impl.cmd;
+package tk.bluetree242.advancedplhide.bungee.impl;
 
-import com.mojang.brigadier.suggestion.Suggestion;
 import tk.bluetree242.advancedplhide.CommandCompleter;
 
-public class SuggestionCommandCompleter implements CommandCompleter {
-    private final Suggestion suggestion;
-    private final SuggestionCommandCompleterList list;
+public class StringCommandCompleter implements CommandCompleter {
+    private final String name;
+    private final StringCommandCompleterList list;
 
-    public SuggestionCommandCompleter(Suggestion suggestion, SuggestionCommandCompleterList list) {
+    public StringCommandCompleter(String name, StringCommandCompleterList list) {
         this.list = list;
-        this.suggestion = suggestion;
+        this.name = name.replaceFirst("/", "");
     }
 
     @Override
     public String getName() {
-        return suggestion.getText();
+        return name;
     }
 
     @Override

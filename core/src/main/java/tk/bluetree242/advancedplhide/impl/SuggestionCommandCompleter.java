@@ -1,5 +1,3 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
 /*
  *  LICENSE
  * AdvancedPlHide
@@ -21,37 +19,28 @@ import org.apache.tools.ant.filters.ReplaceTokens
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  *  END
  */
-plugins {
-    id 'java'
-    id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
-}
-repositories {
-    mavenCentral()
 
-}
-subprojects {
-    apply plugin: 'java'
-    project.jar {
-        archivesBaseName = 'AdvancedPlHide-' + project.name
-    }
-    project.processResources {
-        from(sourceSets.main.resources.srcDirs) {
-            filter ReplaceTokens, tokens: [version: version, description: rootProject.description]
-        }
+package tk.bluetree242.advancedplhide.impl;
+
+import com.mojang.brigadier.suggestion.Suggestion;
+import tk.bluetree242.advancedplhide.CommandCompleter;
+
+public class SuggestionCommandCompleter implements CommandCompleter {
+    private final Suggestion suggestion;
+    private final SuggestionCommandCompleterList list;
+
+    public SuggestionCommandCompleter(Suggestion suggestion, SuggestionCommandCompleterList list) {
+        this.list = list;
+        this.suggestion = suggestion;
     }
 
-}
-shadowJar {
-    classifier ''
-}
-dependencies {
-    implementation project(":Spigot")
-    implementation project(":Velocity")
-    implementation project(":Bungee")
-}
-java.sourceCompatibility = JavaVersion.VERSION_11
-java.targetCompatibility = JavaVersion.VERSION_11
+    @Override
+    public String getName() {
+        return suggestion.getText();
+    }
 
-
-
+    @Override
+    public void remove() {
+        list.remove(this);
+    }
+}
