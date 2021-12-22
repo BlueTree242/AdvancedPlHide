@@ -69,6 +69,7 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
         TabCompleteResponse packet = e.packet();
         if (legacy) {
             String str = commandsWaiting.get(e.player().uniqueId());
+            if (str == null) str = "/";
             if (!str.contains(" ") && str.startsWith("/")) {
                 StringCommandCompleterList list = new StringCommandCompleterList(packet.getCommands());
                 CompleterModifier.handleCompleter(list, BungeeGroup.forPlayer(player), player.hasPermission("plhide.blacklist-mode"));

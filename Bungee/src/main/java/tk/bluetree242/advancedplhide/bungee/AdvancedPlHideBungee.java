@@ -29,8 +29,6 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.chat.BaseComponentSerializer;
-import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.event.EventHandler;
 import tk.bluetree242.advancedplhide.CommandCompleter;
 import tk.bluetree242.advancedplhide.Group;
@@ -41,6 +39,7 @@ import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
 
+import java.net.ProxySelector;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +57,8 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
         ProxyServer.getInstance().getPluginManager().registerListener(this, this);
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new AdvancedPlHideCommand(this));
     }
+
+
 
     public void onDisable() {
         Protocolize.listenerProvider().unregisterListener(listener);
