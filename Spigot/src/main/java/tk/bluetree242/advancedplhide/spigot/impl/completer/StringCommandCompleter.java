@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.spigot.impl.cmd;
+package tk.bluetree242.advancedplhide.spigot.impl.completer;
 
 import tk.bluetree242.advancedplhide.CommandCompleter;
 

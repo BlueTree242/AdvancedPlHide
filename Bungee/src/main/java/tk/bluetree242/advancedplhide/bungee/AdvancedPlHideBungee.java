@@ -22,40 +22,29 @@
 
 package tk.bluetree242.advancedplhide.bungee;
 
-import com.google.common.collect.Multimap;
+import com.google.common.io.ByteStreams;
 import dev.simplix.protocolize.api.Protocolize;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
-import net.md_5.bungee.api.event.ProxyReloadEvent;
-import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.api.plugin.PluginManager;
-import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.event.EventHandler;
-import org.yaml.snakeyaml.Yaml;
 import tk.bluetree242.advancedplhide.CommandCompleter;
 import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.Platform;
-import tk.bluetree242.advancedplhide.bungee.impl.group.BungeeGroup;
 import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.net.ProxySelector;
-import java.net.URISyntaxException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.JarFile;
 
 public class AdvancedPlHideBungee extends Plugin implements Listener {
     public Config config;
@@ -86,16 +75,28 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
                 tabcomplete.add(new GroupCompleter(s));
             }
             if (getGroup(name) == null)
-                groups.add(new BungeeGroup(name, val.parent_groups(), val.priority(), tabcomplete, this));
+                groups.add(new Group(name, tabcomplete));
             else {
                 getLogger().warning("Group " + name + " is repeated.");
             }
         });
         if (getGroup("default") == null) {
-            getLogger().warning("group default was not found, using virtual default group.");
-            groups.add(new BungeeGroup("default", new ArrayList<>(), 0, new ArrayList<>(), this));
+            getLogger().warning("Group default was not found. If someone has no permission for any group, no group applies on them");
         }
 
+    }
+
+    public static Group getGroupForPlayer(ProxiedPlayer player) {
+        Platform core = Platform.get();
+        if (player.hasPermission("plhide.no-group")) return null;
+        List<Group> groups = new ArrayList<>();
+        for (Group group : core.getGroups()) {
+            if (player.hasPermission("plhide.group." + group.getName())) {
+                groups.add(group);
+            }
+        }
+        Group group = groups.isEmpty()? core.getGroup("default") : core.mergeGroups(groups);
+        return group;
     }
 
     public Group getGroup(String name) {
@@ -142,6 +143,15 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
         public String getPluginForCommand(String s) {
 
             return null;
+        }
+
+        @Override
+        public String getVersionConfig() {
+            try {
+                return new String(ByteStreams.toByteArray(getResourceAsStream("version-config.json")));
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
         }
     }
 

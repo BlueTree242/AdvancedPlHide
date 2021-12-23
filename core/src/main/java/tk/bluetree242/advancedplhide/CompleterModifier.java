@@ -38,9 +38,10 @@ public class CompleterModifier {
         if (Platform.get().getConfig().remove_plugin_prefix())
             removePluginPrefix(list);
 
-        if (playerGroup != null)
-            if (!blacklist) applyBlacklist(list, playerGroup.getTabComplete(true));
-            else applyWhitelist(list, playerGroup.getTabComplete(true));
+        if (playerGroup != null) {
+            if (!blacklist) applyBlacklist(list, playerGroup.getTabComplete());
+            else applyWhitelist(list, playerGroup.getTabComplete());
+        }
     }
 
     public static void applyBlacklist(CommandCompleterList list, List<CommandCompleter> toBlacklist) {
@@ -55,7 +56,11 @@ public class CompleterModifier {
             }
         }
         for (CommandCompleter completer : new ArrayList<>(list)) {
-            if (commands.contains(completer.getName()) || plugins.contains(Platform.get().getPluginForCommand(completer.getName()))) completer.remove();
+            if (commands.contains(completer.getName())) {
+                completer.remove();
+            } else if (plugins.contains(Platform.get().getPluginForCommand(completer.getName()))){
+                completer.remove();
+            }
         }
     }
 
@@ -68,9 +73,13 @@ public class CompleterModifier {
             else {
                 String name = completer.getName().replaceFirst("from:", "");
                 plugins.add(name);
-            }        }
+            }
+        }
         for (CommandCompleter completer : new ArrayList<>(list)) {
-            if (!commands.contains(completer.getName()) && !plugins.contains(Platform.get().getPluginForCommand(completer.getName()))) completer.remove();
+            if (!commands.contains(completer.getName())) {
+                if (!plugins.contains(Platform.get().getPluginForCommand(completer.getName())))
+                completer.remove();
+            }
         }
     }
 }

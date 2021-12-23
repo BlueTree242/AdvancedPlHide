@@ -31,9 +31,8 @@ import dev.simplix.protocolize.api.listener.AbstractPacketListener;
 import dev.simplix.protocolize.api.listener.PacketReceiveEvent;
 import dev.simplix.protocolize.api.listener.PacketSendEvent;
 import tk.bluetree242.advancedplhide.CompleterModifier;
-import tk.bluetree242.advancedplhide.impl.SelfExpiringHashMap;
-import tk.bluetree242.advancedplhide.velocity.impl.OfferCompleterList;
-import tk.bluetree242.advancedplhide.velocity.impl.group.VelocityGroup;
+import tk.bluetree242.advancedplhide.impl.completer.SelfExpiringHashMap;
+import tk.bluetree242.advancedplhide.velocity.impl.completer.OfferCompleterList;
 
 import java.util.UUID;
 
@@ -65,11 +64,11 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
             String str = commandsWaiting.get(e.player().uniqueId());
             if (!str.contains(" ") && str.startsWith("/")) {
                 OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
-                CompleterModifier.handleCompleter(list, VelocityGroup.forPlayer(player), player.hasPermission("plhide.blacklist-mode"));
+                CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission("plhide.blacklist-mode"));
             }
         } else if (e.packet().getStart() == 1) {
             OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
-            CompleterModifier.handleCompleter(list, VelocityGroup.forPlayer(player), player.hasPermission("plhide.blacklist-mode"));
+            CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission("plhide.blacklist-mode"));
         }
     }
 

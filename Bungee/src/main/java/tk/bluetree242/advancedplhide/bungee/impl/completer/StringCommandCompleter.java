@@ -20,25 +20,26 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.config;
+package tk.bluetree242.advancedplhide.bungee.impl.completer;
 
-import java.util.ArrayList;
-import java.util.List;
+import tk.bluetree242.advancedplhide.CommandCompleter;
 
-public class DefaultGroupImpl implements Config.Group {
-    protected DefaultGroupImpl() {
+public class StringCommandCompleter implements CommandCompleter {
+    private final String name;
+    private final StringCommandCompleterList list;
+
+    public StringCommandCompleter(String name, StringCommandCompleterList list) {
+        this.list = list;
+        this.name = name.replaceFirst("/", "");
     }
 
     @Override
-    public List<String> tabcomplete() {
-        List<String> result = new ArrayList<>();
-        result.add("serverlistplus");
-        result.add("pl");
-        result.add("plugins");
-        result.add("version");
-        result.add("example1");
-        result.add("example2");
-        return result;
+    public String getName() {
+        return name;
     }
 
+    @Override
+    public void remove() {
+        list.remove(this);
+    }
 }

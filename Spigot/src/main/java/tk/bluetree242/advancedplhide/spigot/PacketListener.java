@@ -30,10 +30,10 @@ import com.comphenix.protocol.reflect.StructureModifier;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.tree.RootCommandNode;
 import tk.bluetree242.advancedplhide.CompleterModifier;
-import tk.bluetree242.advancedplhide.impl.RootNodeCommandCompleter;
-import tk.bluetree242.advancedplhide.impl.SuggestionCommandCompleterList;
-import tk.bluetree242.advancedplhide.spigot.impl.cmd.StringCommandCompleterList;
-import tk.bluetree242.advancedplhide.spigot.impl.group.SpigotGroup;
+import tk.bluetree242.advancedplhide.Platform;
+import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
+import tk.bluetree242.advancedplhide.impl.completer.SuggestionCommandCompleterList;
+import tk.bluetree242.advancedplhide.spigot.impl.completer.StringCommandCompleterList;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -63,7 +63,7 @@ public class PacketListener extends PacketAdapter {
             Suggestions suggestionsOrigin = matchModifier.read(0);
             SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
             if (suggestionsOrigin.getRange().getStart() == 1) {
-                CompleterModifier.handleCompleter(suggestions, SpigotGroup.forPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.blacklist-mode"));
+                CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.blacklist-mode"));
             }
             matchModifier.write(0, suggestions.export());
         } else {
@@ -72,7 +72,7 @@ public class PacketListener extends PacketAdapter {
             StringCommandCompleterList suggestions = new StringCommandCompleterList(suggestionsOrigin);
             String str = this.commandsWaiting.get(e.getPlayer().getUniqueId());
             if (!str.contains(" ") && str.startsWith("/")) {
-                CompleterModifier.handleCompleter(suggestions, SpigotGroup.forPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.blacklist-mode"));
+                CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.blacklist-mode"));
             }
             matchModifier.write(0, suggestions.export());
         }
@@ -82,7 +82,7 @@ public class PacketListener extends PacketAdapter {
         StructureModifier<RootCommandNode> matchModifier = e.getPacket().getSpecificModifier(RootCommandNode.class);
         RootCommandNode nodeOrigin = matchModifier.read(0);
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(nodeOrigin);
-        CompleterModifier.handleCompleter(node, SpigotGroup.forPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.blacklist-mode"));
+        CompleterModifier.handleCompleter(node, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.blacklist-mode"));
         matchModifier.write(0, node.export());
     }
 

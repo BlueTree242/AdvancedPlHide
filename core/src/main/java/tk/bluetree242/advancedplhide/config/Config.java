@@ -48,16 +48,13 @@ public interface Config {
     @ConfDefault.DefaultObject("tk.bluetree242.advancedplhide.config.ConfManager.defaultGroups")
     Map<String, @SubSection Group> groups();
 
+    @AnnotationBasedSorter.Order(40)
+    @ConfComments("# If you disable this, we will not notify you of new dev builds but of new major or beta updates")
+    @ConfDefault.DefaultBoolean(true)
+    boolean dev_updatechecker();
+
     interface Group {
         @AnnotationBasedSorter.Order(10)
         List<String> tabcomplete();
-
-        @AnnotationBasedSorter.Order(20)
-        @ConfComments("# If player has 2 groups, the one with higher priority will be chosen")
-        Integer priority();
-
-        @AnnotationBasedSorter.Order(30)
-        @ConfKey("parent-groups")
-        List<String> parent_groups();
     }
 }

@@ -31,6 +31,7 @@ import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.simplix.protocolize.api.Protocolize;
 import net.kyori.adventure.text.Component;
@@ -43,14 +44,16 @@ import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
-import tk.bluetree242.advancedplhide.impl.RootNodeCommandCompleter;
+import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
-import tk.bluetree242.advancedplhide.velocity.impl.group.VelocityGroup;
 
 import javax.inject.Inject;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Plugin(id = "advancedplhide",
         name = "AdvancedPlHide",
@@ -85,14 +88,13 @@ public class AdvancedPlHideVelocity extends Platform {
                 tabcomplete.add(new GroupCompleter(s));
             }
             if (getGroup(name) == null)
-                groups.add(new VelocityGroup(name, val.parent_groups(), val.priority(), tabcomplete, this));
+                groups.add(new Group(name, tabcomplete));
             else {
                 getLogger().warn("Group " + name + " is repeated.");
             }
         });
         if (getGroup("default") == null) {
-            getLogger().warn("group default was not found, using virtual default group.");
-            groups.add(new VelocityGroup("default", new ArrayList<>(), 0, new ArrayList<>(), this));
+            getLogger().warn("Group default was not found. If someone has no permission for any group, no group applies on them");
         }
 
     }
@@ -111,6 +113,15 @@ public class AdvancedPlHideVelocity extends Platform {
     @Override
     public String getPluginForCommand(String s) {
         return null;
+    }
+
+    @Override
+    public String getVersionConfig() {
+        try {
+            return new String(getClass().getClassLoader().getResourceAsStream("version-config.json").readAllBytes());
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     public List<Group> getGroups() {
@@ -132,6 +143,19 @@ public class AdvancedPlHideVelocity extends Platform {
     @Override
     public Config getConfig() {
         return config;
+    }
+
+    public static Group getGroupForPlayer(Player player) {
+        Platform core = Platform.get();
+        if (player.hasPermission("plhide.no-group")) return null;
+        List<Group> groups = new ArrayList<>();
+        for (Group group : core.getGroups()) {
+            if (player.hasPermission("plhide.group." + group.getName())) {
+                groups.add(group);
+            }
+        }
+        Group group = groups.isEmpty()? core.getGroup("default") : core.mergeGroups(groups);
+        return group;
     }
 
     @Override
@@ -161,7 +185,7 @@ public class AdvancedPlHideVelocity extends Platform {
             return;
         }
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(e.getRootNode());
-        CompleterModifier.handleCompleter(node, VelocityGroup.forPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.blacklist-mode"));
+        CompleterModifier.handleCompleter(node, getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.blacklist-mode"));
     }
 
 }

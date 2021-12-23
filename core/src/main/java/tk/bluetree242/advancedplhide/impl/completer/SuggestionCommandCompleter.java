@@ -20,24 +20,23 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.velocity.impl;
+package tk.bluetree242.advancedplhide.impl.completer;
 
-import com.velocitypowered.proxy.protocol.packet.TabCompleteResponse;
+import com.mojang.brigadier.suggestion.Suggestion;
 import tk.bluetree242.advancedplhide.CommandCompleter;
 
-public class OfferCommandCompleter implements CommandCompleter {
-    private final OfferCompleterList list;
-    private final String name;
+public class SuggestionCommandCompleter implements CommandCompleter {
+    private final Suggestion suggestion;
+    private final SuggestionCommandCompleterList list;
 
-    public OfferCommandCompleter(TabCompleteResponse.Offer offer, OfferCompleterList list, boolean legacy) {
+    public SuggestionCommandCompleter(Suggestion suggestion, SuggestionCommandCompleterList list) {
         this.list = list;
-        this.name = legacy ? offer.getText().replaceFirst("/", "") : offer.getText();
-
+        this.suggestion = suggestion;
     }
 
     @Override
     public String getName() {
-        return name;
+        return suggestion.getText();
     }
 
     @Override

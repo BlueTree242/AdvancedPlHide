@@ -33,11 +33,11 @@ import net.md_5.bungee.protocol.packet.Commands;
 import net.md_5.bungee.protocol.packet.TabCompleteRequest;
 import net.md_5.bungee.protocol.packet.TabCompleteResponse;
 import tk.bluetree242.advancedplhide.CompleterModifier;
-import tk.bluetree242.advancedplhide.bungee.impl.StringCommandCompleterList;
-import tk.bluetree242.advancedplhide.bungee.impl.group.BungeeGroup;
-import tk.bluetree242.advancedplhide.impl.RootNodeCommandCompleter;
-import tk.bluetree242.advancedplhide.impl.SelfExpiringHashMap;
-import tk.bluetree242.advancedplhide.impl.SuggestionCommandCompleterList;
+import tk.bluetree242.advancedplhide.Platform;
+import tk.bluetree242.advancedplhide.bungee.impl.completer.StringCommandCompleterList;
+import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
+import tk.bluetree242.advancedplhide.impl.completer.SelfExpiringHashMap;
+import tk.bluetree242.advancedplhide.impl.completer.SuggestionCommandCompleterList;
 
 import java.util.UUID;
 
@@ -72,12 +72,12 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
             if (str == null) str = "/";
             if (!str.contains(" ") && str.startsWith("/")) {
                 StringCommandCompleterList list = new StringCommandCompleterList(packet.getCommands());
-                CompleterModifier.handleCompleter(list, BungeeGroup.forPlayer(player), player.hasPermission("plhide.blacklist-mode"));
+                CompleterModifier.handleCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission("plhide.blacklist-mode"));
             }
         } else {
             if (packet.getSuggestions().getRange().getStart() == 1) {
                 SuggestionCommandCompleterList list = new SuggestionCommandCompleterList(packet.getSuggestions());
-                CompleterModifier.handleCompleter(list, BungeeGroup.forPlayer(player), player.hasPermission("plhide.blacklist-mode"));
+                CompleterModifier.handleCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission("plhide.blacklist-mode"));
             }
         }
     }
@@ -122,7 +122,7 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
             }
             Commands packet = e.packet();
             RootNodeCommandCompleter completer = new RootNodeCommandCompleter(packet.getRoot());
-            CompleterModifier.handleCompleter(completer, BungeeGroup.forPlayer(player), player.hasPermission("plhide.blacklist-mode"));
+            CompleterModifier.handleCompleter(completer, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission("plhide.blacklist-mode"));
         }
     }
 }

@@ -20,29 +20,33 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.spigot.impl.cmd;
+package tk.bluetree242.advancedplhide.impl.version;
 
-import tk.bluetree242.advancedplhide.CommandCompleter;
-import tk.bluetree242.advancedplhide.CommandCompleterList;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class StringCommandCompleterList extends CommandCompleterList {
-
-    public StringCommandCompleterList(String[] list) {
-        for (String s : list) {
-            add(new StringCommandCompleter(s, this));
-        }
+public class UpdateCheckResult {
+    private final int versionsBehind;
+    private final String message;
+    private final String loggerType;
+    private final String updateUrl;
+    public UpdateCheckResult(int versionsBehind, String message, String loggerType, String updateUrl) {
+        this.versionsBehind = versionsBehind;
+        this.message = message;
+        this.loggerType = loggerType;
+        this.updateUrl = updateUrl;
     }
 
+    public int getVersionsBehind() {
+        return versionsBehind;
+    }
 
-    @Override
-    public String[] export() {
-        List<String> cmds = new ArrayList<>();
-        for (CommandCompleter completer : this) {
-            cmds.add("/" + completer.getName());
-        }
-        return cmds.toArray(new String[0]);
+    public String getMessage() {
+        return message;
+    }
+
+    public String getLoggerType() {
+        return loggerType;
+    }
+
+    public String getUpdateUrl() {
+        return updateUrl;
     }
 }

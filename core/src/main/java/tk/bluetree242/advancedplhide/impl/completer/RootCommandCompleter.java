@@ -20,23 +20,23 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.impl;
+package tk.bluetree242.advancedplhide.impl.completer;
 
-import com.mojang.brigadier.suggestion.Suggestion;
+import com.mojang.brigadier.tree.CommandNode;
 import tk.bluetree242.advancedplhide.CommandCompleter;
 
-public class SuggestionCommandCompleter implements CommandCompleter {
-    private final Suggestion suggestion;
-    private final SuggestionCommandCompleterList list;
+public class RootCommandCompleter implements CommandCompleter {
+    private final CommandNode node;
+    private final RootNodeCommandCompleter list;
 
-    public SuggestionCommandCompleter(Suggestion suggestion, SuggestionCommandCompleterList list) {
+    public RootCommandCompleter(CommandNode node, RootNodeCommandCompleter list) {
         this.list = list;
-        this.suggestion = suggestion;
+        this.node = node;
     }
 
     @Override
     public String getName() {
-        return suggestion.getText();
+        return node.getName();
     }
 
     @Override

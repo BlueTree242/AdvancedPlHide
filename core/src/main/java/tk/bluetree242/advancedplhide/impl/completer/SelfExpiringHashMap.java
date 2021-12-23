@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.impl;
+package tk.bluetree242.advancedplhide.impl.completer;
 
 import tk.bluetree242.advancedplhide.SelfExpiringMap;
 

@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.velocity.impl;
+package tk.bluetree242.advancedplhide.velocity.impl.completer;
 
 import com.velocitypowered.proxy.protocol.packet.TabCompleteResponse;
 import tk.bluetree242.advancedplhide.CommandCompleter;

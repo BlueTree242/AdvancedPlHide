@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.bungee.impl;
+package tk.bluetree242.advancedplhide.bungee.impl.completer;
 
 import tk.bluetree242.advancedplhide.CommandCompleter;
 import tk.bluetree242.advancedplhide.CommandCompleterList;

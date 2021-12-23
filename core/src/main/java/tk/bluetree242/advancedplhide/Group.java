@@ -29,27 +29,35 @@ import java.util.List;
  * **Handling infinite loops of group parents:**
  * Parent groups inherited would not be repeated.
  */
-public interface Group {
+public class Group {
+    private final String name;
+    private final List<CommandCompleter> completers;
+
+    public Group(String name, List<CommandCompleter> completers) {
+        this.name = name;
+        this.completers = completers;
+    }
 
     /**
      * @return Name of group
      */
-    String getName();
+    public String getName() {
+        return name;
+    }
+
+
 
     /**
-     * @return List of parents that this group inherit
-     */
-    List<Group> getParents();
-
-    /**
-     * @param all if should return all blacklisted commands even from parent groups
      * @return List of commands for group, either used as whitelist or blacklist. The commands are considered not in a list.
      */
-    List<CommandCompleter> getTabComplete(boolean all);
+    public List<CommandCompleter> getTabComplete() {
+        return completers;
+    }
 
-    /**
-     * @return Priority of the group
-     */
-    int getPriority();
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 
 }

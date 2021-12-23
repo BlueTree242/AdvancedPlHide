@@ -20,26 +20,29 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.bungee.impl;
+package tk.bluetree242.advancedplhide.spigot.impl.completer;
 
 import tk.bluetree242.advancedplhide.CommandCompleter;
+import tk.bluetree242.advancedplhide.CommandCompleterList;
 
-public class StringCommandCompleter implements CommandCompleter {
-    private final String name;
-    private final StringCommandCompleterList list;
+import java.util.ArrayList;
+import java.util.List;
 
-    public StringCommandCompleter(String name, StringCommandCompleterList list) {
-        this.list = list;
-        this.name = name.replaceFirst("/", "");
+public class StringCommandCompleterList extends CommandCompleterList {
+
+    public StringCommandCompleterList(String[] list) {
+        for (String s : list) {
+            add(new StringCommandCompleter(s, this));
+        }
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
 
     @Override
-    public void remove() {
-        list.remove(this);
+    public String[] export() {
+        List<String> cmds = new ArrayList<>();
+        for (CommandCompleter completer : this) {
+            cmds.add("/" + completer.getName());
+        }
+        return cmds.toArray(new String[0]);
     }
 }

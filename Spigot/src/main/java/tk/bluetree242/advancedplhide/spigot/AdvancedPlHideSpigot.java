@@ -24,12 +24,14 @@ package tk.bluetree242.advancedplhide.spigot;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.PluginIdentifiableCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -42,8 +44,9 @@ import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
-import tk.bluetree242.advancedplhide.spigot.impl.group.SpigotGroup;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +67,6 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
 
     public void onEnable() {
         reloadConfig();
-        ;
         protocolManager.addPacketListener(new PacketListener(this));
         getServer().getPluginManager().registerEvents(this, this);
         String str = Bukkit.getServer().getClass().getPackage().getName();
@@ -105,14 +107,14 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
                 tabcomplete.add(new GroupCompleter(s));
             }
             if (getGroup(name) == null)
-                groups.add(new SpigotGroup(name, val.parent_groups(), val.priority(), tabcomplete, this));
+                groups.add(new Group(name, tabcomplete));
             else {
                 getLogger().warning("Group " + name + " is repeated.");
             }
         });
         if (getGroup("default") == null) {
-            getLogger().warning("group default was not found, using virtual default group.");
-            groups.add(new SpigotGroup("default", new ArrayList<>(), 0, new ArrayList<>(), this));
+            getLogger().warning("group default was not found. If someone has no permission for any group, no group applies on them");
+
         }
 
     }
@@ -172,6 +174,28 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
             if (plugin == null) return null;
             return plugin.getName();
         }
+
+        @Override
+        public String getVersionConfig() {
+            try {
+                return new String(ByteStreams.toByteArray(getResource("version-config.json")));
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+    }
+
+    public static Group getGroupForPlayer(Player player) {
+        Platform core = Platform.get();
+        if (player.hasPermission("plhide.no-group")) return null;
+        List<Group> groups = new ArrayList<>();
+        for (Group group : core.getGroups()) {
+            if (player.hasPermission("plhide.group." + group.getName())) {
+                groups.add(group);
+            }
+        }
+        Group group = groups.isEmpty()? core.getGroup("default") : core.mergeGroups(groups);
+        return group;
     }
 
 
