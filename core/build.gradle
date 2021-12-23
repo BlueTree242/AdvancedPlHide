@@ -42,6 +42,9 @@ repositories {
     maven {
         url = uri("https://repo.destroystokyo.com/repository/maven-public/")
     }
+    maven {
+        url "https://libraries.minecraft.net"
+    }
 }
 dependencies {
     implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2'

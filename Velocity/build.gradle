@@ -41,6 +41,9 @@ repositories {
     maven {
         url 'https://mvn.exceptionflug.de/repository/exceptionflug-public/'
     }
+    maven {
+        url = uri("https://repo.destroystokyo.com/repository/maven-public/")
+    }
 }
 
 dependencies {
