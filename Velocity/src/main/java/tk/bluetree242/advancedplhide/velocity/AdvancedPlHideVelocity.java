@@ -26,6 +26,7 @@ import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.event.command.PlayerAvailableCommandsEvent;
+import com.velocitypowered.api.event.connection.PostLoginEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
@@ -35,6 +36,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.simplix.protocolize.api.Protocolize;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.slf4j.Logger;
 import tk.bluetree242.advancedplhide.CommandCompleter;
@@ -46,6 +48,8 @@ import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
+import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
+import tk.bluetree242.advancedplhide.utils.Constants;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -53,7 +57,6 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Plugin(id = "advancedplhide",
         name = "AdvancedPlHide",
@@ -78,6 +81,19 @@ public class AdvancedPlHideVelocity extends Platform {
         this.dataDirectory = dataDirectory;
         confManager = ConfManager.create(dataDirectory, "config.yml", Config.class);
         Platform.setPlatform(this);
+    }
+
+    public static Group getGroupForPlayer(Player player) {
+        Platform core = Platform.get();
+        if (player.hasPermission("plhide.no-group")) return null;
+        List<Group> groups = new ArrayList<>();
+        for (Group group : core.getGroups()) {
+            if (player.hasPermission("plhide.group." + group.getName())) {
+                groups.add(group);
+            }
+        }
+        Group group = groups.isEmpty() ? core.getGroup("default") : core.mergeGroups(groups);
+        return group;
     }
 
     public void loadGroups() {
@@ -137,7 +153,7 @@ public class AdvancedPlHideVelocity extends Platform {
                 .build();
         server.getCommandManager().register(meta, new AdvancedPlHideCommand(this));
         Protocolize.listenerProvider().registerListener(new PacketListener(this));
-
+        performStartUpdateCheck();
     }
 
     @Override
@@ -145,17 +161,46 @@ public class AdvancedPlHideVelocity extends Platform {
         return config;
     }
 
-    public static Group getGroupForPlayer(Player player) {
-        Platform core = Platform.get();
-        if (player.hasPermission("plhide.no-group")) return null;
-        List<Group> groups = new ArrayList<>();
-        for (Group group : core.getGroups()) {
-            if (player.hasPermission("plhide.group." + group.getName())) {
-                groups.add(group);
-            }
+    public void performStartUpdateCheck() {
+        UpdateCheckResult result = updateCheck();
+        if (result == null) getLogger().error("Could not check for updates");
+        String msg = result.getVersionsBehind() == 0 ?
+                LegacyComponentSerializer.legacy('&').deserialize(Constants.DEFAULT_UP_TO_DATE).content() :
+                LegacyComponentSerializer.legacy('&').deserialize(Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "")
+                        .replace("{download}", result.getUpdateUrl())).content();
+        if (result.getMessage() != null) {
+            msg = LegacyComponentSerializer.legacy('&').deserialize(result.getMessage()).content();
         }
-        Group group = groups.isEmpty()? core.getGroup("default") : core.mergeGroups(groups);
-        return group;
+
+        switch (result.getLoggerType()) {
+            case "INFO":
+                logger.info(msg);
+                break;
+            case "WARNING":
+                logger.warn(msg);
+                break;
+            case "ERROR":
+                logger.error(msg);
+                break;
+        }
+    }
+
+    @Subscribe
+    public void onPlayerJoin(PostLoginEvent e) {
+        if (e.getPlayer().hasPermission("plhide.updatechecker")) {
+            new Thread(() -> {
+                UpdateCheckResult result = updateCheck();
+                if (result == null) return;
+                Component msg = result.getVersionsBehind() == 0 ? null : LegacyComponentSerializer.legacy('&').deserialize("&e[APH-&2Velocity&e]" + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + ""));
+                if (result.getMessage() != null) {
+                    msg = LegacyComponentSerializer.legacy('&').deserialize("&e[APH-&2Velocity&e] &c" + result.getMessage());
+                }
+                if (msg != null) {
+                    msg = msg.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, result.getUpdateUrl()));
+                    e.getPlayer().sendMessage(msg);
+                }
+            }).start();
+        }
     }
 
     @Override

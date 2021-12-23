@@ -46,7 +46,6 @@ public class Group {
     }
 
 
-
     /**
      * @return List of commands for group, either used as whitelist or blacklist. The commands are considered not in a list.
      */

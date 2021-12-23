@@ -30,7 +30,6 @@ import com.comphenix.protocol.reflect.StructureModifier;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.tree.RootCommandNode;
 import tk.bluetree242.advancedplhide.CompleterModifier;
-import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.completer.SuggestionCommandCompleterList;
 import tk.bluetree242.advancedplhide.spigot.impl.completer.StringCommandCompleterList;

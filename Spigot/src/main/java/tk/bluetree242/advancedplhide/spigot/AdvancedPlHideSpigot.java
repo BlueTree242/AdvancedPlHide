@@ -29,12 +29,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import tk.bluetree242.advancedplhide.CommandCompleter;
@@ -44,6 +44,8 @@ import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
+import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
+import tk.bluetree242.advancedplhide.utils.Constants;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -60,6 +62,19 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     private boolean legacy = false;
     private List<Group> groups;
 
+    public static Group getGroupForPlayer(Player player) {
+        Platform core = Platform.get();
+        if (player.hasPermission("plhide.no-group")) return null;
+        List<Group> groups = new ArrayList<>();
+        for (Group group : core.getGroups()) {
+            if (player.hasPermission("plhide.group." + group.getName())) {
+                groups.add(group);
+            }
+        }
+        Group group = groups.isEmpty() ? core.getGroup("default") : core.mergeGroups(groups);
+        return group;
+    }
+
     public void onLoad() {
         protocolManager = ProtocolLibrary.getProtocolManager();
         Platform.setPlatform(new Impl());
@@ -74,7 +89,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         legacy = (str.equals("v1_8_R3") || str.contains("v1_9_R") || str.contains("v1_10_R1") || str.contains("v1_11_R1") || str.contains("v1_12_R1"));
         getServer().getPluginCommand("advancedplhide").setExecutor(new AdvancedPlHideCommand(this));
         getServer().getPluginCommand("advancedplhide").setTabCompleter(new AdvancedPlHideCommand.TabCompleter());
-
+        performStartUpdateCheck();
     }
 
     public void onDisable() {
@@ -93,6 +108,31 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
             e.setCancelled(true);
             e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', config.pl_message()));
         }
+    }
+
+    public void performStartUpdateCheck() {
+        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+            UpdateCheckResult result = Impl.get().updateCheck();
+            if (result == null) getLogger().severe("Could not check for updates");
+            String msg = result.getVersionsBehind() == 0 ?
+                    ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_UP_TO_DATE) :
+                    ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "")
+                            .replace("{download}", result.getUpdateUrl()));
+            if (result.getMessage() != null) {
+                msg = ChatColor.translateAlternateColorCodes('&', result.getMessage());
+            }
+            switch (result.getLoggerType()) {
+                case "INFO":
+                    getLogger().info(msg);
+                    break;
+                case "WARNING":
+                    getLogger().warning(msg);
+                    break;
+                case "ERROR":
+                    getLogger().severe(msg);
+                    break;
+            }
+        });
     }
 
     public List<Group> getGroups() {
@@ -140,10 +180,28 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
             bukkitCommandMap.setAccessible(true);
             CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
             return commandMap;
-        } catch(Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        if (e.getPlayer().hasPermission("plhide.updatechecker")) {
+            Bukkit.getScheduler().runTask(this, () -> {
+                UpdateCheckResult result = Impl.get().updateCheck();
+                if (result == null) return;
+                String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Velocity&e]" + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + ""));
+                if (result.getMessage() != null) {
+                    msg = ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Spigot&e] &c" + result.getMessage());
+                }
+                if (msg != null) {
+                    e.getPlayer().sendMessage(msg);
+                }
+            });
+        }
+    }
+
     public class Impl extends Platform {
 
         @Override
@@ -183,19 +241,6 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
                 throw new UncheckedIOException(e);
             }
         }
-    }
-
-    public static Group getGroupForPlayer(Player player) {
-        Platform core = Platform.get();
-        if (player.hasPermission("plhide.no-group")) return null;
-        List<Group> groups = new ArrayList<>();
-        for (Group group : core.getGroups()) {
-            if (player.hasPermission("plhide.group." + group.getName())) {
-                groups.add(group);
-            }
-        }
-        Group group = groups.isEmpty()? core.getGroup("default") : core.mergeGroups(groups);
-        return group;
     }
 
 

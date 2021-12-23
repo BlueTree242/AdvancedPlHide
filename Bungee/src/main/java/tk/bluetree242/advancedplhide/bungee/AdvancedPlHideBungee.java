@@ -28,6 +28,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
+import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
@@ -38,6 +39,8 @@ import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
+import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
+import tk.bluetree242.advancedplhide.utils.Constants;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -53,15 +56,27 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
     private Map<String, String> map = new HashMap<>();
     private List<Group> groups = new ArrayList<>();
 
+    public static Group getGroupForPlayer(ProxiedPlayer player) {
+        Platform core = Platform.get();
+        if (player.hasPermission("plhide.no-group")) return null;
+        List<Group> groups = new ArrayList<>();
+        for (Group group : core.getGroups()) {
+            if (player.hasPermission("plhide.group." + group.getName())) {
+                groups.add(group);
+            }
+        }
+        Group group = groups.isEmpty() ? core.getGroup("default") : core.mergeGroups(groups);
+        return group;
+    }
+
     public void onEnable() {
         reloadConfig();
         Protocolize.listenerProvider().registerListener(listener = new PacketListener(this));
         Platform.setPlatform(new Impl());
         ProxyServer.getInstance().getPluginManager().registerListener(this, this);
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new AdvancedPlHideCommand(this));
+        performStartUpdateCheck();
     }
-
-
 
     public void onDisable() {
         Protocolize.listenerProvider().unregisterListener(listener);
@@ -86,17 +101,29 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
 
     }
 
-    public static Group getGroupForPlayer(ProxiedPlayer player) {
-        Platform core = Platform.get();
-        if (player.hasPermission("plhide.no-group")) return null;
-        List<Group> groups = new ArrayList<>();
-        for (Group group : core.getGroups()) {
-            if (player.hasPermission("plhide.group." + group.getName())) {
-                groups.add(group);
+    public void performStartUpdateCheck() {
+        ProxyServer.getInstance().getScheduler().runAsync(this, () -> {
+            UpdateCheckResult result = Impl.get().updateCheck();
+            if (result == null) getLogger().severe("Could not check for updates");
+            String msg = result.getVersionsBehind() == 0 ?
+                    ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_UP_TO_DATE) :
+                    ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "")
+                            .replace("{download}", result.getUpdateUrl()));
+            if (result.getMessage() != null) {
+                msg = ChatColor.translateAlternateColorCodes('&', result.getMessage());
             }
-        }
-        Group group = groups.isEmpty()? core.getGroup("default") : core.mergeGroups(groups);
-        return group;
+            switch (result.getLoggerType()) {
+                case "INFO":
+                    getLogger().info(msg);
+                    break;
+                case "WARNING":
+                    getLogger().warning(msg);
+                    break;
+                case "ERROR":
+                    getLogger().severe(msg);
+                    break;
+            }
+        });
     }
 
     public Group getGroup(String name) {
@@ -115,6 +142,37 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
         config = confManager.getConfigData();
         loadGroups();
 
+    }
+
+    @EventHandler
+    public void onChat(ChatEvent e) {
+        if (e.getMessage().startsWith("/")) {
+            if (e.getSender() instanceof ProxiedPlayer) {
+                ProxiedPlayer sender = (ProxiedPlayer) e.getSender();
+                if (sender.hasPermission("plhide.command.use")) return;
+                String cmd = e.getMessage().toLowerCase().split(" ")[0];
+                if (cmd.equalsIgnoreCase("/plugins") || cmd.equalsIgnoreCase("/pl") || cmd.equalsIgnoreCase("/bukkit:pl") || cmd.equalsIgnoreCase("/bukkit:plugins")) {
+                    e.setCancelled(true);
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', config.pl_message()));
+                }
+            }
+        }
+    }
+
+    public void onPlayerJoin(PostLoginEvent e) {
+        if (e.getPlayer().hasPermission("plhide.updatechecker")) {
+            ProxyServer.getInstance().getScheduler().runAsync(this, () -> {
+                UpdateCheckResult result = Impl.get().updateCheck();
+                if (result == null) return;
+                String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Velocity&e]" + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + ""));
+                if (result.getMessage() != null) {
+                    msg = ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Bungee&e] &c" + result.getMessage());
+                }
+                if (msg != null) {
+                    e.getPlayer().sendMessage(msg);
+                }
+            });
+        }
     }
 
     public class Impl extends Platform {
@@ -151,21 +209,6 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
                 return new String(ByteStreams.toByteArray(getResourceAsStream("version-config.json")));
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
-            }
-        }
-    }
-
-    @EventHandler
-    public void onChat(ChatEvent e) {
-        if (e.getMessage().startsWith("/")) {
-            if (e.getSender() instanceof ProxiedPlayer) {
-                ProxiedPlayer sender = (ProxiedPlayer) e.getSender();
-                if (sender.hasPermission("plhide.command.use")) return;
-                String cmd = e.getMessage().toLowerCase().split(" ")[0];
-                if (cmd.equalsIgnoreCase("/plugins") || cmd.equalsIgnoreCase("/pl") || cmd.equalsIgnoreCase("/bukkit:pl") || cmd.equalsIgnoreCase("/bukkit:plugins")) {
-                    e.setCancelled(true);
-                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', config.pl_message()));
-                }
             }
         }
     }

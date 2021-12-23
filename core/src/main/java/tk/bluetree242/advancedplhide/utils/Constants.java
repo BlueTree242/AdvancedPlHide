@@ -20,34 +20,9 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.impl.version;
+package tk.bluetree242.advancedplhide.utils;
 
-public class UpdateCheckResult {
-    private final int versionsBehind;
-    private final String message;
-    private final String loggerType;
-    private final String updateUrl;
-
-    public UpdateCheckResult(int versionsBehind, String message, String loggerType, String updateUrl) {
-        this.versionsBehind = versionsBehind;
-        this.message = message;
-        this.loggerType = loggerType;
-        this.updateUrl = updateUrl;
-    }
-
-    public int getVersionsBehind() {
-        return versionsBehind;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getLoggerType() {
-        return loggerType;
-    }
-
-    public String getUpdateUrl() {
-        return updateUrl;
-    }
+public class Constants {
+    public static final String DEFAULT_UP_TO_DATE = "&aYou are up to date";
+    public static final String DEFAULT_BEHIND = "&cYou are {versions} Behind. Please Update ASAP. Download from {download}";
 }

@@ -28,13 +28,10 @@ import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.HttpPostMultipart;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Platform is the platform the plugin runs on, we can also call it the plugin core as it contains some methods related to the plugin itself too
@@ -75,7 +72,7 @@ public abstract class Platform {
         for (Group group : groups) {
             names.add(group.getName());
         }
-        String name = "Merged Group: " +String.join(", ", names);
+        String name = "Merged Group: " + String.join(", ", names);
         return new Group(name, tabcomplete);
     }
 
@@ -93,22 +90,20 @@ public abstract class Platform {
         return new JSONObject(getVersionConfig()).getString("buildDate");
     }
 
-    public CompletableFuture<UpdateCheckResult> updateCheck() {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("User-Agent", "APH/Java");
-                HttpPostMultipart req = new HttpPostMultipart("https://advancedplhide.ml/updatecheck", "utf-8", headers);
-                req.addFormField("version", getCurrentVersion());
-                req.addFormField("buildNumber", getCurrentBuild());
-                req.addFormField("buildDate", getBuildDate());
-                req.addFormField("devUpdatechecker", getConfig().dev_updatechecker() + "");
-                String response = req.finish();
-                JSONObject json = new JSONObject(response);
-                return new UpdateCheckResult(json.getInt("versions_behind"), json.getString("message"), json.isNull("type") ? "INFO" : json.getString("type"), json.getString("downloadUrl"));
-            } catch (Exception e) {
-                return null;
-            }
-        });
+    public UpdateCheckResult updateCheck() {
+        try {
+            Map<String, String> headers = new HashMap<>();
+            headers.put("User-Agent", "APH/Java");
+            HttpPostMultipart req = new HttpPostMultipart("https://advancedplhide.ml/updatecheck", "utf-8", headers);
+            req.addFormField("version", getCurrentVersion());
+            req.addFormField("buildNumber", getCurrentBuild());
+            req.addFormField("buildDate", getBuildDate());
+            req.addFormField("devUpdatechecker", getConfig().dev_updatechecker() + "");
+            String response = req.finish();
+            JSONObject json = new JSONObject(response);
+            return new UpdateCheckResult(json.getInt("versions_behind"), json.isNull("versions_behind") ? null : json.getString("message"), json.isNull("type") ? "INFO" : json.getString("type"), json.getString("downloadUrl"));
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

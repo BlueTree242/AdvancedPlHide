@@ -24,7 +24,6 @@ package tk.bluetree242.advancedplhide.config;
 
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
-import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.annote.SubSection;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 

@@ -49,7 +49,7 @@ public class CompleterModifier {
         List<String> plugins = new ArrayList<>();
         for (CommandCompleter completer : toBlacklist) {
             if (!completer.getName().startsWith("from:"))
-            commands.add(completer.getName());
+                commands.add(completer.getName());
             else {
                 String name = completer.getName().replaceFirst("from:", "");
                 plugins.add(name);
@@ -58,7 +58,7 @@ public class CompleterModifier {
         for (CommandCompleter completer : new ArrayList<>(list)) {
             if (commands.contains(completer.getName())) {
                 completer.remove();
-            } else if (plugins.contains(Platform.get().getPluginForCommand(completer.getName()))){
+            } else if (plugins.contains(Platform.get().getPluginForCommand(completer.getName()))) {
                 completer.remove();
             }
         }
@@ -78,7 +78,7 @@ public class CompleterModifier {
         for (CommandCompleter completer : new ArrayList<>(list)) {
             if (!commands.contains(completer.getName())) {
                 if (!plugins.contains(Platform.get().getPluginForCommand(completer.getName())))
-                completer.remove();
+                    completer.remove();
             }
         }
     }

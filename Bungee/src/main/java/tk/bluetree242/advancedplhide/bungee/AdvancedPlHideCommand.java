@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 public class AdvancedPlHideCommand extends Command {
     private final AdvancedPlHideBungee core;
+
     public AdvancedPlHideCommand(AdvancedPlHideBungee core) {
         super("advancedplhidebungee", null, "aphb", "plhideb");
         this.core = core;

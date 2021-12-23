@@ -33,7 +33,6 @@ import net.md_5.bungee.protocol.packet.Commands;
 import net.md_5.bungee.protocol.packet.TabCompleteRequest;
 import net.md_5.bungee.protocol.packet.TabCompleteResponse;
 import tk.bluetree242.advancedplhide.CompleterModifier;
-import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.bungee.impl.completer.StringCommandCompleterList;
 import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.completer.SelfExpiringHashMap;

@@ -31,8 +31,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class HttpPostMultipart {
-    private final String boundary;
     private static final String LINE = "\r\n";
+    private final String boundary;
     private HttpURLConnection httpConn;
     private String charset;
     private OutputStream outputStream;
