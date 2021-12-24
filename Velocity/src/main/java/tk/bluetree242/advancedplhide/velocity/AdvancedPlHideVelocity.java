@@ -24,29 +24,21 @@ package tk.bluetree242.advancedplhide.velocity;
 
 import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.event.Subscribe;
-import com.velocitypowered.api.event.command.CommandExecuteEvent;
-import com.velocitypowered.api.event.command.PlayerAvailableCommandsEvent;
-import com.velocitypowered.api.event.connection.PostLoginEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
-import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.simplix.protocolize.api.Protocolize;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.slf4j.Logger;
 import tk.bluetree242.advancedplhide.CommandCompleter;
-import tk.bluetree242.advancedplhide.CompleterModifier;
 import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
-import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
@@ -70,10 +62,10 @@ public class AdvancedPlHideVelocity extends Platform {
     public final ProxyServer server;
     public final Logger logger;
     public final Path dataDirectory;
+    private final Metrics.Factory metricsFactory;
     public Config config;
     protected ConfManager<Config> confManager;
     private List<Group> groups = new ArrayList<>();
-    private final Metrics.Factory metricsFactory;
 
     @Inject
     public AdvancedPlHideVelocity(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory, Metrics.Factory metricsFactory) {
@@ -190,14 +182,12 @@ public class AdvancedPlHideVelocity extends Platform {
     }
 
 
-
     @Override
     public void reloadConfig() throws ConfigurationLoadException {
         confManager.reloadConfig();
         config = confManager.getConfigData();
         loadGroups();
     }
-
 
 
 }

@@ -31,10 +31,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import tk.bluetree242.advancedplhide.CommandCompleter;
@@ -100,7 +97,6 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     public boolean isLegacy() {
         return legacy;
     }
-
 
 
     public void performStartUpdateCheck() {
@@ -177,7 +173,6 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
             return null;
         }
     }
-
 
 
     public class Impl extends Platform {

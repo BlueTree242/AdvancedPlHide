@@ -40,6 +40,7 @@ public class EventListener implements Listener {
     public EventListener(AdvancedPlHideBungee core) {
         this.core = core;
     }
+
     @EventHandler
     public void onChat(ChatEvent e) {
         if (e.getMessage().startsWith("/")) {

@@ -36,7 +36,7 @@ import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
-public class EventListener{
+public class EventListener {
 
     @Subscribe
     public void onPlayerJoin(PostLoginEvent e) {
