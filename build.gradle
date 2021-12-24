@@ -28,7 +28,6 @@ plugins {
 }
 repositories {
     mavenCentral()
-
 }
 
 def buildNumber = project.properties['buildNumber'] == null ? "NONE" : project.properties['buildNumber']
