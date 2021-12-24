@@ -73,7 +73,7 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
         reloadConfig();
         Protocolize.listenerProvider().registerListener(listener = new PacketListener(this));
         Platform.setPlatform(new Impl());
-        ProxyServer.getInstance().getPluginManager().registerListener(this, this);
+        getProxy().getPluginManager().registerListener(this, new EventListener(this));
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new AdvancedPlHideCommand(this));
         new Metrics(this, 13709);
         performStartUpdateCheck();
@@ -145,36 +145,8 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
 
     }
 
-    @EventHandler
-    public void onChat(ChatEvent e) {
-        if (e.getMessage().startsWith("/")) {
-            if (e.getSender() instanceof ProxiedPlayer) {
-                ProxiedPlayer sender = (ProxiedPlayer) e.getSender();
-                if (sender.hasPermission("plhide.command.use")) return;
-                String cmd = e.getMessage().toLowerCase().split(" ")[0];
-                if (cmd.equalsIgnoreCase("/plugins") || cmd.equalsIgnoreCase("/pl") || cmd.equalsIgnoreCase("/bukkit:pl") || cmd.equalsIgnoreCase("/bukkit:plugins")) {
-                    e.setCancelled(true);
-                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', config.pl_message()));
-                }
-            }
-        }
-    }
 
-    public void onPlayerJoin(PostLoginEvent e) {
-        if (e.getPlayer().hasPermission("plhide.updatechecker")) {
-            ProxyServer.getInstance().getScheduler().runAsync(this, () -> {
-                UpdateCheckResult result = Impl.get().updateCheck();
-                if (result == null) return;
-                String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Velocity&e]" + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + ""));
-                if (result.getMessage() != null) {
-                    msg = ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Bungee&e] &c" + result.getMessage());
-                }
-                if (msg != null) {
-                    e.getPlayer().sendMessage(msg);
-                }
-            });
-        }
-    }
+
 
     public class Impl extends Platform {
 

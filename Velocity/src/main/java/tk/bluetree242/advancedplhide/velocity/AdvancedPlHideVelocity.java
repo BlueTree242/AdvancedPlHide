@@ -154,6 +154,7 @@ public class AdvancedPlHideVelocity extends Platform {
                 .aliases("aphv", "apv", "plhidev", "phv")
                 .build();
         server.getCommandManager().register(meta, new AdvancedPlHideCommand(this));
+        server.getEventManager().register(this, new EventListener());
         Protocolize.listenerProvider().registerListener(new PacketListener(this));
         metricsFactory.make(this, 13708);
         performStartUpdateCheck();
@@ -188,23 +189,7 @@ public class AdvancedPlHideVelocity extends Platform {
         }
     }
 
-    @Subscribe
-    public void onPlayerJoin(PostLoginEvent e) {
-        if (e.getPlayer().hasPermission("plhide.updatechecker")) {
-            new Thread(() -> {
-                UpdateCheckResult result = updateCheck();
-                if (result == null) return;
-                Component msg = result.getVersionsBehind() == 0 ? null : LegacyComponentSerializer.legacy('&').deserialize("&e[APH-&2Velocity&e]" + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + ""));
-                if (result.getMessage() != null) {
-                    msg = LegacyComponentSerializer.legacy('&').deserialize("&e[APH-&2Velocity&e] &c" + result.getMessage());
-                }
-                if (msg != null) {
-                    msg = msg.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, result.getUpdateUrl()));
-                    e.getPlayer().sendMessage(msg);
-                }
-            }).start();
-        }
-    }
+
 
     @Override
     public void reloadConfig() throws ConfigurationLoadException {
@@ -213,27 +198,6 @@ public class AdvancedPlHideVelocity extends Platform {
         loadGroups();
     }
 
-    @Subscribe
-    public void onCommandExecute(CommandExecuteEvent e) {
-        if (e.getCommandSource() instanceof ConsoleCommandSource) return;
-        String cmd = "/" + e.getCommand().split(" ")[0];
-        if (cmd.equalsIgnoreCase("/plugins") || cmd.equalsIgnoreCase("/pl") || cmd.equalsIgnoreCase("/bukkit:pl") || cmd.equalsIgnoreCase("/bukkit:plugins")) {
-            if (!e.getCommandSource().hasPermission("plhide.command.use")) {
-                Component response = LegacyComponentSerializer.legacy('&').deserialize(config.pl_message());
-                e.getCommandSource().sendMessage(response);
-                e.setResult(CommandExecuteEvent.CommandResult.denied());
-            }
-        }
-    }
 
-    @Subscribe
-    public void onCommands(PlayerAvailableCommandsEvent e) {
-        if (!e.getPlayer().isActive()) {
-            e.getRootNode().getChildren().removeAll(e.getRootNode().getChildren());
-            return;
-        }
-        RootNodeCommandCompleter node = new RootNodeCommandCompleter(e.getRootNode());
-        CompleterModifier.handleCompleter(node, getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.blacklist-mode"));
-    }
 
 }

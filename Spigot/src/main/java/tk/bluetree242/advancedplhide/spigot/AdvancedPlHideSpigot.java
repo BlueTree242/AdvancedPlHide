@@ -83,7 +83,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     public void onEnable() {
         reloadConfig();
         protocolManager.addPacketListener(new PacketListener(this));
-        getServer().getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(new EventListener(this), this);
         String str = Bukkit.getServer().getClass().getPackage().getName();
         str = str.substring(str.lastIndexOf("v"));
         legacy = (str.equals("v1_8_R3") || str.contains("v1_9_R") || str.contains("v1_10_R1") || str.contains("v1_11_R1") || str.contains("v1_12_R1"));
@@ -101,15 +101,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         return legacy;
     }
 
-    @EventHandler
-    public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
-        if (e.getPlayer().hasPermission("plhide.command.use")) return;
-        String cmd = e.getMessage().toLowerCase().split(" ")[0];
-        if (cmd.equalsIgnoreCase("/plugins") || cmd.equalsIgnoreCase("/pl") || cmd.equalsIgnoreCase("/bukkit:pl") || cmd.equalsIgnoreCase("/bukkit:plugins")) {
-            e.setCancelled(true);
-            e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', config.pl_message()));
-        }
-    }
+
 
     public void performStartUpdateCheck() {
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
@@ -186,22 +178,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e) {
-        if (e.getPlayer().hasPermission("plhide.updatechecker")) {
-            Bukkit.getScheduler().runTask(this, () -> {
-                UpdateCheckResult result = Impl.get().updateCheck();
-                if (result == null) return;
-                String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Velocity&e]" + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + ""));
-                if (result.getMessage() != null) {
-                    msg = ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Spigot&e] &c" + result.getMessage());
-                }
-                if (msg != null) {
-                    e.getPlayer().sendMessage(msg);
-                }
-            });
-        }
-    }
+
 
     public class Impl extends Platform {
 
