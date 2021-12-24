@@ -34,12 +34,12 @@ public class CompleterModifier {
     }
 
 
-    public static void handleCompleter(CommandCompleterList list, Group playerGroup, boolean blacklist) {
+    public static void handleCompleter(CommandCompleterList list, Group playerGroup, boolean whitelist) {
         if (Platform.get().getConfig().remove_plugin_prefix())
             removePluginPrefix(list);
 
         if (playerGroup != null) {
-            if (!blacklist) applyBlacklist(list, playerGroup.getTabComplete());
+            if (!whitelist) applyBlacklist(list, playerGroup.getTabComplete());
             else applyWhitelist(list, playerGroup.getTabComplete());
         }
     }

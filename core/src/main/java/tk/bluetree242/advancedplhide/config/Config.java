@@ -24,12 +24,14 @@ package tk.bluetree242.advancedplhide.config;
 
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
+import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.annote.SubSection;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
 import java.util.List;
 import java.util.Map;
 
+@ConfHeader("# https://github.com/BlueTree242/AdvancedPlHide/wiki/")
 public interface Config {
 
     @AnnotationBasedSorter.Order(10)
@@ -43,7 +45,7 @@ public interface Config {
     Boolean remove_plugin_prefix();
 
     @AnnotationBasedSorter.Order(30)
-    @ConfComments("") //space between the groups and the conf options up
+    @ConfComments("\n# https://github.com/BlueTree242/AdvancedPlHide/wiki/groups") //space between the groups and the conf options up
     @ConfDefault.DefaultObject("tk.bluetree242.advancedplhide.config.ConfManager.defaultGroups")
     Map<String, @SubSection Group> groups();
 

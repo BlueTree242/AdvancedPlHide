@@ -62,7 +62,7 @@ public class PacketListener extends PacketAdapter {
             Suggestions suggestionsOrigin = matchModifier.read(0);
             SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
             if (suggestionsOrigin.getRange().getStart() == 1) {
-                CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.blacklist-mode"));
+                CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
             }
             matchModifier.write(0, suggestions.export());
         } else {
@@ -71,7 +71,7 @@ public class PacketListener extends PacketAdapter {
             StringCommandCompleterList suggestions = new StringCommandCompleterList(suggestionsOrigin);
             String str = this.commandsWaiting.get(e.getPlayer().getUniqueId());
             if (!str.contains(" ") && str.startsWith("/")) {
-                CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.blacklist-mode"));
+                CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
             }
             matchModifier.write(0, suggestions.export());
         }
@@ -81,7 +81,7 @@ public class PacketListener extends PacketAdapter {
         StructureModifier<RootCommandNode> matchModifier = e.getPacket().getSpecificModifier(RootCommandNode.class);
         RootCommandNode nodeOrigin = matchModifier.read(0);
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(nodeOrigin);
-        CompleterModifier.handleCompleter(node, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.blacklist-mode"));
+        CompleterModifier.handleCompleter(node, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
         matchModifier.write(0, node.export());
     }
 
