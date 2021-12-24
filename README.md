@@ -34,13 +34,13 @@
 ### Features
 
 * Group merging.
-* Hides /pl (/plugin).
+* Hides /pl (/plugins).
 * blacklist or whitelist tab commands.
 * Others.
 
 ### Requirements
 
-* Java 11 or higher (for Velocity)
+* Java 11 or higher (For Velocity)
 * Java 9 or higher (Bungee and spigot)
 * ProtocolLib (Spigot) 
 * Protocolize (Proxy)
