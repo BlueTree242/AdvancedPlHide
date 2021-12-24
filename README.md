@@ -33,10 +33,10 @@
 
 ### Features
 
-  * group merging.
-  * hides /pl.
+ * Group merging.
+ * Hides /pl or /plugin.
 * blacklist or whitelist tab commands.
-* Others 
+* Others.
 
 ### Requirements
 
