@@ -102,8 +102,10 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     public void performStartUpdateCheck() {
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
             UpdateCheckResult result = Impl.get().updateCheck();
-            if (result == null) getLogger().severe("Could not check for updates");
-            String msg = result.getVersionsBehind() == 0 ?
+            if (result == null) {
+                getLogger().severe("Could not check for updates");
+                return;
+            }            String msg = result.getVersionsBehind() == 0 ?
                     ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_UP_TO_DATE) :
                     ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "")
                             .replace("{download}", result.getUpdateUrl()));
