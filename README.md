@@ -41,7 +41,7 @@
 ### Requirements
 
 * Java 11 (or higher) (for Velocity)
-* Java 8 (or higher) (bungee and spigot)
+* Java 9 (or higher) (bungee and spigot)
 * ProtocolLib(spigot) 
 * Protocolize(proxy)
 * Luckperms or some other perm plugin
