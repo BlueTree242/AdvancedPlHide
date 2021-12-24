@@ -22,11 +22,14 @@
 
 package tk.bluetree242.advancedplhide;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import org.json.JSONObject;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
-import tk.bluetree242.advancedplhide.utils.HttpPostMultipart;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,16 +95,18 @@ public abstract class Platform {
 
     public UpdateCheckResult updateCheck() {
         try {
+            OkHttpClient client = new OkHttpClient();
             Map<String, String> headers = new HashMap<>();
             headers.put("User-Agent", "APH/Java");
-            HttpPostMultipart req = new HttpPostMultipart("https://advancedplhide.ml/updatecheck", "utf-8", headers);
-            req.addFormField("version", getCurrentVersion());
-            req.addFormField("buildNumber", getCurrentBuild());
-            req.addFormField("buildDate", getBuildDate());
-            req.addFormField("devUpdatechecker", getConfig().dev_updatechecker() + "");
-            String response = req.finish();
+            MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data"))
+                    .addFormDataPart("version", getCurrentVersion())
+                    .addFormDataPart("buildNumber", getCurrentBuild())
+                    .addFormDataPart("buildDate", getCurrentBuild())
+                    .addFormDataPart("devUpdatechecker", getConfig().dev_updatechecker() + "").build();
+            Request req = new Request.Builder().url("https://advancedplhide.ml/updatecheck").post(form).build();
+            String response = client.newCall(req).execute().body().string();
             JSONObject json = new JSONObject(response);
-            return new UpdateCheckResult(json.getInt("versions_behind"), json.isNull("versions_behind") ? null : json.getString("message"), json.isNull("type") ? "INFO" : json.getString("type"), json.getString("downloadUrl"));
+            return new UpdateCheckResult(json.getInt("versions_behind"), json.isNull("versions_behind") ? null : json.isNull("message") ? null : json.getString("message"), json.isNull("type") ? "INFO" : json.getString("type"), json.getString("downloadUrl"));
         } catch (Exception e) {
             return null;
         }
