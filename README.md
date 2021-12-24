@@ -9,12 +9,12 @@
 
 [SpigotRating]:https://img.shields.io/spiget/rating/98645?style=flat-square
 [GitHubStar]:https://img.shields.io/github/stars/BlueTree242/AdvancedPlHide
-![TestedVersion]: https://img.shields.io/spiget/tested-versions/98645?label=Tested%20on&style=flat-square
+[TestedVersion]: https://img.shields.io/spiget/tested-versions/98645?label=Tested%20on&style=flat-square
 [CodeSize]:https://img.shields.io/github/languages/code-size/BlueTree242/AdvancedPlHide
 <!-- Shields -->
 [![Discord]](https://discordsrvutils.xyz/support)
 [![Spigot]](https://spigotmc.org/resources/98645)
-<br><br>[[!TestedVersion](https://spigotmc.org/resources/98645 ![SpigotRating]
+<br><br>[[!TestedVersion]](https://spigotmc.org/resources/98645 ![SpigotRating]
 <br> ![GitHubStar] ![CodeSize]
 </div>
 
