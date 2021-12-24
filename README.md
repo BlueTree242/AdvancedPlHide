@@ -14,7 +14,7 @@
 <!-- Shields -->
 [![Discord]](https://discordsrvutils.xyz/support)
 [![Spigot]](https://spigotmc.org/resources/98645)
-<br><br>[![TestedVersion]](https://spigotmc.org/resources/98645 ![SpigotRating]
+<br><br>[!TestedVersion](https://spigotmc.org/resources/98645 ![SpigotRating]
 <br> ![GitHubStar] ![CodeSize]
 </div>
 
