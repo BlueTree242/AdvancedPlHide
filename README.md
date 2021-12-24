@@ -58,5 +58,5 @@ When using a proxy AdvancedPlHide needs Protocolize
 
 ### License
 
-[License]:https://img.shields.io/apm/l/vim-mode?color=e
+[License]:https://img.shields.io/github/license/Bluetree242/AdvancedPlHide?color=e
 [![License]](https://github.com/Bluetree242/AdvancedPlHide/blob/master/LICENSE)
