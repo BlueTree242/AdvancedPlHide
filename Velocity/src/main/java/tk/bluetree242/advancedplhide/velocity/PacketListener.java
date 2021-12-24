@@ -64,11 +64,11 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
             String str = commandsWaiting.get(e.player().uniqueId());
             if (!str.contains(" ") && str.startsWith("/")) {
                 OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
-                CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission("plhide.blacklist-mode"));
+                CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission("plhide.whitelist-mode"));
             }
         } else if (e.packet().getStart() == 1) {
             OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
-            CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission("plhide.blacklist-mode"));
+            CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission("plhide.whitelist-mode"));
         }
     }
 
