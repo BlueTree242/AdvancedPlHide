@@ -159,7 +159,10 @@ public class AdvancedPlHideVelocity extends Platform {
 
     public void performStartUpdateCheck() {
         UpdateCheckResult result = updateCheck();
-        if (result == null) getLogger().error("Could not check for updates");
+        if (result == null) {
+            getLogger().error("Could not check for updates");
+            return;
+        }
         String msg = result.getVersionsBehind() == 0 ?
                 LegacyComponentSerializer.legacy('&').deserialize(Constants.DEFAULT_UP_TO_DATE).content() :
                 LegacyComponentSerializer.legacy('&').deserialize(Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "")
