@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+
+}
+
+
+repositories {
+    mavenCentral()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven {
+        url 'https://mvn.exceptionflug.de/repository/exceptionflug-public/'
+    }
+    maven {
+        url "https://libraries.minecraft.net"
+    }
+
+}
+
+dependencies {
+    implementation project(":core")
+    implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2'
+    compileOnly 'dev.simplix:protocolize-api:2.1.0'
+    compileOnly 'net.md-5:bungeecord-api:1.15-SNAPSHOT'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+java.sourceCompatibility = JavaVersion.VERSION_1_9
+java.targetCompatibility = JavaVersion.VERSION_1_9
