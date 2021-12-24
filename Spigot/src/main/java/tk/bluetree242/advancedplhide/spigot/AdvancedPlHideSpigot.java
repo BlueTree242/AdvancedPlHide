@@ -89,6 +89,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         legacy = (str.equals("v1_8_R3") || str.contains("v1_9_R") || str.contains("v1_10_R1") || str.contains("v1_11_R1") || str.contains("v1_12_R1"));
         getServer().getPluginCommand("advancedplhide").setExecutor(new AdvancedPlHideCommand(this));
         getServer().getPluginCommand("advancedplhide").setTabCompleter(new AdvancedPlHideCommand.TabCompleter());
+        new Metrics(this, 13707);
         performStartUpdateCheck();
     }
 

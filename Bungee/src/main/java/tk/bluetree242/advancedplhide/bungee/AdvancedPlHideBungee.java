@@ -75,6 +75,7 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
         Platform.setPlatform(new Impl());
         ProxyServer.getInstance().getPluginManager().registerListener(this, this);
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new AdvancedPlHideCommand(this));
+        new Metrics(this, 13709);
         performStartUpdateCheck();
     }
 

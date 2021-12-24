@@ -73,9 +73,11 @@ public class AdvancedPlHideVelocity extends Platform {
     public Config config;
     protected ConfManager<Config> confManager;
     private List<Group> groups = new ArrayList<>();
+    private final Metrics.Factory metricsFactory;
 
     @Inject
-    public AdvancedPlHideVelocity(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
+    public AdvancedPlHideVelocity(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory, Metrics.Factory metricsFactory) {
+        this.metricsFactory = metricsFactory;
         this.server = server;
         this.logger = logger;
         this.dataDirectory = dataDirectory;
@@ -153,6 +155,7 @@ public class AdvancedPlHideVelocity extends Platform {
                 .build();
         server.getCommandManager().register(meta, new AdvancedPlHideCommand(this));
         Protocolize.listenerProvider().registerListener(new PacketListener(this));
+        metricsFactory.make(this, 13708);
         performStartUpdateCheck();
     }
 
