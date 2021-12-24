@@ -58,4 +58,4 @@ When using a proxy AdvancedPlHide needs Protocolize
 
 ### License
 
-// idk
+[Discord]:https://img.shields.io/apm/l/vim-mode?color=e
