@@ -15,7 +15,7 @@
 [![Discord]](https://discordsrvutils.xyz/support)
 [![Spigot]](https://spigotmc.org/resources/98645)
 <br><br>[![TestedVersion]](https://spigotmc.org/resources/98645 ![SpigotRating]
-<br>![License] ![GitHubStar] ![CodeSize]
+<br> ![GitHubStar] ![CodeSize]
 </div>
 
 ## Table of Contents
