@@ -27,7 +27,7 @@ plugins {
 
 group 'me.bluetree242.advancedplhide'
 rootProject.allprojects {
-    apply plugin: 'java'
+    plugins.apply('java')
     plugins.apply("com.github.johnrengelman.shadow")
     project.shadowJar {
         classifier ''
