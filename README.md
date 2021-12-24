@@ -33,8 +33,8 @@
 
 ### Features
 
- * Group merging.
- * Hides /pl or /plugin.
+* Group merging.
+* Hides /pl (/plugin).
 * blacklist or whitelist tab commands.
 * Others.
 
@@ -42,8 +42,8 @@
 
 * Java 11 (or higher) (for Velocity)
 * Java 9 (or higher) (bungee and spigot)
-* ProtocolLib (spigot) 
-* Protocolize (proxy)
+* ProtocolLib (Spigot) 
+* Protocolize (Proxy)
 * Luckperms or some other perm plugin
 ### Supported Platforms
 
