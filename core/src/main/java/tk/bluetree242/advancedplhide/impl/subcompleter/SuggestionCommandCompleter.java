@@ -20,21 +20,29 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide;
+package tk.bluetree242.advancedplhide.impl.subcompleter;
 
-public interface CommandCompleter {
+import tk.bluetree242.advancedplhide.CommandCompleter;
+import tk.bluetree242.advancedplhide.SubCommandCompleter;
 
-    /**
-     * @return The name of the command, if the completer is `/help` this would return `help`
-     */
-    String getName();
+public class SuggestionCommandCompleter implements SubCommandCompleter {
+    private final SuggestionSubCommandCompleterList list;
+    private final String text;
 
-    /**
-     * This method is only used if this is included in a {@link CommandCompleterList}
-     *
-     * @throws UnsupportedOperationException if this is not in a list
-     */
-    void remove();
+    public SuggestionCommandCompleter(SuggestionSubCommandCompleterList list, String text) {
+        this.list = list;
+        this.text = text;
+    }
+
+    @Override
+    public String getText() {
+        return text;
+    }
+
+    @Override
+    public void remove() {
+        list.remove(this);
+    }
 
 
 }

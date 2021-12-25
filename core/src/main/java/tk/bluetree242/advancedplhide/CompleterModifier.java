@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CompleterModifier {
-
+    private static final List BAD_COMMANDS = List.of("ver", "version", "plugins", "bukkit:plugins", "bukkit:ver", "bukkit:version");
     public static void removePluginPrefix(CommandCompleterList list) {
         for (CommandCompleter completer : new ArrayList<>(list)) {
             if (completer.getName().contains(":")) completer.remove();
@@ -41,6 +41,12 @@ public class CompleterModifier {
         if (playerGroup != null) {
             if (!whitelist) applyBlacklist(list, playerGroup.getTabComplete());
             else applyWhitelist(list, playerGroup.getTabComplete());
+        }
+    }
+
+    public static void handleSubCompleter(SubCommandCompleterList list, Group playerGroup, boolean whitelist) {
+        if (BAD_COMMANDS.contains(list.getName().toLowerCase())) {
+            list.removeAll();
         }
     }
 

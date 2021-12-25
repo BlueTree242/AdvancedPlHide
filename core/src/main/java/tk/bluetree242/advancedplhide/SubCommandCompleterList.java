@@ -22,19 +22,37 @@
 
 package tk.bluetree242.advancedplhide;
 
-public interface CommandCompleter {
+import java.util.ArrayList;
+import java.util.function.Consumer;
+
+public abstract class SubCommandCompleterList extends ArrayList<SubCommandCompleter> {
+
+    @Override
+    public void forEach(Consumer e) {
+        for (SubCommandCompleter commandCompleter : new ArrayList<>(this)) {
+            e.accept(commandCompleter);
+        }
+
+    }
 
     /**
-     * @return The name of the command, if the completer is `/help` this would return `help`
+     * @return Exported value of the original sub-completer list
      */
-    String getName();
+    public abstract Object export();
+
 
     /**
-     * This method is only used if this is included in a {@link CommandCompleterList}
-     *
-     * @throws UnsupportedOperationException if this is not in a list
+     * @return Array of args, does not include the command
      */
-    void remove();
+    public abstract String[] getArgs();
+
+    /**
+     * @return Name of the command
+     */
+    public abstract String getName();
 
 
+    public void removeAll() {
+        removeAll(new ArrayList<>(this));
+    }
 }

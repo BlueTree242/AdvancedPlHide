@@ -22,19 +22,19 @@
 
 package tk.bluetree242.advancedplhide;
 
-public interface CommandCompleter {
+public interface SubCommandCompleter {
 
     /**
-     * @return The name of the command, if the completer is `/help` this would return `help`
+     * @return Text of completer
      */
-    String getName();
+    String getText();
+
 
     /**
-     * This method is only used if this is included in a {@link CommandCompleterList}
+     * This method is only used if this is included in a {@link SubCommandCompleterList}
      *
      * @throws UnsupportedOperationException if this is not in a list
      */
     void remove();
-
 
 }
