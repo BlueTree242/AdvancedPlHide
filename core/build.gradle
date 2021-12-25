@@ -24,7 +24,15 @@ plugins {
     id 'java'
     id 'maven-publish'
 }
-
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
 rootProject.allprojects {
     plugins.apply('java')
     plugins.apply("com.github.johnrengelman.shadow")
