@@ -25,7 +25,6 @@ plugins {
     id 'maven-publish'
 }
 
-group 'me.bluetree242.advancedplhide'
 rootProject.allprojects {
     plugins.apply('java')
     plugins.apply("com.github.johnrengelman.shadow")
