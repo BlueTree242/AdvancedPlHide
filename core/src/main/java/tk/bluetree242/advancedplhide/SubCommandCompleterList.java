@@ -42,17 +42,19 @@ public abstract class SubCommandCompleterList extends ArrayList<SubCommandComple
 
 
     /**
-     * @return Array of args, does not include the command
+     * @return Array of args, does not include the command, this never includes parts that aren't completed by the player (part which all completers are supposed to complete
      */
     public abstract String[] getArgs();
 
     /**
-     * @return Name of the command
+     * @return Name of the command used, without /
      */
     public abstract String getName();
 
 
     public void removeAll() {
-        removeAll(new ArrayList<>(this));
+        for (SubCommandCompleter subCommandCompleter : new ArrayList<>(this)) {
+            subCommandCompleter.remove();
+        }
     }
 }

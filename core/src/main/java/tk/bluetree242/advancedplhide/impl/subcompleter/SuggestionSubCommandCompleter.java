@@ -22,14 +22,13 @@
 
 package tk.bluetree242.advancedplhide.impl.subcompleter;
 
-import tk.bluetree242.advancedplhide.CommandCompleter;
 import tk.bluetree242.advancedplhide.SubCommandCompleter;
 
-public class SuggestionCommandCompleter implements SubCommandCompleter {
+public class SuggestionSubCommandCompleter implements SubCommandCompleter {
     private final SuggestionSubCommandCompleterList list;
     private final String text;
 
-    public SuggestionCommandCompleter(SuggestionSubCommandCompleterList list, String text) {
+    public SuggestionSubCommandCompleter(SuggestionSubCommandCompleterList list, String text) {
         this.list = list;
         this.text = text;
     }

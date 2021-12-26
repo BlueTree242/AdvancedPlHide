@@ -37,21 +37,27 @@ public class SuggestionSubCommandCompleterList extends SubCommandCompleterList {
     public SuggestionSubCommandCompleterList(Suggestions suggestions, String notCompleted) {
         this.suggestions = suggestions;
         for (Suggestion suggestion : suggestions.getList()) {
-            add(new SuggestionCommandCompleter(this, suggestion.getText()));
+            add(new SuggestionSubCommandCompleter(this, suggestion.getText()));
         }
         String[] split = notCompleted.split(" ");
-        command = split[0].replaceFirst("/", "");
+        command = split[0].trim().replaceFirst("/", "");
         List<String> list = Arrays.asList(split);
         for (String s : split) {
             if (!s.equalsIgnoreCase("/" + command)) {
+                if (notCompleted.endsWith(" "))
                 list.add(s);
+                else {
+                    if (!s.equals(split[split.length -1])) {
+                        list.add(s);
+                    }
+                }
             }
         }
         args = list.toArray(new String[0]);
     }
 
     @Override
-    public Object export() {
+    public Suggestions export() {
         return suggestions;
     }
 
