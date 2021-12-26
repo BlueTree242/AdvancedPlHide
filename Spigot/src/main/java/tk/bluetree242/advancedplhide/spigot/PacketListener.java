@@ -34,6 +34,7 @@ import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.completer.SuggestionCommandCompleterList;
 import tk.bluetree242.advancedplhide.impl.subcompleter.SuggestionSubCommandCompleterList;
 import tk.bluetree242.advancedplhide.spigot.impl.completer.StringCommandCompleterList;
+import tk.bluetree242.advancedplhide.spigot.impl.subcompleter.StringSubCommandCompleterList;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
 import java.util.HashMap;
@@ -63,14 +64,12 @@ public class PacketListener extends PacketAdapter {
             StructureModifier<Suggestions> matchModifier = e.getPacket().getSpecificModifier(Suggestions.class);
             Suggestions suggestionsOrigin = matchModifier.read(0);
             String notCompleted = this.commandsWaiting.get(e.getPlayer().getUniqueId());
-            if (notCompleted == null) {
-                notCompleted = "/";
-            }
+            if (notCompleted == null) notCompleted = "/";
             if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
                 CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
                 matchModifier.write(0, suggestions.export());
-            } else if (notCompleted.contains(" ") && notCompleted.startsWith("/")){
+            } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")){
                 SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(suggestionsOrigin, notCompleted);
                 CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
                 matchModifier.write(0, suggestions.export());
@@ -80,12 +79,17 @@ public class PacketListener extends PacketAdapter {
             StructureModifier<String[]> matchModifier = e.getPacket().getSpecificModifier(String[].class);
             String[] suggestionsOrigin = matchModifier.read(0);
             String notCompleted = this.commandsWaiting.get(e.getPlayer().getUniqueId());
-            if (!notCompleted.trim().contains(" ") && notCompleted.trim().startsWith("/")) {
+            if (notCompleted == null){
+                notCompleted = "/";
+            }
+            if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 StringCommandCompleterList suggestions = new StringCommandCompleterList(suggestionsOrigin);
                 CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
                 matchModifier.write(0, suggestions.export());
-            } else if (notCompleted.trim().contains(" ") && notCompleted.trim().startsWith("/")) {
-                //TODO: Handle sub for legacy
+            } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+                StringSubCommandCompleterList suggestions = new StringSubCommandCompleterList(suggestionsOrigin, notCompleted);
+                CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
+                matchModifier.write(0, suggestions.export());
             }
         }
     }
@@ -100,8 +104,9 @@ public class PacketListener extends PacketAdapter {
 
     public void onPacketReceiving(PacketEvent e) {
         if (e.getPacketType() == PacketType.Play.Client.TAB_COMPLETE) {
-                this.commandsWaiting.put(e.getPlayer().getUniqueId(), e.getPacket().getStrings()
-                        .read(0));
+            String s =  e.getPacket().getStrings()
+                    .read(core.isLegacy() ? 0 : 1);
+                this.commandsWaiting.put(e.getPlayer().getUniqueId(),s);
         }
     }
 }
