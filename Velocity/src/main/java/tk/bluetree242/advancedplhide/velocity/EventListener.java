@@ -76,6 +76,6 @@ public class EventListener {
             return;
         }
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(e.getRootNode());
-        CompleterModifier.handleCompleter(node, AdvancedPlHideVelocity.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
+        CompleterModifier.handleCompleter(node, AdvancedPlHideVelocity.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
     }
 }
