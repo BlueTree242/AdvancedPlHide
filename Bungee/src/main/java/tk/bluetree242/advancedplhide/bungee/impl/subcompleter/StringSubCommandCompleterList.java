@@ -26,7 +26,6 @@ import tk.bluetree242.advancedplhide.SubCommandCompleter;
 import tk.bluetree242.advancedplhide.SubCommandCompleterList;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class StringSubCommandCompleterList extends SubCommandCompleterList {
@@ -40,7 +39,7 @@ public class StringSubCommandCompleterList extends SubCommandCompleterList {
         }
         String[] split = notCompleted.split(" ");
         command = split[0].trim().replaceFirst("/", "");
-        List<String> list = Arrays.asList(split);
+        List<String> list = new ArrayList<>();
         for (String s : split) {
             if (!s.equalsIgnoreCase("/" + command)) {
                 if (notCompleted.endsWith(" "))

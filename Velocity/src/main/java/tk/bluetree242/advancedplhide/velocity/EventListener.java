@@ -71,10 +71,6 @@ public class EventListener {
 
     @Subscribe
     public void onCommands(PlayerAvailableCommandsEvent e) {
-        if (!e.getPlayer().isActive()) {
-            e.getRootNode().getChildren().removeAll(e.getRootNode().getChildren());
-            return;
-        }
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(e.getRootNode());
         CompleterModifier.handleCompleter(node, AdvancedPlHideVelocity.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
     }
