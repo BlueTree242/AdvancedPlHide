@@ -62,7 +62,7 @@ public class EventListener implements Listener {
             ProxyServer.getInstance().getScheduler().runAsync(core, () -> {
                 UpdateCheckResult result = Platform.get().updateCheck();
                 if (result == null) return;
-                String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Bungee&e]" + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + ""));
+                String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Bungee&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
                 if (result.getMessage() != null) {
                     msg = ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Bungee&e] &c" + result.getMessage());
                 }

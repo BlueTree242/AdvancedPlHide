@@ -44,7 +44,7 @@ public class EventListener {
             new Thread(() -> {
                 UpdateCheckResult result = AdvancedPlHideVelocity.get().updateCheck();
                 if (result == null) return;
-                Component msg = result.getVersionsBehind() == 0 ? null : LegacyComponentSerializer.legacy('&').deserialize("&e[APH-&2Velocity&e]" + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + ""));
+                Component msg = result.getVersionsBehind() == 0 ? null : LegacyComponentSerializer.legacy('&').deserialize("&e[APH-&2Velocity&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
                 if (result.getMessage() != null) {
                     msg = LegacyComponentSerializer.legacy('&').deserialize("&e[APH-&2Velocity&e] &c" + result.getMessage());
                 }

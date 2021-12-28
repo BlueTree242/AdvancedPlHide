@@ -34,6 +34,7 @@ import tk.bluetree242.advancedplhide.CompleterModifier;
 import tk.bluetree242.advancedplhide.impl.completer.SelfExpiringHashMap;
 import tk.bluetree242.advancedplhide.utils.Constants;
 import tk.bluetree242.advancedplhide.velocity.impl.completer.OfferCompleterList;
+import tk.bluetree242.advancedplhide.velocity.impl.subcompleter.OfferSubCommandCompleterList;
 
 import java.util.UUID;
 
@@ -66,12 +67,17 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
             if (!notCompleted.contains(" ") && notCompleted.startsWith("/")) {
                 OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
                 CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+            }else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+                OfferSubCommandCompleterList list = new OfferSubCommandCompleterList(e.packet().getOffers(), notCompleted);
+                CompleterModifier.handleSubCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
             }
         } else {
             if ((!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) ) {
                 OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
                 CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
-            }else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")){
+            }else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+                OfferSubCommandCompleterList list = new OfferSubCommandCompleterList(e.packet().getOffers(), notCompleted);
+                CompleterModifier.handleSubCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
             }
         }
     }
