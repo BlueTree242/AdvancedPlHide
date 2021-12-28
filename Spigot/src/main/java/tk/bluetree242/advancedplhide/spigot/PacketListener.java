@@ -105,7 +105,7 @@ public class PacketListener extends PacketAdapter {
     public void onPacketReceiving(PacketEvent e) {
         if (e.getPacketType() == PacketType.Play.Client.TAB_COMPLETE) {
             String s =  e.getPacket().getStrings()
-                    .read(core.isLegacy() ? 0 : 1);
+                    .read(0);
                 this.commandsWaiting.put(e.getPlayer().getUniqueId(),s);
         }
     }

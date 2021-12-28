@@ -57,4 +57,13 @@ public abstract class SubCommandCompleterList extends ArrayList<SubCommandComple
             subCommandCompleter.remove();
         }
     }
+
+    /**
+     * Never use this method, most likely won't affect the list final result
+     * @deprecated 90% won't affect the list final result
+     */
+    @Deprecated
+    public final boolean add(SubCommandCompleter s) {
+        return super.add(s);
+    }
 }
