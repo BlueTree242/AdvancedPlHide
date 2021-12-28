@@ -71,7 +71,7 @@ public class PacketListener extends PacketAdapter {
                 matchModifier.write(0, suggestions.export());
             } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")){
                 SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(suggestionsOrigin, notCompleted);
-                CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 matchModifier.write(0, suggestions.export());
             }
 
@@ -88,7 +88,7 @@ public class PacketListener extends PacketAdapter {
                 matchModifier.write(0, suggestions.export());
             } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 StringSubCommandCompleterList suggestions = new StringSubCommandCompleterList(suggestionsOrigin, notCompleted);
-                CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 matchModifier.write(0, suggestions.export());
             }
         }

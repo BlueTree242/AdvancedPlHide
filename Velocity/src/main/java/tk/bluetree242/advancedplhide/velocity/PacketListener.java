@@ -32,6 +32,7 @@ import dev.simplix.protocolize.api.listener.PacketReceiveEvent;
 import dev.simplix.protocolize.api.listener.PacketSendEvent;
 import tk.bluetree242.advancedplhide.CompleterModifier;
 import tk.bluetree242.advancedplhide.impl.completer.SelfExpiringHashMap;
+import tk.bluetree242.advancedplhide.utils.Constants;
 import tk.bluetree242.advancedplhide.velocity.impl.completer.OfferCompleterList;
 
 import java.util.UUID;
@@ -60,15 +61,18 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
             e.cancelled(true);
             return;
         }
+        String notCompleted = commandsWaiting.get(e.player().uniqueId());
         if (legacy) {
-            String str = commandsWaiting.get(e.player().uniqueId());
-            if (!str.contains(" ") && str.startsWith("/")) {
+            if (!notCompleted.contains(" ") && notCompleted.startsWith("/")) {
                 OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
-                CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission("plhide.whitelist-mode"));
+                CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
             }
-        } else if (e.packet().getStart() == 1) {
-            OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
-            CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission("plhide.whitelist-mode"));
+        } else {
+            if ((!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) ) {
+                OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
+                CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+            }else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")){
+            }
         }
     }
 
@@ -80,10 +84,7 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
 
         @Override
         public void packetReceive(PacketReceiveEvent<TabCompleteRequest> e) {
-            boolean legacy = e.player().protocolVersion() <= 340;
-            if (legacy) {
                 commandsWaiting.put(e.player().uniqueId(), e.packet().getCommand(), 60000);
-            }
         }
 
         @Override

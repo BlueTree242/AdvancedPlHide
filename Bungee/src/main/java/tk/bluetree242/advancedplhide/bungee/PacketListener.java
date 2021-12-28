@@ -34,6 +34,7 @@ import net.md_5.bungee.protocol.packet.TabCompleteRequest;
 import net.md_5.bungee.protocol.packet.TabCompleteResponse;
 import tk.bluetree242.advancedplhide.CompleterModifier;
 import tk.bluetree242.advancedplhide.bungee.impl.completer.StringCommandCompleterList;
+import tk.bluetree242.advancedplhide.bungee.impl.subcompleter.StringSubCommandCompleterList;
 import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.completer.SelfExpiringHashMap;
 import tk.bluetree242.advancedplhide.impl.completer.SuggestionCommandCompleterList;
@@ -74,6 +75,9 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
             if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 StringCommandCompleterList list = new StringCommandCompleterList(packet.getCommands());
                 CompleterModifier.handleCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+            }else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+                StringSubCommandCompleterList list = new StringSubCommandCompleterList(packet.getCommands(), notCompleted);
+                CompleterModifier.handleSubCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
             }
         } else {
             if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
@@ -81,7 +85,7 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
                 CompleterModifier.handleCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission("plhide.whitelist-mode"));
             }else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")){
                 SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(e.packet().getSuggestions(), notCompleted);
-                CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
             }
         }
     }
