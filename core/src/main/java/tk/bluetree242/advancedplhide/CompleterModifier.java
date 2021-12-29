@@ -22,6 +22,8 @@
 
 package tk.bluetree242.advancedplhide;
 
+import tk.bluetree242.advancedplhide.config.subcompleter.ConfSubCompleterList;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,8 +41,8 @@ public class CompleterModifier {
             removePluginPrefix(list);
 
         if (playerGroup != null) {
-            if (!whitelist) applyBlacklist(list, playerGroup.getTabComplete());
-            else applyWhitelist(list, playerGroup.getTabComplete());
+            if (!whitelist) applyBlacklist(list, playerGroup.getCompleteCommands());
+            else applyWhitelist(list, playerGroup.getCompleteCommands());
         }
     }
 
@@ -48,7 +50,22 @@ public class CompleterModifier {
         if (BAD_COMMANDS.contains(list.getName().toLowerCase())) {
             list.removeAll();
         }
+        if (playerGroup == null) return;
+        ConfSubCompleterList originConfList = playerGroup.getSubCompleters();
+        ConfSubCompleterList confList = originConfList.ofCommand(list.getName());
+        if (!whitelist) applyBlacklist(list, confList);
     }
+
+    public static void applyBlacklist(SubCommandCompleterList list, ConfSubCompleterList originConfList) {
+        for (SubCommandCompleter completer : new ArrayList<>(list)) {
+            ConfSubCompleterList confList = originConfList.ofArgs(list.getArgs(completer));
+            if (!confList.isEmpty()) {
+                completer.remove();
+            }
+        }
+    }
+
+
 
     public static void applyBlacklist(CommandCompleterList list, List<CommandCompleter> toBlacklist) {
         List<String> commands = new ArrayList<>();

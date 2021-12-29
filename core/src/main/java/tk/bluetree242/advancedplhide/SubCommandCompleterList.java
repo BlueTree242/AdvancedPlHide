@@ -23,6 +23,7 @@
 package tk.bluetree242.advancedplhide;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public abstract class SubCommandCompleterList extends ArrayList<SubCommandCompleter> {
@@ -42,9 +43,23 @@ public abstract class SubCommandCompleterList extends ArrayList<SubCommandComple
 
 
     /**
-     * @return Array of args, does not include the command, this never includes parts that aren't completed by the player (part which all completers are supposed to complete
+     * @return Array of args, does not include the command, this never includes parts that aren't completed by the player (part which all completers are supposed to complete)
      */
     public abstract String[] getArgs();
+
+    /**
+     *
+     * @param completer sub completer to use
+     * @return {@link SubCommandCompleterList#getArgs()} but ends with the text of the sub completer
+     */
+    public String[] getArgs(SubCommandCompleter completer) {
+        List<String> result = new ArrayList<>();
+        for (String arg : getArgs()) {
+            result.add(arg);
+        }
+        result.add(completer.getText());
+        return result.toArray(new String[0]);
+    }
 
     /**
      * @return Name of the command used, without /

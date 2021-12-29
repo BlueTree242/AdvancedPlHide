@@ -38,8 +38,8 @@ public class OfferSubCommandCompleterList extends SubCommandCompleterList {
         for (TabCompleteResponse.Offer suggestion : suggestions) {
             add(new OfferSubCommandCompleter(this, suggestion.getText()));
         }
-        String[] split = notCompleted.split(" ");
-        command = split[0].trim().replaceFirst("/", "");
+        String[] split = notCompleted.trim().split(" ");
+        command = split[0].replaceFirst("/", "");
         List<String> list = new ArrayList<>();
         for (String s : split) {
             if (!s.equalsIgnoreCase("/" + command)) {

@@ -37,8 +37,8 @@ public class StringSubCommandCompleterList extends SubCommandCompleterList {
         for (String suggestion : suggestions) {
             add(new StringSubCommandCompleter(this, suggestion));
         }
-        String[] split = notCompleted.split(" ");
-        command = split[0].trim().replaceFirst("/", "");
+        String[] split = notCompleted.trim().split(" ");
+        command = split[0].replaceFirst("/", "");
         List<String> list = new ArrayList<>();
         for (String s : split) {
             if (!s.equalsIgnoreCase("/" + command)) {
