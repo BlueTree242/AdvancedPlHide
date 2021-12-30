@@ -54,12 +54,23 @@ public class CompleterModifier {
         ConfSubCompleterList originConfList = playerGroup.getSubCompleters();
         ConfSubCompleterList confList = originConfList.ofCommand(list.getName());
         if (!whitelist) applyBlacklist(list, confList);
+        else applyWhitelist(list, confList);
     }
 
     public static void applyBlacklist(SubCommandCompleterList list, ConfSubCompleterList originConfList) {
         for (SubCommandCompleter completer : new ArrayList<>(list)) {
             ConfSubCompleterList confList = originConfList.ofArgs(list.getArgs(completer));
             if (!confList.isEmpty()) {
+                completer.remove();
+            }
+        }
+    }
+
+    public static void applyWhitelist(SubCommandCompleterList list, ConfSubCompleterList originConfList) {
+        if (originConfList.isEmpty()) return;
+        for (SubCommandCompleter completer : new ArrayList<>(list)) {
+            ConfSubCompleterList confList = originConfList.ofArgs(list.getArgs(completer));
+            if (confList.isEmpty()) {
                 completer.remove();
             }
         }
