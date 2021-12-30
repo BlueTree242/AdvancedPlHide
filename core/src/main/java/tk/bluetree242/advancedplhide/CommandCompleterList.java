@@ -41,5 +41,14 @@ public abstract class CommandCompleterList extends ArrayList<CommandCompleter> {
      */
     public abstract Object export();
 
+    /**
+     * Never use this method, most likely won't affect the list final result
+     * @deprecated 90% won't affect the list final result
+     */
+    @Deprecated
+    public final boolean add(CommandCompleter s) {
+        return super.add(s);
+    }
+
 
 }

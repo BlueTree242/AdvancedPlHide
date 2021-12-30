@@ -32,7 +32,10 @@ import com.mojang.brigadier.tree.RootCommandNode;
 import tk.bluetree242.advancedplhide.CompleterModifier;
 import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.completer.SuggestionCommandCompleterList;
+import tk.bluetree242.advancedplhide.impl.subcompleter.SuggestionSubCommandCompleterList;
 import tk.bluetree242.advancedplhide.spigot.impl.completer.StringCommandCompleterList;
+import tk.bluetree242.advancedplhide.spigot.impl.subcompleter.StringSubCommandCompleterList;
+import tk.bluetree242.advancedplhide.utils.Constants;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -60,20 +63,34 @@ public class PacketListener extends PacketAdapter {
         if (!core.isLegacy()) {
             StructureModifier<Suggestions> matchModifier = e.getPacket().getSpecificModifier(Suggestions.class);
             Suggestions suggestionsOrigin = matchModifier.read(0);
-            SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
-            if (suggestionsOrigin.getRange().getStart() == 1) {
+            String notCompleted = this.commandsWaiting.get(e.getPlayer().getUniqueId());
+            if (notCompleted == null) notCompleted = "/";
+            if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+                SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
                 CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
+                matchModifier.write(0, suggestions.export());
+            } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")){
+                SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(suggestionsOrigin, notCompleted);
+                CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
+                matchModifier.write(0, suggestions.export());
             }
-            matchModifier.write(0, suggestions.export());
+
         } else {
             StructureModifier<String[]> matchModifier = e.getPacket().getSpecificModifier(String[].class);
             String[] suggestionsOrigin = matchModifier.read(0);
-            StringCommandCompleterList suggestions = new StringCommandCompleterList(suggestionsOrigin);
-            String str = this.commandsWaiting.get(e.getPlayer().getUniqueId());
-            if (!str.contains(" ") && str.startsWith("/")) {
-                CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
+            String notCompleted = this.commandsWaiting.get(e.getPlayer().getUniqueId());
+            if (notCompleted == null){
+                notCompleted = "/";
             }
-            matchModifier.write(0, suggestions.export());
+            if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+                StringCommandCompleterList suggestions = new StringCommandCompleterList(suggestionsOrigin);
+                CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+                matchModifier.write(0, suggestions.export());
+            } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+                StringSubCommandCompleterList suggestions = new StringSubCommandCompleterList(suggestionsOrigin, notCompleted);
+                CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
+                matchModifier.write(0, suggestions.export());
+            }
         }
     }
 
@@ -81,16 +98,15 @@ public class PacketListener extends PacketAdapter {
         StructureModifier<RootCommandNode> matchModifier = e.getPacket().getSpecificModifier(RootCommandNode.class);
         RootCommandNode nodeOrigin = matchModifier.read(0);
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(nodeOrigin);
-        CompleterModifier.handleCompleter(node, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
+        CompleterModifier.handleCompleter(node, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
         matchModifier.write(0, node.export());
     }
 
     public void onPacketReceiving(PacketEvent e) {
         if (e.getPacketType() == PacketType.Play.Client.TAB_COMPLETE) {
-            if (core.isLegacy()) {
-                this.commandsWaiting.put(e.getPlayer().getUniqueId(), e.getPacket().getStrings()
-                        .read(0).trim());
-            }
+            String s =  e.getPacket().getStrings()
+                    .read(0);
+                this.commandsWaiting.put(e.getPlayer().getUniqueId(),s);
         }
     }
 }

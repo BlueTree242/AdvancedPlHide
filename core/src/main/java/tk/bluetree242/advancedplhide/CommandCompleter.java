@@ -30,7 +30,7 @@ public interface CommandCompleter {
     String getName();
 
     /**
-     * This method is only used if this is included in a CommandCompleterList
+     * This method is only used if this is included in a {@link CommandCompleterList}
      *
      * @throws UnsupportedOperationException if this is not in a list
      */

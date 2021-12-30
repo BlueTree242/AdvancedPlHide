@@ -98,7 +98,7 @@ public class AdvancedPlHideVelocity extends Platform {
                 tabcomplete.add(new GroupCompleter(s));
             }
             if (getGroup(name) == null)
-                groups.add(new Group(name, tabcomplete));
+                groups.add(new Group(name, val.tabcomplete()));
             else {
                 getLogger().warn("Group " + name + " is repeated.");
             }

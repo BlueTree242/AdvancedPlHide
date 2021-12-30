@@ -20,11 +20,21 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.utils;
+package tk.bluetree242.advancedplhide;
 
-public class Constants {
-    public static final String DEFAULT_UP_TO_DATE = "&aYou are up to date";
-    public static final String DEFAULT_BEHIND = "&cYou are {versions} Behind. Please Update ASAP. Download from {download}";
-    public static final String WHITELIST_MODE_PERMISSION = "plhide.whitelist-mode";
-    public static final String SUB_WHITELIST_MODE_PERMISSION = "plhide.sub-whitelist-mode";
+public interface SubCommandCompleter {
+
+    /**
+     * @return Text of completer
+     */
+    String getText();
+
+
+    /**
+     * This method is only used if this is included in a {@link SubCommandCompleterList}
+     *
+     * @throws UnsupportedOperationException if this is not in a list
+     */
+    void remove();
+
 }

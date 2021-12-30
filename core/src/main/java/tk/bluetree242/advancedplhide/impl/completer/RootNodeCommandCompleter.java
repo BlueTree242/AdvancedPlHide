@@ -24,21 +24,17 @@ package tk.bluetree242.advancedplhide.impl.completer;
 
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
-import tk.bluetree242.advancedplhide.CommandCompleter;
 import tk.bluetree242.advancedplhide.CommandCompleterList;
 
 import java.util.ArrayList;
 
 public class RootNodeCommandCompleter extends CommandCompleterList {
     private final RootCommandNode node;
-    private boolean canAdd = false;
 
     public RootNodeCommandCompleter(RootCommandNode root) {
-        canAdd = true;
         for (Object child : root.getChildren()) {
             add(new RootCommandCompleter((CommandNode) child, this));
         }
-        canAdd = false;
         this.node = root;
     }
 
@@ -62,9 +58,4 @@ public class RootNodeCommandCompleter extends CommandCompleterList {
         return false;
     }
 
-    @Override
-    public boolean add(CommandCompleter e) {
-        if (!canAdd) throw new UnsupportedOperationException();
-        return super.add(e);
-    }
 }

@@ -65,9 +65,9 @@ public abstract class Platform {
     public abstract String getPluginForCommand(String s);
 
     public Group mergeGroups(List<Group> groups) {
-        List<CommandCompleter> tabcomplete = new ArrayList<>();
+        List<String> tabcomplete = new ArrayList<>();
         for (Group group : groups) {
-            for (CommandCompleter completer : group.getTabComplete()) {
+            for (String completer : group.getOriginCompleters()) {
                 tabcomplete.add(completer);
             }
         }

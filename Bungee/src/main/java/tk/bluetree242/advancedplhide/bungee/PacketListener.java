@@ -34,9 +34,12 @@ import net.md_5.bungee.protocol.packet.TabCompleteRequest;
 import net.md_5.bungee.protocol.packet.TabCompleteResponse;
 import tk.bluetree242.advancedplhide.CompleterModifier;
 import tk.bluetree242.advancedplhide.bungee.impl.completer.StringCommandCompleterList;
+import tk.bluetree242.advancedplhide.bungee.impl.subcompleter.StringSubCommandCompleterList;
 import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.completer.SelfExpiringHashMap;
 import tk.bluetree242.advancedplhide.impl.completer.SuggestionCommandCompleterList;
+import tk.bluetree242.advancedplhide.impl.subcompleter.SuggestionSubCommandCompleterList;
+import tk.bluetree242.advancedplhide.utils.Constants;
 
 import java.util.UUID;
 
@@ -66,17 +69,23 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
             return;
         }
         TabCompleteResponse packet = e.packet();
+        String notCompleted = this.commandsWaiting.get(e.player().uniqueId());
+        if (notCompleted == null) notCompleted = "/";
         if (legacy) {
-            String str = commandsWaiting.get(e.player().uniqueId());
-            if (str == null) str = "/";
-            if (!str.contains(" ") && str.startsWith("/")) {
+            if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 StringCommandCompleterList list = new StringCommandCompleterList(packet.getCommands());
-                CompleterModifier.handleCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission("plhide.whitelist-mode"));
+                CompleterModifier.handleCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+            }else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+                StringSubCommandCompleterList list = new StringSubCommandCompleterList(packet.getCommands(), notCompleted);
+                CompleterModifier.handleSubCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
             }
         } else {
-            if (packet.getSuggestions().getRange().getStart() == 1) {
+            if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 SuggestionCommandCompleterList list = new SuggestionCommandCompleterList(packet.getSuggestions());
                 CompleterModifier.handleCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission("plhide.whitelist-mode"));
+            }else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")){
+                SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(e.packet().getSuggestions(), notCompleted);
+                CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
             }
         }
     }
@@ -89,10 +98,7 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
 
         @Override
         public void packetReceive(PacketReceiveEvent<TabCompleteRequest> e) {
-            boolean legacy = e.player().protocolVersion() <= 340;
-            if (legacy) {
                 commandsWaiting.put(e.player().uniqueId(), e.packet().getCursor(), 60000);
-            }
         }
 
         @Override
@@ -121,7 +127,7 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
             }
             Commands packet = e.packet();
             RootNodeCommandCompleter completer = new RootNodeCommandCompleter(packet.getRoot());
-            CompleterModifier.handleCompleter(completer, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission("plhide.whitelist-mode"));
+            CompleterModifier.handleCompleter(completer, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
         }
     }
 }
