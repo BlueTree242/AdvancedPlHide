@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.velocity;
+package tk.bluetree242.advancedplhide.velocity.listener.event;
 
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
@@ -35,6 +35,7 @@ import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
+import tk.bluetree242.advancedplhide.velocity.AdvancedPlHideVelocity;
 
 public class EventListener {
 
@@ -44,7 +45,7 @@ public class EventListener {
             new Thread(() -> {
                 UpdateCheckResult result = AdvancedPlHideVelocity.get().updateCheck();
                 if (result == null) return;
-                Component msg = result.getVersionsBehind() == 0 ? null : LegacyComponentSerializer.legacy('&').deserialize("&e[APH-&2Velocity&e]" + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + ""));
+                Component msg = result.getVersionsBehind() == 0 ? null : LegacyComponentSerializer.legacy('&').deserialize("&e[APH-&2Velocity&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
                 if (result.getMessage() != null) {
                     msg = LegacyComponentSerializer.legacy('&').deserialize("&e[APH-&2Velocity&e] &c" + result.getMessage());
                 }
@@ -71,11 +72,7 @@ public class EventListener {
 
     @Subscribe
     public void onCommands(PlayerAvailableCommandsEvent e) {
-        if (!e.getPlayer().isActive()) {
-            e.getRootNode().getChildren().removeAll(e.getRootNode().getChildren());
-            return;
-        }
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(e.getRootNode());
-        CompleterModifier.handleCompleter(node, AdvancedPlHideVelocity.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
+        CompleterModifier.handleCompleter(node, AdvancedPlHideVelocity.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
     }
 }

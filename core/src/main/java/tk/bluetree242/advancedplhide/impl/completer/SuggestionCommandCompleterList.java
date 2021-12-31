@@ -29,14 +29,12 @@ import tk.bluetree242.advancedplhide.CommandCompleterList;
 
 public class SuggestionCommandCompleterList extends CommandCompleterList {
     private final Suggestions suggestions;
-    private boolean canAdd = true;
 
     public SuggestionCommandCompleterList(Suggestions suggestions) {
         this.suggestions = suggestions;
         for (Suggestion suggestion : suggestions.getList()) {
             add(new SuggestionCommandCompleter(suggestion, this));
         }
-        canAdd = false;
     }
 
     @Override
@@ -44,12 +42,6 @@ public class SuggestionCommandCompleterList extends CommandCompleterList {
         return suggestions;
     }
 
-    @Override
-    public boolean add(CommandCompleter completer) {
-        if (!canAdd)
-            throw new UnsupportedOperationException();
-        else return super.add(completer);
-    }
 
     @Override
     public boolean remove(Object e) {

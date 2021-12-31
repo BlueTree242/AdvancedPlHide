@@ -42,6 +42,8 @@ import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
+import tk.bluetree242.advancedplhide.spigot.listener.event.EventListener;
+import tk.bluetree242.advancedplhide.spigot.listener.packet.PacketListener;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
 import java.io.IOException;
@@ -138,7 +140,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
                 tabcomplete.add(new GroupCompleter(s));
             }
             if (getGroup(name) == null)
-                groups.add(new Group(name, tabcomplete));
+                groups.add(new Group(name, val.tabcomplete()));
             else {
                 getLogger().warning("Group " + name + " is repeated.");
             }

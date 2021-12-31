@@ -22,6 +22,11 @@
 
 package tk.bluetree242.advancedplhide;
 
+import tk.bluetree242.advancedplhide.config.subcompleter.ConfSubCompleter;
+import tk.bluetree242.advancedplhide.config.subcompleter.ConfSubCompleterList;
+import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,10 +37,22 @@ import java.util.List;
 public class Group {
     private final String name;
     private final List<CommandCompleter> completers;
-
-    public Group(String name, List<CommandCompleter> completers) {
+    private List<String> originCompleters;
+    private final ConfSubCompleterList subCompleters;
+    public Group(String name, List<String> completers) {
+        this.originCompleters = completers;
         this.name = name;
-        this.completers = completers;
+        List<CommandCompleter> completersFinal = new ArrayList<>();
+        ConfSubCompleterList subCompletersFinal = new ConfSubCompleterList();
+        for (String completer : completers) {
+            String[] split = completer.trim().split(" ");
+            if (split.length == 1) completersFinal.add(new GroupCompleter(split[0]));
+            else {
+                subCompletersFinal.add(ConfSubCompleter.of(completer));
+            }
+        }
+        this.completers = completersFinal;
+        this.subCompleters = subCompletersFinal;
     }
 
     /**
@@ -45,11 +62,25 @@ public class Group {
         return name;
     }
 
+    /**
+     * @return list of completer strings. the raw ones in config
+     */
+    public List<String> getOriginCompleters() {
+        return originCompleters;
+    }
 
     /**
-     * @return List of commands for group, either used as whitelist or blacklist. The commands are considered not in a list.
+     * @return list of sub completers
      */
-    public List<CommandCompleter> getTabComplete() {
+    public ConfSubCompleterList getSubCompleters() {
+        return subCompleters;
+    }
+
+
+    /**
+     * @return List of commands for group, either used as whitelist or blacklist. The commands are considered not in a list. this will not contain any sub commands
+     */
+    public List<CommandCompleter> getCompleteCommands() {
         return completers;
     }
 

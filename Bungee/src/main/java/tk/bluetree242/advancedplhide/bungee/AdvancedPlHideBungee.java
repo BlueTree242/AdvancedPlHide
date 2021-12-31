@@ -29,13 +29,13 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
-import tk.bluetree242.advancedplhide.CommandCompleter;
 import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.Platform;
+import tk.bluetree242.advancedplhide.bungee.listener.event.EventListener;
+import tk.bluetree242.advancedplhide.bungee.listener.packet.PacketListener;
 import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
-import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
@@ -83,12 +83,8 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
     public void loadGroups() {
         groups = new ArrayList<>();
         config.groups().forEach((name, val) -> {
-            List<CommandCompleter> tabcomplete = new ArrayList<>();
-            for (String s : val.tabcomplete()) {
-                tabcomplete.add(new GroupCompleter(s));
-            }
             if (getGroup(name) == null)
-                groups.add(new Group(name, tabcomplete));
+                groups.add(new Group(name, val.tabcomplete()));
             else {
                 getLogger().warning("Group " + name + " is repeated.");
             }

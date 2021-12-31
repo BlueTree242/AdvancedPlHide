@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.spigot;
+package tk.bluetree242.advancedplhide.spigot.listener.event;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,6 +30,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
+import tk.bluetree242.advancedplhide.spigot.AdvancedPlHideSpigot;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
 public class EventListener implements Listener {
@@ -55,7 +56,7 @@ public class EventListener implements Listener {
             Bukkit.getScheduler().runTask(core, () -> {
                 UpdateCheckResult result = Platform.get().get().updateCheck();
                 if (result == null) return;
-                String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Velocity&e]" + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + ""));
+                String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Velocity&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
                 if (result.getMessage() != null) {
                     msg = ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Spigot&e] &c" + result.getMessage());
                 }

@@ -32,16 +32,13 @@ import java.util.List;
 public class OfferCompleterList extends CommandCompleterList {
     private final List<TabCompleteResponse.Offer> offers;
     private final boolean legacy;
-    private boolean canAdd = false;
 
     public OfferCompleterList(List<TabCompleteResponse.Offer> offers, boolean legacy) {
         this.offers = offers;
         this.legacy = legacy;
-        canAdd = true;
         for (TabCompleteResponse.Offer offer : offers) {
             add(new OfferCommandCompleter(offer, this, legacy));
         }
-        canAdd = false;
     }
 
     @Override
@@ -69,10 +66,4 @@ public class OfferCompleterList extends CommandCompleterList {
         return false;
     }
 
-    @Override
-    public boolean add(CommandCompleter e) {
-        if (!canAdd)
-            throw new UnsupportedOperationException();
-        return super.add(e);
-    }
 }

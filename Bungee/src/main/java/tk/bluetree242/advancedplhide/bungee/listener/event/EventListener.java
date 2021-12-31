@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.bungee;
+package tk.bluetree242.advancedplhide.bungee.listener.event;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
@@ -30,6 +30,7 @@ import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import tk.bluetree242.advancedplhide.Platform;
+import tk.bluetree242.advancedplhide.bungee.AdvancedPlHideBungee;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
@@ -62,7 +63,7 @@ public class EventListener implements Listener {
             ProxyServer.getInstance().getScheduler().runAsync(core, () -> {
                 UpdateCheckResult result = Platform.get().updateCheck();
                 if (result == null) return;
-                String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Bungee&e]" + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + ""));
+                String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Bungee&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
                 if (result.getMessage() != null) {
                     msg = ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Bungee&e] &c" + result.getMessage());
                 }

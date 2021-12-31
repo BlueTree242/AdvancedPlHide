@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.velocity;
+package tk.bluetree242.advancedplhide.velocity.listener.packet;
 
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.proxy.protocol.packet.TabCompleteRequest;
@@ -31,16 +31,19 @@ import dev.simplix.protocolize.api.listener.AbstractPacketListener;
 import dev.simplix.protocolize.api.listener.PacketReceiveEvent;
 import dev.simplix.protocolize.api.listener.PacketSendEvent;
 import tk.bluetree242.advancedplhide.CompleterModifier;
-import tk.bluetree242.advancedplhide.impl.completer.SelfExpiringHashMap;
+import tk.bluetree242.advancedplhide.utils.Constants;
+import tk.bluetree242.advancedplhide.utils.MultiMap;
+import tk.bluetree242.advancedplhide.velocity.AdvancedPlHideVelocity;
 import tk.bluetree242.advancedplhide.velocity.impl.completer.OfferCompleterList;
+import tk.bluetree242.advancedplhide.velocity.impl.subcompleter.OfferSubCommandCompleterList;
 
 import java.util.UUID;
 
 public class PacketListener extends AbstractPacketListener<TabCompleteResponse> {
-    private final SelfExpiringHashMap<UUID, String> commandsWaiting = new SelfExpiringHashMap<>();
+    private final MultiMap<UUID, String> commandsWaiting = new MultiMap<>();
     private final AdvancedPlHideVelocity core;
 
-    protected PacketListener(AdvancedPlHideVelocity core) {
+    public PacketListener(AdvancedPlHideVelocity core) {
         super(TabCompleteResponse.class, Direction.UPSTREAM, 0);
         this.core = core;
         Protocolize.listenerProvider().registerListener(new PacketListener.RequestListener());
@@ -60,30 +63,38 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
             e.cancelled(true);
             return;
         }
+        String notCompleted = commandsWaiting.get(e.player().uniqueId());
+        if (notCompleted == null) notCompleted = "/";
+        commandsWaiting.remove(player.getUniqueId());
         if (legacy) {
-            String str = commandsWaiting.get(e.player().uniqueId());
-            if (!str.contains(" ") && str.startsWith("/")) {
+            if (!notCompleted.contains(" ") && notCompleted.startsWith("/")) {
                 OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
-                CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission("plhide.whitelist-mode"));
+                CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+            }else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+                OfferSubCommandCompleterList list = new OfferSubCommandCompleterList(e.packet().getOffers(), notCompleted);
+                CompleterModifier.handleSubCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
             }
-        } else if (e.packet().getStart() == 1) {
-            OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
-            CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission("plhide.whitelist-mode"));
+        } else {
+            if ((!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) ) {
+                OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
+                CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+            }else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+                OfferSubCommandCompleterList list = new OfferSubCommandCompleterList(e.packet().getOffers(), notCompleted);
+                CompleterModifier.handleSubCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
+            }
         }
     }
 
     public class RequestListener extends AbstractPacketListener<TabCompleteRequest> {
 
         protected RequestListener() {
-            super(TabCompleteRequest.class, Direction.UPSTREAM, 0);
+            super(TabCompleteRequest.class, Direction.UPSTREAM, Integer.MAX_VALUE);
         }
 
         @Override
         public void packetReceive(PacketReceiveEvent<TabCompleteRequest> e) {
-            boolean legacy = e.player().protocolVersion() <= 340;
-            if (legacy) {
-                commandsWaiting.put(e.player().uniqueId(), e.packet().getCommand(), 60000);
-            }
+            if (!e.cancelled())
+                commandsWaiting.put(e.player().uniqueId(), e.packet().getCommand());
         }
 
         @Override

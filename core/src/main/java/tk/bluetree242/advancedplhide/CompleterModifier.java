@@ -22,11 +22,13 @@
 
 package tk.bluetree242.advancedplhide;
 
+import tk.bluetree242.advancedplhide.config.subcompleter.ConfSubCompleterList;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CompleterModifier {
-
+    private static final List BAD_COMMANDS = List.of("ver", "version", "plugins", "bukkit:plugins", "bukkit:ver", "bukkit:version", "about", "bukkit:about");
     public static void removePluginPrefix(CommandCompleterList list) {
         for (CommandCompleter completer : new ArrayList<>(list)) {
             if (completer.getName().contains(":")) completer.remove();
@@ -39,10 +41,42 @@ public class CompleterModifier {
             removePluginPrefix(list);
 
         if (playerGroup != null) {
-            if (!whitelist) applyBlacklist(list, playerGroup.getTabComplete());
-            else applyWhitelist(list, playerGroup.getTabComplete());
+            if (!whitelist) applyBlacklist(list, playerGroup.getCompleteCommands());
+            else applyWhitelist(list, playerGroup.getCompleteCommands());
         }
     }
+
+    public static void handleSubCompleter(SubCommandCompleterList list, Group playerGroup, boolean whitelist) {
+        if (BAD_COMMANDS.contains(list.getName().toLowerCase())) {
+            list.removeAll();
+        }
+        if (playerGroup == null) return;
+        ConfSubCompleterList originConfList = playerGroup.getSubCompleters();
+        ConfSubCompleterList confList = originConfList.ofCommand(list.getName());
+        if (!whitelist) applyBlacklist(list, confList);
+        else applyWhitelist(list, confList);
+    }
+
+    public static void applyBlacklist(SubCommandCompleterList list, ConfSubCompleterList originConfList) {
+        for (SubCommandCompleter completer : new ArrayList<>(list)) {
+            ConfSubCompleterList confList = originConfList.ofArgs(list.getArgs(completer));
+            if (!confList.isEmpty()) {
+                completer.remove();
+            }
+        }
+    }
+
+    public static void applyWhitelist(SubCommandCompleterList list, ConfSubCompleterList originConfList) {
+        if (originConfList.isEmpty()) return;
+        for (SubCommandCompleter completer : new ArrayList<>(list)) {
+            ConfSubCompleterList confList = originConfList.ofArgs(list.getArgs(completer));
+            if (confList.isEmpty()) {
+                completer.remove();
+            }
+        }
+    }
+
+
 
     public static void applyBlacklist(CommandCompleterList list, List<CommandCompleter> toBlacklist) {
         List<String> commands = new ArrayList<>();

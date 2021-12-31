@@ -20,11 +20,28 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.utils;
+package tk.bluetree242.advancedplhide.velocity.impl.subcompleter;
 
-public class Constants {
-    public static final String DEFAULT_UP_TO_DATE = "&aYou are up to date";
-    public static final String DEFAULT_BEHIND = "&cYou are {versions} Behind. Please Update ASAP. Download from {download}";
-    public static final String WHITELIST_MODE_PERMISSION = "plhide.whitelist-mode";
-    public static final String SUB_WHITELIST_MODE_PERMISSION = "plhide.sub-whitelist-mode";
+import tk.bluetree242.advancedplhide.SubCommandCompleter;
+
+public class OfferSubCommandCompleter implements SubCommandCompleter {
+    private final OfferSubCommandCompleterList list;
+    private final String text;
+
+    public OfferSubCommandCompleter(OfferSubCommandCompleterList list, String text) {
+        this.list = list;
+        this.text = text;
+    }
+
+    @Override
+    public String getText() {
+        return text;
+    }
+
+    @Override
+    public void remove() {
+        list.remove(this);
+    }
+
+
 }
