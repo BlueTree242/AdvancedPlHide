@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.bungee;
+package tk.bluetree242.advancedplhide.bungee.listener.packet;
 
 import dev.simplix.protocolize.api.Direction;
 import dev.simplix.protocolize.api.Protocolize;
@@ -33,21 +33,22 @@ import net.md_5.bungee.protocol.packet.Commands;
 import net.md_5.bungee.protocol.packet.TabCompleteRequest;
 import net.md_5.bungee.protocol.packet.TabCompleteResponse;
 import tk.bluetree242.advancedplhide.CompleterModifier;
+import tk.bluetree242.advancedplhide.bungee.AdvancedPlHideBungee;
 import tk.bluetree242.advancedplhide.bungee.impl.completer.StringCommandCompleterList;
 import tk.bluetree242.advancedplhide.bungee.impl.subcompleter.StringSubCommandCompleterList;
 import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
-import tk.bluetree242.advancedplhide.impl.completer.SelfExpiringHashMap;
 import tk.bluetree242.advancedplhide.impl.completer.SuggestionCommandCompleterList;
 import tk.bluetree242.advancedplhide.impl.subcompleter.SuggestionSubCommandCompleterList;
 import tk.bluetree242.advancedplhide.utils.Constants;
+import tk.bluetree242.advancedplhide.utils.MultiMap;
 
 import java.util.UUID;
 
 public class PacketListener extends AbstractPacketListener<TabCompleteResponse> {
-    private final SelfExpiringHashMap<UUID, String> commandsWaiting = new SelfExpiringHashMap<>();
+    private final MultiMap<UUID, String> commandsWaiting = new MultiMap<>();
     private final AdvancedPlHideBungee core;
 
-    protected PacketListener(AdvancedPlHideBungee core) {
+    public PacketListener(AdvancedPlHideBungee core) {
         super(TabCompleteResponse.class, Direction.UPSTREAM, 0);
         this.core = core;
         Protocolize.listenerProvider().registerListener(new PacketListener.RequestListener());
@@ -93,12 +94,13 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
     public class RequestListener extends AbstractPacketListener<TabCompleteRequest> {
 
         protected RequestListener() {
-            super(TabCompleteRequest.class, Direction.UPSTREAM, 0);
+            super(TabCompleteRequest.class, Direction.UPSTREAM, Integer.MAX_VALUE);
         }
 
         @Override
         public void packetReceive(PacketReceiveEvent<TabCompleteRequest> e) {
-                commandsWaiting.put(e.player().uniqueId(), e.packet().getCursor(), 60000);
+            if (!e.cancelled())
+                commandsWaiting.put(e.player().uniqueId(), e.packet().getCursor());
         }
 
         @Override

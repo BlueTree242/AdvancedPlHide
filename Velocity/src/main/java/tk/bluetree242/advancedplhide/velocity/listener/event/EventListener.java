@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.velocity;
+package tk.bluetree242.advancedplhide.velocity.listener.event;
 
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
@@ -35,6 +35,7 @@ import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
+import tk.bluetree242.advancedplhide.velocity.AdvancedPlHideVelocity;
 
 public class EventListener {
 

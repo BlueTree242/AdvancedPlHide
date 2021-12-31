@@ -42,6 +42,8 @@ import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
+import tk.bluetree242.advancedplhide.spigot.listener.event.EventListener;
+import tk.bluetree242.advancedplhide.spigot.listener.packet.PacketListener;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
 import java.io.IOException;
