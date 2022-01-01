@@ -73,6 +73,7 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
             }else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 OfferSubCommandCompleterList list = new OfferSubCommandCompleterList(e.packet().getOffers(), notCompleted);
                 CompleterModifier.handleSubCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
+                if (list.isCancelled()) e.cancelled(true);
             }
         } else {
             if ((!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) ) {
@@ -81,6 +82,7 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
             }else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 OfferSubCommandCompleterList list = new OfferSubCommandCompleterList(e.packet().getOffers(), notCompleted);
                 CompleterModifier.handleSubCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
+                if (list.isCancelled()) e.cancelled(true);
             }
         }
     }
