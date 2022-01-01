@@ -40,7 +40,7 @@ public class Constants {
                 "|   &cRunning on: &r" + Platform.get().getType().getName() + "\n&r" +
                 "| &cSupport:\n&r" +
                 "|   &cGithub: &rhttps://github.com/BlueTree242/AdvancedPlHide/issues\n" +
-                "|   &cDiscord: &rhttps://discordsrvutils.xyz/support\n" +
+                "|   &cDiscord: &rhttps://advancedplhide.ml/support\n" +
                 "[]================================[]";
     }
 }
