@@ -65,6 +65,7 @@ public class PacketListener extends PacketAdapter {
             StructureModifier<Suggestions> matchModifier = e.getPacket().getSpecificModifier(Suggestions.class);
             Suggestions suggestionsOrigin = matchModifier.read(0);
             String notCompleted = this.commandsWaiting.get(e.getPlayer().getUniqueId());
+            commandsWaiting.remove(e.getPlayer().getUniqueId());
             if (notCompleted == null) notCompleted = "/";
             if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
