@@ -89,6 +89,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         getServer().getPluginCommand("advancedplhide").setExecutor(new AdvancedPlHideCommand(this));
         getServer().getPluginCommand("advancedplhide").setTabCompleter(new AdvancedPlHideCommand.TabCompleter());
         new Metrics(this, 13707);
+        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', Constants.startupMessage()));
         performStartUpdateCheck();
     }
 
@@ -217,6 +218,11 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
+        }
+
+        @Override
+        public Type getType() {
+            return Type.SPIGOT;
         }
     }
 

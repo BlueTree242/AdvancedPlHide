@@ -111,4 +111,19 @@ public abstract class Platform {
             return null;
         }
     }
+
+    public abstract Type getType();
+
+    public enum Type {
+        SPIGOT("Spigot"), VELOCITY("Velocity"), BUNGEE("Bungee");
+        private final String name;
+
+        Type(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
 }
