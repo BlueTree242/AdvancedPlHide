@@ -99,7 +99,9 @@ public class EventListener implements Listener {
             JSONObject json = new JSONObject();
             if (!json.getBoolean("proxy")) {
                 core.getLogger().severe("Proxy Mode is not enabled in config of " + server.getInfo().getName() + ". Please enable it, there are lots of bugs without it");
-
+                if (((ProxiedPlayer) e.getReceiver()).hasPermission("plhide.warnings")) {
+                    ((ProxiedPlayer) e.getReceiver()).sendMessage(ChatColor.RED + "Proxy Mode is not enabled in AdvancedPlHide config of " + server.getInfo().getName() + ". Please enable it, there are lots of bugs without it");
+                }
             }
         }
     }
