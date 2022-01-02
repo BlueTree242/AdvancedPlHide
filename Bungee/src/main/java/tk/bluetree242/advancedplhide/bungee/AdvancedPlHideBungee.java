@@ -69,6 +69,7 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
     public void onEnable() {
         reloadConfig();
         Protocolize.listenerProvider().registerListener(listener = new PacketListener(this));
+        getProxy().registerChannel("aph:main");
         Platform.setPlatform(new Impl());
         getProxy().getPluginManager().registerListener(this, new EventListener(this));
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new AdvancedPlHideCommand(this));

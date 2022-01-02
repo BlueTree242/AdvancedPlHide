@@ -22,18 +22,26 @@
 
 package tk.bluetree242.advancedplhide.spigot.listener.event;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.server.TabCompleteEvent;
+import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.json.JSONObject;
 import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.spigot.AdvancedPlHideSpigot;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
-public class EventListener implements Listener {
+public class EventListener implements Listener, PluginMessageListener {
     private final AdvancedPlHideSpigot core;
 
     public EventListener(AdvancedPlHideSpigot core) {
@@ -66,4 +74,27 @@ public class EventListener implements Listener {
             });
         }
     }
+    private boolean registered = false;
+    @Override
+    public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+        if (!channel.equals("aph:main")) return;
+        ByteArrayDataInput in = ByteStreams.newDataInput(message);
+        String subchannel = in.readUTF();
+        if (subchannel.equalsIgnoreCase("proxy")) {
+            String msg = in.readUTF();
+                ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                out.writeUTF("backend");
+                JSONObject res = new JSONObject();
+                res.put("version", core.getDescription().getVersion());
+                res.put("proxy", core.config.proxy_mode());
+                out.writeUTF(res.toString());
+                player.sendPluginMessage(core, "aph:main", out.toByteArray());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onTabComplete(TabCompleteEvent e) {
+
+    }
+
 }

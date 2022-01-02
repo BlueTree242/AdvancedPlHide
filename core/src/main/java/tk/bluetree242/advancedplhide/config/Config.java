@@ -54,6 +54,11 @@ public interface Config {
     @ConfDefault.DefaultBoolean(true)
     boolean dev_updatechecker();
 
+    @AnnotationBasedSorter.Order(50)
+    @ConfComments("# Enable this on proxy and all spigot servers, trust me there are bugs on proxy that happen when you don't do that")
+    @ConfDefault.DefaultBoolean(false)
+    boolean proxy_mode();
+
     interface Group {
         @AnnotationBasedSorter.Order(10)
         List<String> tabcomplete();

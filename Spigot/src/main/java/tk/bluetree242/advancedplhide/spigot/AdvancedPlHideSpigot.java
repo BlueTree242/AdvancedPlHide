@@ -82,7 +82,10 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     public void onEnable() {
         reloadConfig();
         protocolManager.addPacketListener(new PacketListener(this));
-        getServer().getPluginManager().registerEvents(new EventListener(this), this);
+        EventListener listener = new EventListener(this);
+        getServer().getPluginManager().registerEvents(listener, this);
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, "aph:main", listener);
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "aph:main");
         String str = Bukkit.getServer().getClass().getPackage().getName();
         str = str.substring(str.lastIndexOf("v"));
         legacy = (str.equals("v1_8_R3") || str.contains("v1_9_R") || str.contains("v1_10_R1") || str.contains("v1_11_R1") || str.contains("v1_12_R1"));
@@ -95,6 +98,8 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
 
     public void onDisable() {
         protocolManager.removePacketListener(listener);
+        this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
+        this.getServer().getMessenger().unregisterIncomingPluginChannel(this);
     }
 
     public boolean isLegacy() {

@@ -22,17 +22,25 @@
 
 package tk.bluetree242.advancedplhide.bungee.listener.event;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.ChatEvent;
+import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import org.json.JSONObject;
 import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.bungee.AdvancedPlHideBungee;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
+
+import java.util.concurrent.TimeUnit;
 
 public class EventListener implements Listener {
     private final AdvancedPlHideBungee core;
@@ -71,6 +79,28 @@ public class EventListener implements Listener {
                     e.getPlayer().sendMessage(msg);
                 }
             });
+        }
+        ProxyServer.getInstance().getScheduler().schedule(core, () -> {
+            ByteArrayDataOutput out = ByteStreams.newDataOutput();
+            out.writeUTF("proxy");
+            out.writeUTF("");
+            e.getPlayer().getServer().getInfo().sendData( "aph:main", out.toByteArray());
+        }, 1000, TimeUnit.MILLISECONDS);
+    }
+
+    @EventHandler
+    public void on(PluginMessageEvent e) {
+        if (!e.getTag().equals("aph:main") || !(e.getReceiver() instanceof ProxiedPlayer)) return;
+        e.setCancelled(true);
+        Server server = ((ProxiedPlayer) e.getReceiver()).getServer();
+        ByteArrayDataInput in = ByteStreams.newDataInput(e.getData());
+        String subChannel = in.readUTF();
+        if (subChannel.equals("backend")) {
+            JSONObject json = new JSONObject();
+            if (!json.getBoolean("proxy")) {
+                core.getLogger().severe("Proxy Mode is not enabled in config of " + server.getInfo().getName() + ". Please enable it, there are lots of bugs without it");
+
+            }
         }
     }
 }
