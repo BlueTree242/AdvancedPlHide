@@ -56,7 +56,7 @@ import java.util.List;
 public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     public Config config;
     protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
-    private ProtocolManager protocolManager;
+    public ProtocolManager protocolManager;
     private PacketListener listener = new PacketListener(this);
     private boolean legacy = false;
     private List<Group> groups;

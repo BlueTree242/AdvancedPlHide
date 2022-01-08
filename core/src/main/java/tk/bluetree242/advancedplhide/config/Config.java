@@ -44,6 +44,10 @@ public interface Config {
     @ConfDefault.DefaultBoolean(true)
     Boolean remove_plugin_prefix();
 
+    @AnnotationBasedSorter.Order(21)
+    @ConfComments("# Enable this on proxy and all spigot servers, trust me there are bugs on proxy that happen when you don't do that")
+    @ConfDefault.DefaultBoolean(false)
+    boolean proxy_mode();
     @AnnotationBasedSorter.Order(30)
     @ConfComments("\n# https://github.com/BlueTree242/AdvancedPlHide/wiki/groups") //space between the groups and the conf options up
     @ConfDefault.DefaultObject("tk.bluetree242.advancedplhide.config.ConfManager.defaultGroups")
@@ -53,11 +57,6 @@ public interface Config {
     @ConfComments("# If you disable this, we will not notify you of new dev builds but of new major or beta updates")
     @ConfDefault.DefaultBoolean(true)
     boolean dev_updatechecker();
-
-    @AnnotationBasedSorter.Order(50)
-    @ConfComments("# Enable this on proxy and all spigot servers, trust me there are bugs on proxy that happen when you don't do that")
-    @ConfDefault.DefaultBoolean(false)
-    boolean proxy_mode();
 
     interface Group {
         @AnnotationBasedSorter.Order(10)

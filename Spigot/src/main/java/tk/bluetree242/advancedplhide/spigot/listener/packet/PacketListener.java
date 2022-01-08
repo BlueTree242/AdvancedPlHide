@@ -30,6 +30,7 @@ import com.comphenix.protocol.reflect.StructureModifier;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.tree.RootCommandNode;
 import tk.bluetree242.advancedplhide.CompleterModifier;
+import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.completer.SuggestionCommandCompleterList;
 import tk.bluetree242.advancedplhide.impl.subcompleter.SuggestionSubCommandCompleterList;
@@ -40,10 +41,11 @@ import tk.bluetree242.advancedplhide.utils.Constants;
 import tk.bluetree242.advancedplhide.utils.MultiMap;
 
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public class PacketListener extends PacketAdapter {
 
-    private final MultiMap<UUID, String> commandsWaiting = new MultiMap<>();
+    public static final MultiMap<UUID, String> commandsWaiting = new MultiMap<>();
     private AdvancedPlHideSpigot core;
 
     public PacketListener(AdvancedPlHideSpigot core) {
@@ -52,7 +54,6 @@ public class PacketListener extends PacketAdapter {
     }
 
     public void onPacketSending(PacketEvent e) {
-
         if (e.getPacketType() == PacketType.Play.Server.TAB_COMPLETE) {
             onTabcomplete(e);
         } else if (e.getPacketType() == PacketType.Play.Server.COMMANDS) {
@@ -64,6 +65,16 @@ public class PacketListener extends PacketAdapter {
         if (!core.isLegacy()) {
             StructureModifier<Suggestions> matchModifier = e.getPacket().getSpecificModifier(Suggestions.class);
             Suggestions suggestionsOrigin = matchModifier.read(0);
+            if (e.isCancelled() && Platform.get().isProxyMode()) {
+                e.setCancelled(false);
+                try {
+                    matchModifier.write(0, Suggestions.empty().get());
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                } catch (ExecutionException ex) {
+                    ex.printStackTrace();
+                }
+            }
             String notCompleted = this.commandsWaiting.get(e.getPlayer().getUniqueId());
             commandsWaiting.remove(e.getPlayer().getUniqueId());
             if (notCompleted == null) notCompleted = "/";
@@ -81,6 +92,10 @@ public class PacketListener extends PacketAdapter {
         } else {
             StructureModifier<String[]> matchModifier = e.getPacket().getSpecificModifier(String[].class);
             String[] suggestionsOrigin = matchModifier.read(0);
+            if (e.isCancelled() && Platform.get().isProxyMode()) {
+                e.setCancelled(false);
+                matchModifier.write(0, new String[0]);
+            }
             String notCompleted = this.commandsWaiting.get(e.getPlayer().getUniqueId());
             if (notCompleted == null){
                 notCompleted = "/";

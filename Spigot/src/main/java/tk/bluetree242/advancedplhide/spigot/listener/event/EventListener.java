@@ -22,9 +22,12 @@
 
 package tk.bluetree242.advancedplhide.spigot.listener.event;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.PacketContainer;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import com.mojang.brigadier.suggestion.Suggestions;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -39,7 +42,11 @@ import org.json.JSONObject;
 import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.spigot.AdvancedPlHideSpigot;
+import tk.bluetree242.advancedplhide.spigot.listener.packet.PacketListener;
 import tk.bluetree242.advancedplhide.utils.Constants;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ExecutionException;
 
 public class EventListener implements Listener, PluginMessageListener {
     private final AdvancedPlHideSpigot core;
@@ -94,7 +101,32 @@ public class EventListener implements Listener, PluginMessageListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onTabComplete(TabCompleteEvent e) {
-
+        if (!(e.getSender() instanceof Player)) return;
+        if (e.isCancelled() || e.getCompletions().isEmpty()) {
+            e.setCancelled(true);
+            if (!Platform.get().isProxyMode()) {
+                PacketListener.commandsWaiting.remove(((Player) e.getSender()).getUniqueId());
+                return;
+            }
+            PacketContainer packet = new PacketContainer(PacketType.Play.Server.TAB_COMPLETE);
+            if (core.isLegacy()) {
+                packet.getStringArrays().write(0, new String[0]);
+            } else {
+                try {
+                    packet.getSpecificModifier(Suggestions.class).write(0, Suggestions.empty().get());
+                    packet.getIntegers().write(0, Integer.MAX_VALUE);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                } catch (ExecutionException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            try {
+                core.protocolManager.sendServerPacket((Player) e.getSender(), packet);
+            } catch (InvocationTargetException invocationTargetException) {
+                core.getLogger().severe("Could not send TAB_COMPLETE packet");
+            }
+        }
     }
 
 }

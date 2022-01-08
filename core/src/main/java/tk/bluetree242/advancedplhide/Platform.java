@@ -112,6 +112,8 @@ public abstract class Platform {
         }
     }
 
+    public boolean isProxyMode() {return getConfig().proxy_mode();}
+
     public abstract Type getType();
 
     public enum Type {

@@ -75,10 +75,11 @@ public abstract class SubCommandCompleterList extends ArrayList<SubCommandComple
 
     /**
      * Checks if the packet (or event) should be cancelled
-     * @return if this should be cancelled, currently true only when list is empty
+     * @return if this should be cancelled, currently true only when list is empty, always returns false when running on spigot and proxy mode is on
      * @throws IllegalStateException if this isn't supposed to be for a cancellable event/packet
      */
     public boolean isCancelled() {
+        if (Platform.get().getType() == Platform.Type.SPIGOT && Platform.get().isProxyMode()) return false;
         return isEmpty();
     }
 
