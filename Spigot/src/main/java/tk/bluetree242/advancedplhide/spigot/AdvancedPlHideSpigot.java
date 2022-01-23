@@ -108,7 +108,8 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
             if (result == null) {
                 getLogger().severe("Could not check for updates");
                 return;
-            }            String msg = result.getVersionsBehind() == 0 ?
+            }
+            String msg = result.getVersionsBehind() == 0 ?
                     ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_UP_TO_DATE) :
                     ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "")
                             .replace("{download}", result.getUpdateUrl()));

@@ -48,7 +48,3 @@ test {
     useJUnitPlatform()
 }
 
-
-java.sourceCompatibility = JavaVersion.VERSION_1_9
-java.targetCompatibility = JavaVersion.VERSION_1_9
-
