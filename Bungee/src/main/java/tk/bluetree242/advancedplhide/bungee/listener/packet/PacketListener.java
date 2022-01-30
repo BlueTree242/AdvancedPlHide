@@ -40,12 +40,12 @@ import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.completer.SuggestionCommandCompleterList;
 import tk.bluetree242.advancedplhide.impl.subcompleter.SuggestionSubCommandCompleterList;
 import tk.bluetree242.advancedplhide.utils.Constants;
-import tk.bluetree242.advancedplhide.utils.MultiMap;
+import tk.bluetree242.advancedplhide.utils.UsedMap;
 
 import java.util.UUID;
 
 public class PacketListener extends AbstractPacketListener<TabCompleteResponse> {
-    private final MultiMap<UUID, String> commandsWaiting = new MultiMap<>();
+    private final UsedMap<UUID, String> commandsWaiting = new UsedMap<>();
     private final AdvancedPlHideBungee core;
 
     public PacketListener(AdvancedPlHideBungee core) {

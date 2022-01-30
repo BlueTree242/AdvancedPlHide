@@ -37,13 +37,13 @@ import tk.bluetree242.advancedplhide.spigot.AdvancedPlHideSpigot;
 import tk.bluetree242.advancedplhide.spigot.impl.completer.StringCommandCompleterList;
 import tk.bluetree242.advancedplhide.spigot.impl.subcompleter.StringSubCommandCompleterList;
 import tk.bluetree242.advancedplhide.utils.Constants;
-import tk.bluetree242.advancedplhide.utils.MultiMap;
+import tk.bluetree242.advancedplhide.utils.UsedMap;
 
 import java.util.UUID;
 
 public class PacketListener extends PacketAdapter {
 
-    private final MultiMap<UUID, String> commandsWaiting = new MultiMap<>();
+    private final UsedMap<UUID, String> commandsWaiting = new UsedMap<>();
     private AdvancedPlHideSpigot core;
 
     public PacketListener(AdvancedPlHideSpigot core) {

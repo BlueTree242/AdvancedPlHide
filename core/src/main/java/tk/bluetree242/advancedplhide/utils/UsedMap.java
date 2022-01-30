@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MultiMap<K, V> {
+public class UsedMap<K, V> {
 
     private Map<K, List<V>> map = new HashMap<>();
 
@@ -44,6 +44,7 @@ public class MultiMap<K, V> {
             list.add(val);
             map.put(key, list);
         } else {
+            list.remove(0);
             list.add(val);
         }
     }
