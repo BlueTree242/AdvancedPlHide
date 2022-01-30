@@ -48,6 +48,7 @@ public class RootNodeCommandCompleter extends CommandCompleterList {
         if (!(e instanceof RootCommandCompleter))
             throw new IllegalArgumentException("May only remove RootCommandCompleter");
         RootCommandCompleter completer = (RootCommandCompleter) e;
+        System.out.println(completer.getName());
         for (Object child : new ArrayList<>(node.getChildren())) {
             CommandNode real = (CommandNode) child;
             if (completer.getName().equalsIgnoreCase(real.getName())) {
