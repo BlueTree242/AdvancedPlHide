@@ -74,6 +74,15 @@ public abstract class SubCommandCompleterList extends ArrayList<SubCommandComple
     }
 
     /**
+     * Checks if the packet (or event) should be cancelled
+     * @return if this should be cancelled, currently true only when list is empty
+     * @throws IllegalStateException if this isn't supposed to be for a cancellable event/packet
+     */
+    public boolean isCancelled() {
+        return isEmpty();
+    }
+
+    /**
      * Never use this method, most likely won't affect the list final result
      * @deprecated 90% won't affect the list final result
      */

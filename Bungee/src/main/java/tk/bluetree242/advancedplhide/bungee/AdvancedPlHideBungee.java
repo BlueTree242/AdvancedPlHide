@@ -73,6 +73,7 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
         getProxy().getPluginManager().registerListener(this, new EventListener(this));
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new AdvancedPlHideCommand(this));
         new Metrics(this, 13709);
+        ProxyServer.getInstance().getConsole().sendMessage(ChatColor.translateAlternateColorCodes('&', Constants.startupMessage()));
         performStartUpdateCheck();
     }
 
@@ -176,6 +177,11 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
+        }
+
+        @Override
+        public Type getType() {
+            return Type.BUNGEE;
         }
     }
 

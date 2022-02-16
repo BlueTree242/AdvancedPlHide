@@ -41,6 +41,9 @@ subprojects {
     project.jar {
         archivesBaseName = 'AdvancedPlHide-' + project.name
     }
+    dependencies {
+        compile 'org.jetbrains:annotations:16.0.2'
+    }
     project.processResources {
         from(sourceSets.main.resources.srcDirs) {
             filter ReplaceTokens, tokens: [version  : version,
@@ -57,6 +60,7 @@ subprojects {
 shadowJar {
     classifier ''
 }
+
 dependencies {
     implementation project(":Spigot")
     implementation project(":Velocity")

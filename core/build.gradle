@@ -59,14 +59,9 @@ dependencies {
     implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2'
     compileOnly 'com.mojang:brigadier:1.0.18'
     implementation group: 'org.json', name: 'json', version: '20210307'
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.0"))
-    implementation("com.squareup.okhttp3:okhttp")
 }
 
 
 test {
     useJUnitPlatform()
 }
-
-java.sourceCompatibility = JavaVersion.VERSION_1_9
-java.targetCompatibility = JavaVersion.VERSION_1_9

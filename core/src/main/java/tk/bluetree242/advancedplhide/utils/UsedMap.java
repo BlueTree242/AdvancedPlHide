@@ -22,40 +22,8 @@
 
 package tk.bluetree242.advancedplhide.utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-public class MultiMap<K, V> {
+public class UsedMap<K, V> extends HashMap<K, V> {
 
-    private Map<K, List<V>> map = new HashMap<>();
-
-    public V get(K key) {
-        List list = map.get(key);
-        if (list == null || list.isEmpty()) return null;
-        return (V) list.get(0);
-    }
-
-    public void put(K key, V val) {
-        List list = map.get(key);
-        if (list == null) {
-            list = new ArrayList();
-            list.add(val);
-            map.put(key, list);
-        } else {
-            list.add(val);
-        }
-    }
-
-    public void remove(K key) {
-        List list = map.get(key);
-        if (list == null) {
-            //nothing to remove
-            return;
-        } else {
-            list.remove(0);
-            if (list.isEmpty()) map.remove(list);
-        }
-    }
 }

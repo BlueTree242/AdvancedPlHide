@@ -136,6 +136,11 @@ public class AdvancedPlHideVelocity extends Platform {
         }
     }
 
+    @Override
+    public Type getType() {
+        return Type.VELOCITY;
+    }
+
     public List<Group> getGroups() {
         return groups;
     }
@@ -151,6 +156,7 @@ public class AdvancedPlHideVelocity extends Platform {
         server.getEventManager().register(this, new EventListener());
         Protocolize.listenerProvider().registerListener(new PacketListener(this));
         metricsFactory.make(this, 13708);
+        server.getConsoleCommandSource().sendMessage(LegacyComponentSerializer.legacy('&').deserialize(Constants.startupMessage()));
         performStartUpdateCheck();
     }
 

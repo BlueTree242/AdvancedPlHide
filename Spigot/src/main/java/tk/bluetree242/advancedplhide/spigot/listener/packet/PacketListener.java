@@ -37,13 +37,13 @@ import tk.bluetree242.advancedplhide.spigot.AdvancedPlHideSpigot;
 import tk.bluetree242.advancedplhide.spigot.impl.completer.StringCommandCompleterList;
 import tk.bluetree242.advancedplhide.spigot.impl.subcompleter.StringSubCommandCompleterList;
 import tk.bluetree242.advancedplhide.utils.Constants;
-import tk.bluetree242.advancedplhide.utils.MultiMap;
+import tk.bluetree242.advancedplhide.utils.UsedMap;
 
 import java.util.UUID;
 
 public class PacketListener extends PacketAdapter {
 
-    private final MultiMap<UUID, String> commandsWaiting = new MultiMap<>();
+    private final UsedMap<UUID, String> commandsWaiting = new UsedMap<>();
     private AdvancedPlHideSpigot core;
 
     public PacketListener(AdvancedPlHideSpigot core) {
@@ -65,6 +65,7 @@ public class PacketListener extends PacketAdapter {
             StructureModifier<Suggestions> matchModifier = e.getPacket().getSpecificModifier(Suggestions.class);
             Suggestions suggestionsOrigin = matchModifier.read(0);
             String notCompleted = this.commandsWaiting.get(e.getPlayer().getUniqueId());
+            commandsWaiting.remove(e.getPlayer().getUniqueId());
             if (notCompleted == null) notCompleted = "/";
             if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
@@ -73,6 +74,7 @@ public class PacketListener extends PacketAdapter {
             } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")){
                 SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(suggestionsOrigin, notCompleted);
                 CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
+                if (suggestions.isCancelled()) e.setCancelled(true);
                 matchModifier.write(0, suggestions.export());
             }
 
@@ -91,6 +93,7 @@ public class PacketListener extends PacketAdapter {
             } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 StringSubCommandCompleterList suggestions = new StringSubCommandCompleterList(suggestionsOrigin, notCompleted);
                 CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
+                if (suggestions.isCancelled()) e.setCancelled(true);
                 matchModifier.write(0, suggestions.export());
             }
         }
