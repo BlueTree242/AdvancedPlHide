@@ -72,20 +72,21 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
         TabCompleteResponse packet = e.packet();
         String notCompleted = this.commandsWaiting.get(e.player().uniqueId());
         if (notCompleted == null) notCompleted = "/";
+        if (!notCompleted.trim().startsWith("/")) notCompleted = "/" + notCompleted;
         if (legacy) {
-            if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+            if (!notCompleted.contains(" ")) {
                 StringCommandCompleterList list = new StringCommandCompleterList(packet.getCommands());
                 CompleterModifier.handleCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
-            } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+            } else  {
                 StringSubCommandCompleterList list = new StringSubCommandCompleterList(packet.getCommands(), notCompleted);
                 CompleterModifier.handleSubCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 if (list.isCancelled()) e.cancelled(true);
             }
         } else {
-            if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+            if (!notCompleted.contains(" ")) {
                 SuggestionCommandCompleterList list = new SuggestionCommandCompleterList(packet.getSuggestions());
                 CompleterModifier.handleCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission("plhide.whitelist-mode"));
-            } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+            } else  {
                 SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(e.packet().getSuggestions(), notCompleted);
                 CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 if (suggestions.isCancelled()) e.cancelled(true);
