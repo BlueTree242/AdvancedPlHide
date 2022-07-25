@@ -41,22 +41,26 @@ subprojects {
     project.jar {
         archivesBaseName = 'AdvancedPlHide-' + project.name
     }
-        dependencies {
+    dependencies {
         compileOnly 'org.jetbrains:annotations:16.0.2'
     }
     tasks.withType(Copy).all { duplicatesStrategy 'INCLUDE' }
     project.processResources {
         from(sourceSets.main.resources.srcDirs) {
-            filter ReplaceTokens, tokens: [version  : version,
-                                           build    : buildNumber,
-                                           commit   : commit,
+            filter ReplaceTokens, tokens: [version    : version,
+                                           build      : buildNumber,
+                                           commit     : commit,
                                            description: description,
-                                           buildDate: System.currentTimeMillis() + ""
+                                           buildDate  : System.currentTimeMillis() + ""
             ]
         }
-
     }
-
+    java {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    }
+    compileJava {
+        options.release.set(8)
+    }
 }
 shadowJar {
     classifier ''
@@ -74,8 +78,9 @@ publishing {
         }
     }
 }
-java.sourceCompatibility = JavaVersion.VERSION_17
-java.targetCompatibility = JavaVersion.VERSION_11
+
+
+
 
 
 

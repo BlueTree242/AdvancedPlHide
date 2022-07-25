@@ -22,7 +22,6 @@
 plugins {
     id("io.papermc.paperweight.userdev") version "1.3.7"
 }
-apply(plugin = "io.papermc.paperweight.userdev")
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
@@ -32,8 +31,6 @@ repositories {
     maven("https://libraries.minecraft.net")
 }
 
-
-
 dependencies {
     paperDevBundle("1.19-R0.1-SNAPSHOT")
     implementation("space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2")
@@ -42,7 +39,14 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     implementation(project(":core"))
-
 }
+
+java {
+    this.disableAutoTargetJvm()
+}
+
+
+
+
 
 

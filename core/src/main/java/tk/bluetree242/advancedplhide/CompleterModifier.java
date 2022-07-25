@@ -25,10 +25,11 @@ package tk.bluetree242.advancedplhide;
 import tk.bluetree242.advancedplhide.config.subcompleter.ConfSubCompleterList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CompleterModifier {
-    private static final List BAD_COMMANDS = List.of("ver", "version", "plugins", "bukkit:plugins", "bukkit:ver", "bukkit:version", "about", "bukkit:about");
+    private static final List BAD_COMMANDS = Arrays.asList("ver", "version", "plugins", "bukkit:plugins", "bukkit:ver", "bukkit:version", "about", "bukkit:about");
     public static void removePluginPrefix(CommandCompleterList list) {
         for (CommandCompleter completer : new ArrayList<>(list)) {
             if (completer.getName().contains(":")) completer.remove();

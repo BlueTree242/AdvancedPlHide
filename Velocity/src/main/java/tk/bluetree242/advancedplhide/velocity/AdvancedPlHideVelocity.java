@@ -46,11 +46,14 @@ import tk.bluetree242.advancedplhide.velocity.listener.event.EventListener;
 import tk.bluetree242.advancedplhide.velocity.listener.packet.PacketListener;
 
 import javax.inject.Inject;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Plugin(id = "advancedplhide",
         name = "AdvancedPlHide",
@@ -130,10 +133,21 @@ public class AdvancedPlHideVelocity extends Platform {
     @Override
     public String getVersionConfig() {
         try {
-            return new String(getClass().getClassLoader().getResourceAsStream("version-config.json").readAllBytes());
+            return new String(readFully(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("version-config.json"))));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+    private static byte[] readFully(InputStream input) throws IOException
+    {
+        byte[] buffer = new byte[8192];
+        int bytesRead;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        while ((bytesRead = input.read(buffer)) != -1)
+        {
+            output.write(buffer, 0, bytesRead);
+        }
+        return output.toByteArray();
     }
 
     @Override
