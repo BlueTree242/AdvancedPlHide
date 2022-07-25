@@ -63,13 +63,13 @@ public class PacketListener extends PacketAdapter {
     }
 
     private void onTabcomplete(PacketEvent e) {
+        String notCompleted = this.commandsWaiting.get(e.getPlayer().getUniqueId());
+        commandsWaiting.remove(e.getPlayer().getUniqueId());
+        if (notCompleted == null) notCompleted = "/";
+        if (!notCompleted.trim().startsWith("/")) notCompleted = "/" + notCompleted;
         if (!core.isLegacy()) {
             StructureModifier<Suggestions> matchModifier = e.getPacket().getSpecificModifier(Suggestions.class);
             Suggestions suggestionsOrigin = matchModifier.read(0);
-            String notCompleted = this.commandsWaiting.get(e.getPlayer().getUniqueId());
-            commandsWaiting.remove(e.getPlayer().getUniqueId());
-            if (notCompleted == null) notCompleted = "/";
-            if (!notCompleted.trim().startsWith("/")) notCompleted = "/" + notCompleted.trim();
             if (!notCompleted.contains(" ")) {
                 SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
                 CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
@@ -85,16 +85,11 @@ public class PacketListener extends PacketAdapter {
         } else {
             StructureModifier<String[]> matchModifier = e.getPacket().getSpecificModifier(String[].class);
             String[] suggestionsOrigin = matchModifier.read(0);
-            String notCompleted = this.commandsWaiting.get(e.getPlayer().getUniqueId());
-            if (notCompleted == null) {
-                notCompleted = "/";
-            }
-            commandsWaiting.remove(e.getPlayer().getUniqueId());
-            if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+            if (!notCompleted.contains(" ")) {
                 StringCommandCompleterList suggestions = new StringCommandCompleterList(suggestionsOrigin);
                 CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
                 matchModifier.write(0, suggestions.export());
-            } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+            } else {
                 StringSubCommandCompleterList suggestions = new StringSubCommandCompleterList(suggestionsOrigin, notCompleted);
                 CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 if (suggestions.isCancelled()) e.setCancelled(true);
