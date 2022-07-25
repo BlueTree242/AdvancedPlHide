@@ -40,6 +40,7 @@ rootProject.allprojects {
         relocate 'space.arim.dazzleconf', "tk.bluetree242.advancedplhide.dependencies.dazzleconf"
         relocate 'org.yaml.snakeyaml', "tk.bluetree242.advancedplhide.dependencies.yaml"
         relocate 'org.json', "tk.bluetree242.advancedplhide.dependencies.json"
+        relocate 'com.github.kevinsawicki.http', 'tk.bluetree242.advancedplhide.dependencies.http'
     }
 }
 

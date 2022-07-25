@@ -41,11 +41,9 @@ dependencies {
     implementation(project(":core"))
 }
 
-java {
-    this.disableAutoTargetJvm()
+tasks.build {
+    dependsOn(tasks.reobfJar)
 }
-
-
 
 
 
