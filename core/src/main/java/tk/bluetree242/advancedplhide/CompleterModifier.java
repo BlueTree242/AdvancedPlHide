@@ -30,6 +30,7 @@ import java.util.List;
 
 public class CompleterModifier {
     private static final List BAD_COMMANDS = Arrays.asList("ver", "version", "plugins", "bukkit:plugins", "bukkit:ver", "bukkit:version", "about", "bukkit:about");
+
     public static void removePluginPrefix(CommandCompleterList list) {
         for (CommandCompleter completer : new ArrayList<>(list)) {
             if (completer.getName().contains(":")) completer.remove();
@@ -76,7 +77,6 @@ public class CompleterModifier {
             }
         }
     }
-
 
 
     public static void applyBlacklist(CommandCompleterList list, List<CommandCompleter> toBlacklist) {

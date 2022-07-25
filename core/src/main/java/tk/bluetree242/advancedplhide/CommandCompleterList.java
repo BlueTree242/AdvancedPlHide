@@ -43,6 +43,7 @@ public abstract class CommandCompleterList extends ArrayList<CommandCompleter> {
 
     /**
      * Never use this method, most likely won't affect the list final result
+     *
      * @deprecated 90% won't affect the list final result
      */
     @Deprecated

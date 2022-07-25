@@ -70,16 +70,16 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
             if (!notCompleted.contains(" ") && notCompleted.startsWith("/")) {
                 OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
                 CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
-            }else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+            } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 OfferSubCommandCompleterList list = new OfferSubCommandCompleterList(e.packet().getOffers(), notCompleted);
                 CompleterModifier.handleSubCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 if (list.isCancelled()) e.cancelled(true);
             }
         } else {
-            if ((!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) ) {
+            if ((!notCompleted.contains(" ") && notCompleted.trim().startsWith("/"))) {
                 OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
                 CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
-            }else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+            } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 OfferSubCommandCompleterList list = new OfferSubCommandCompleterList(e.packet().getOffers(), notCompleted);
                 CompleterModifier.handleSubCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 if (list.isCancelled()) e.cancelled(true);

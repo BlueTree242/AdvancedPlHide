@@ -74,7 +74,8 @@ public class PacketListener extends PacketAdapter {
                 SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
                 CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
                 matchModifier.write(0, suggestions.export());
-            } {
+            }
+            {
                 SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(suggestionsOrigin, notCompleted);
                 CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 if (suggestions.isCancelled()) e.setCancelled(true);
@@ -85,7 +86,7 @@ public class PacketListener extends PacketAdapter {
             StructureModifier<String[]> matchModifier = e.getPacket().getSpecificModifier(String[].class);
             String[] suggestionsOrigin = matchModifier.read(0);
             String notCompleted = this.commandsWaiting.get(e.getPlayer().getUniqueId());
-            if (notCompleted == null){
+            if (notCompleted == null) {
                 notCompleted = "/";
             }
             commandsWaiting.remove(e.getPlayer().getUniqueId());
@@ -118,9 +119,9 @@ public class PacketListener extends PacketAdapter {
     public void onPacketReceiving(PacketEvent e) {
         if (e.isCancelled()) return;
         if (e.getPacketType() == PacketType.Play.Client.TAB_COMPLETE) {
-            String s =  e.getPacket().getStrings()
+            String s = e.getPacket().getStrings()
                     .read(0);
-                this.commandsWaiting.put(e.getPlayer().getUniqueId(),s);
+            this.commandsWaiting.put(e.getPlayer().getUniqueId(), s);
         }
     }
 }

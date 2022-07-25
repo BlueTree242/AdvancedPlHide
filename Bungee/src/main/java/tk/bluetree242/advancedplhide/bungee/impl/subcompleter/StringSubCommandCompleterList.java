@@ -32,6 +32,7 @@ public class StringSubCommandCompleterList extends SubCommandCompleterList {
     private final String command;
     private final String[] args;
     private final List<String> suggestions;
+
     public StringSubCommandCompleterList(List<String> suggestions, String notCompleted) {
         this.suggestions = suggestions;
         for (String suggestion : suggestions) {
@@ -43,9 +44,9 @@ public class StringSubCommandCompleterList extends SubCommandCompleterList {
         for (String s : split) {
             if (!s.equalsIgnoreCase("/" + command)) {
                 if (notCompleted.endsWith(" "))
-                list.add(s);
+                    list.add(s);
                 else {
-                    if (!s.equals(split[split.length -1])) {
+                    if (!s.equals(split[split.length - 1])) {
                         list.add(s);
                     }
                 }
@@ -70,7 +71,8 @@ public class StringSubCommandCompleterList extends SubCommandCompleterList {
     }
 
     public boolean remove(Object e) {
-        if (!(e instanceof SubCommandCompleter)) throw new IllegalArgumentException("May only remove a SubCommandCompleter");
+        if (!(e instanceof SubCommandCompleter))
+            throw new IllegalArgumentException("May only remove a SubCommandCompleter");
         SubCommandCompleter completer = (SubCommandCompleter) e;
         for (String suggestion : new ArrayList<>(suggestions)) {
             if (suggestion.equalsIgnoreCase(completer.getText())) {

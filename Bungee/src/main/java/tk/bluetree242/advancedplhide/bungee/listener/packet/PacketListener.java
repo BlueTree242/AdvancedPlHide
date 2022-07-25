@@ -76,7 +76,7 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
             if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 StringCommandCompleterList list = new StringCommandCompleterList(packet.getCommands());
                 CompleterModifier.handleCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
-            }else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+            } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 StringSubCommandCompleterList list = new StringSubCommandCompleterList(packet.getCommands(), notCompleted);
                 CompleterModifier.handleSubCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 if (list.isCancelled()) e.cancelled(true);
@@ -85,7 +85,7 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
             if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 SuggestionCommandCompleterList list = new SuggestionCommandCompleterList(packet.getSuggestions());
                 CompleterModifier.handleCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission("plhide.whitelist-mode"));
-            }else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")){
+            } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
                 SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(e.packet().getSuggestions(), notCompleted);
                 CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 if (suggestions.isCancelled()) e.cancelled(true);
