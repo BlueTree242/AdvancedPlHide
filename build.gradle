@@ -30,16 +30,15 @@ repositories {
     mavenCentral()
 
 }
-
 def buildNumber = project.properties['buildNumber'] == null ? "NONE" : project.properties['buildNumber']
 System.out.println("Build Number is " + buildNumber)
 def commit = project.properties['commit'] == null ? "NONE" : project.properties['commit']
 System.out.println("Commit Hash is " + commit)
-build.finalizedBy shadowJar
-
+build.dependsOn shadowJar
 subprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
+    apply plugin: 'com.github.johnrengelman.shadow'
     project.jar {
         archivesBaseName = 'AdvancedPlHide-' + project.name
     }
