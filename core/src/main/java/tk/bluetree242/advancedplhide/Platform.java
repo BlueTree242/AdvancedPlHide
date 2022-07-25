@@ -29,9 +29,7 @@ import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Platform is the platform the plugin runs on, we can also call it the plugin core as it contains some methods related to the plugin itself too
@@ -92,12 +90,12 @@ public abstract class Platform {
 
     public UpdateCheckResult updateCheck() {
         try {
-            Map<String, String> req = new HashMap<String, String>();
-            req.put("version", getCurrentVersion());
-            req.put("buildNumber", getCurrentBuild());
-            req.put("buildDate", getBuildDate());
-            req.put("devUpdatechecker", getConfig().dev_updatechecker() + "");
-            String response = HttpRequest.post("https://advancedplhide.ml/updatecheck").form(req).body();
+            HttpRequest req = HttpRequest.post("https://advancedplhide.ml/updatecheck");
+            req.part("version", getCurrentVersion());
+            req.part("buildNumber", getCurrentBuild());
+            req.part("buildDate", getBuildDate());
+            req.part("devUpdatechecker", getConfig().dev_updatechecker() + "");
+            String response = req.body();
             JSONObject json = new JSONObject(response);
             return new UpdateCheckResult(json.getInt("versions_behind"), json.isNull("message") ? null : json.getString("message"), json.isNull("type") ? "INFO" : json.getString("type"), json.getString("downloadUrl"));
         } catch (Exception e) {
