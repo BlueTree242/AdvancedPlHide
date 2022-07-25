@@ -33,8 +33,12 @@ public class ConfSubCompleter {
     private final String name;
     private final String[] args;
 
+    public ConfSubCompleter(@NotNull String name, @NotNull String[] args) {
+        this.name = name;
+        this.args = args;
+    }
+
     /**
-     *
      * @param cmd - command in config, the full string with 0 modifications
      * @return {@link ConfSubCompleter} of this command
      */
@@ -44,11 +48,6 @@ public class ConfSubCompleter {
         List<String> args = new ArrayList<>(Arrays.asList(split));
         args.remove(name);
         return new ConfSubCompleter(name, args.toArray(new String[0]));
-    }
-
-    public ConfSubCompleter(@NotNull String name,@NotNull String[] args) {
-        this.name = name;
-        this.args = args;
     }
 
     public String getName() {

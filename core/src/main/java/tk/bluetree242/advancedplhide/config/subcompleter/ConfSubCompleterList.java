@@ -42,6 +42,7 @@ public class ConfSubCompleterList extends ArrayList<ConfSubCompleter> {
 
     /**
      * This method tries to find commands with this args, respects *
+     *
      * @param args args of the command
      * @return list of sub completers that have this args
      */
