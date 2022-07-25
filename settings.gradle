@@ -19,7 +19,14 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  *  END
  */
-
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven {
+            url 'https://repo.papermc.io/repository/maven-public/'
+        }
+    }
+}
 rootProject.name = 'AdvancedPlHide'
 include 'core'
 include 'Spigot'

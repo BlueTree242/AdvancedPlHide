@@ -24,7 +24,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 repositories {
     mavenCentral()
@@ -37,14 +37,14 @@ def commit = project.properties['commit'] == null ? "NONE" : project.properties[
 System.out.println("Commit Hash is " + commit)
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'maven'
     apply plugin: 'maven-publish'
     project.jar {
         archivesBaseName = 'AdvancedPlHide-' + project.name
     }
-    dependencies {
-        compile 'org.jetbrains:annotations:16.0.2'
+        dependencies {
+        compileOnly 'org.jetbrains:annotations:16.0.2'
     }
+    tasks.withType(Copy).all { duplicatesStrategy 'INCLUDE' }
     project.processResources {
         from(sourceSets.main.resources.srcDirs) {
             filter ReplaceTokens, tokens: [version  : version,
@@ -74,7 +74,7 @@ publishing {
         }
     }
 }
-java.sourceCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_11
 
 
