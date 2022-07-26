@@ -37,7 +37,7 @@ public class Constants {
                 "|   &cName: &rAdvancedPlHide\n&r" +
                 "|   &cDevelopers: &rBlueTree242\n&r" +
                 "|   &cVersion: &r" + Platform.get().getCurrentVersion() + "\n&r" +
-                (Platform.get().getCurrentBuild() != null ? "|   &cBuild Number: &r#" + Platform.get().getCurrentBuild() + "\n&r" : "") +
+                (!Platform.get().getCurrentBuild().equals("NONE") ? "|   &cBuild Number: &r#" + Platform.get().getCurrentBuild() + "\n&r" : "") +
                 "|   &cRunning on: &r" + Platform.get().getType().getName() + "\n&r" +
                 "| &cSupport:\n&r" +
                 "|   &cGithub: &rhttps://github.com/BlueTree242/AdvancedPlHide/issues\n" +
