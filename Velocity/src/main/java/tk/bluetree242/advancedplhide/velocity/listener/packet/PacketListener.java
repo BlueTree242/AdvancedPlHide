@@ -66,7 +66,6 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
         String notCompleted = commandsWaiting.get(e.player().uniqueId());
         if (notCompleted == null) notCompleted = "/";
         if (!notCompleted.trim().startsWith("/")) notCompleted = "/" + notCompleted;
-        commandsWaiting.remove(player.getUniqueId());
         if (legacy) {
             if (!notCompleted.contains(" ") && notCompleted.startsWith("/")) {
                 OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);

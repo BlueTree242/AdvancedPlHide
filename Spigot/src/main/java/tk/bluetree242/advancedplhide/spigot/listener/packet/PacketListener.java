@@ -64,7 +64,6 @@ public class PacketListener extends PacketAdapter {
 
     private void onTabcomplete(PacketEvent e) {
         String notCompleted = this.commandsWaiting.get(e.getPlayer().getUniqueId());
-        commandsWaiting.remove(e.getPlayer().getUniqueId());
         if (notCompleted == null) notCompleted = "/";
         if (!notCompleted.trim().startsWith("/")) notCompleted = "/" + notCompleted;
         if (!core.isLegacy()) {
