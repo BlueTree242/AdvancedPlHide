@@ -63,6 +63,7 @@ subprojects {
     compileJava {
         options.release.set(8)
     }
+    build.dependsOn shadowJar
 }
 shadowJar {
     classifier ''
