@@ -34,11 +34,11 @@ import tk.bluetree242.advancedplhide.bungee.AdvancedPlHideBungee;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
-public class EventListener implements Listener {
+public class BungeeEventListener implements Listener {
     private final AdvancedPlHideBungee core;
 
 
-    public EventListener(AdvancedPlHideBungee core) {
+    public BungeeEventListener(AdvancedPlHideBungee core) {
         this.core = core;
     }
 

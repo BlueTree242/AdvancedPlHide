@@ -34,16 +34,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import tk.bluetree242.advancedplhide.CommandCompleter;
 import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
-import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
-import tk.bluetree242.advancedplhide.spigot.listener.event.EventListener;
-import tk.bluetree242.advancedplhide.spigot.listener.packet.PacketListener;
+import tk.bluetree242.advancedplhide.spigot.listener.event.SpigotEventListener;
+import tk.bluetree242.advancedplhide.spigot.listener.packet.SpigotPacketListener;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
 import java.io.IOException;
@@ -57,7 +55,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     public Config config;
     protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     private ProtocolManager protocolManager;
-    private PacketListener listener = new PacketListener(this);
+    private final SpigotPacketListener listener = new SpigotPacketListener(this);
     private boolean legacy = false;
     private List<Group> groups;
 
@@ -70,8 +68,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
                 groups.add(group);
             }
         }
-        Group group = groups.isEmpty() ? core.getGroup("default") : core.mergeGroups(groups);
-        return group;
+        return groups.isEmpty() ? core.getGroup("default") : core.mergeGroups(groups);
     }
 
     public void onLoad() {
@@ -81,8 +78,8 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
 
     public void onEnable() {
         reloadConfig();
-        protocolManager.addPacketListener(new PacketListener(this));
-        getServer().getPluginManager().registerEvents(new EventListener(this), this);
+        protocolManager.addPacketListener(new SpigotPacketListener(this));
+        getServer().getPluginManager().registerEvents(new SpigotEventListener(this), this);
         String str = Bukkit.getServer().getClass().getPackage().getName();
         str = str.substring(str.lastIndexOf("v"));
         legacy = (str.equals("v1_8_R3") || str.contains("v1_9_R") || str.contains("v1_10_R1") || str.contains("v1_11_R1") || str.contains("v1_12_R1"));
@@ -137,10 +134,6 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     public void loadGroups() {
         groups = new ArrayList<>();
         config.groups().forEach((name, val) -> {
-            List<CommandCompleter> tabcomplete = new ArrayList<>();
-            for (String s : val.tabcomplete()) {
-                tabcomplete.add(new GroupCompleter(s));
-            }
             if (getGroup(name) == null)
                 groups.add(new Group(name, val.tabcomplete()));
             else {
@@ -173,8 +166,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
             final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
 
             bukkitCommandMap.setAccessible(true);
-            CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
-            return commandMap;
+            return (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
         } catch (Exception e) {
             return null;
         }

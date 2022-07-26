@@ -38,7 +38,7 @@ public class Group {
     private final String name;
     private final List<CommandCompleter> completers;
     private final ConfSubCompleterList subCompleters;
-    private List<String> originCompleters;
+    private final List<String> originCompleters;
 
     public Group(String name, List<String> completers) {
         this.originCompleters = completers;

@@ -33,17 +33,15 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import dev.simplix.protocolize.api.Protocolize;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.slf4j.Logger;
-import tk.bluetree242.advancedplhide.CommandCompleter;
 import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.Platform;
 import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
-import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
-import tk.bluetree242.advancedplhide.velocity.listener.event.EventListener;
-import tk.bluetree242.advancedplhide.velocity.listener.packet.PacketListener;
+import tk.bluetree242.advancedplhide.velocity.listener.event.VelocityEventListener;
+import tk.bluetree242.advancedplhide.velocity.listener.packet.VelocityPacketListener;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
@@ -91,8 +89,7 @@ public class AdvancedPlHideVelocity extends Platform {
                 groups.add(group);
             }
         }
-        Group group = groups.isEmpty() ? core.getGroup("default") : core.mergeGroups(groups);
-        return group;
+        return groups.isEmpty() ? core.getGroup("default") : core.mergeGroups(groups);
     }
 
     private static byte[] readFully(InputStream input) throws IOException {
@@ -108,10 +105,6 @@ public class AdvancedPlHideVelocity extends Platform {
     public void loadGroups() {
         groups = new ArrayList<>();
         config.groups().forEach((name, val) -> {
-            List<CommandCompleter> tabcomplete = new ArrayList<>();
-            for (String s : val.tabcomplete()) {
-                tabcomplete.add(new GroupCompleter(s));
-            }
             if (getGroup(name) == null)
                 groups.add(new Group(name, val.tabcomplete()));
             else {
@@ -166,8 +159,8 @@ public class AdvancedPlHideVelocity extends Platform {
                 .aliases("aphv", "apv", "plhidev", "phv")
                 .build();
         server.getCommandManager().register(meta, new AdvancedPlHideCommand(this));
-        server.getEventManager().register(this, new EventListener());
-        Protocolize.listenerProvider().registerListener(new PacketListener(this));
+        server.getEventManager().register(this, new VelocityEventListener());
+        Protocolize.listenerProvider().registerListener(new VelocityPacketListener(this));
         metricsFactory.make(this, 13708);
         server.getConsoleCommandSource().sendMessage(LegacyComponentSerializer.legacy('&').deserialize(Constants.startupMessage()));
         performStartUpdateCheck();

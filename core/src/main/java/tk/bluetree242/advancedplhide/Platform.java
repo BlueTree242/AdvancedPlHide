@@ -62,9 +62,7 @@ public abstract class Platform {
     public Group mergeGroups(List<Group> groups) {
         List<String> tabcomplete = new ArrayList<>();
         for (Group group : groups) {
-            for (String completer : group.getOriginCompleters()) {
-                tabcomplete.add(completer);
-            }
+            tabcomplete.addAll(group.getOriginCompleters());
         }
         List<String> names = new ArrayList<>();
         for (Group group : groups) {

@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class AdvancedPlHideCommand implements SimpleCommand {
-    private AdvancedPlHideVelocity core;
+    private final AdvancedPlHideVelocity core;
 
     public AdvancedPlHideCommand(AdvancedPlHideVelocity core) {
         this.core = core;
@@ -49,27 +49,23 @@ public class AdvancedPlHideCommand implements SimpleCommand {
             sender.sendMessage(LegacyComponentSerializer.legacy('&').deserialize("&aRunning AdvancedPlHide v.&e" + AdvancedPlHideVelocity.VERSION));
             return;
         } else {
-            if (args.length >= 1) {
-                if (args[0].equalsIgnoreCase("reload")) {
-                    if (!sender.hasPermission("plhide.reload")) {
-                        sender.sendMessage(Component.text("You don't have permission to run this command").color(NamedTextColor.RED));
-                        return;
-                    } else {
-                        core.server.getScheduler().buildTask(core, () -> {
-                            try {
-                                Platform.get().reloadConfig();
-                                sender.sendMessage(Component.text("Configuration Reloaded").color(NamedTextColor.GREEN));
-                            } catch (ConfigurationLoadException ev) {
-                                sender.sendMessage(Component.text("Could not reload " + ev.getConfigName()).color(NamedTextColor.RED));
-                            }
-                        }).schedule();
-                        return;
-                    }
+            if (args[0].equalsIgnoreCase("reload")) {
+                if (!sender.hasPermission("plhide.reload")) {
+                    sender.sendMessage(Component.text("You don't have permission to run this command").color(NamedTextColor.RED));
+                } else {
+                    core.server.getScheduler().buildTask(core, () -> {
+                        try {
+                            Platform.get().reloadConfig();
+                            sender.sendMessage(Component.text("Configuration Reloaded").color(NamedTextColor.GREEN));
+                        } catch (ConfigurationLoadException ev) {
+                            sender.sendMessage(Component.text("Could not reload " + ev.getConfigName()).color(NamedTextColor.RED));
+                        }
+                    }).schedule();
                 }
+                return;
             }
         }
         sender.sendMessage(Component.text("SubCommand not found").color(NamedTextColor.RED));
-        return;
     }
 
     @Override

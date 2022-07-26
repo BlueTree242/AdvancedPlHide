@@ -43,12 +43,12 @@ import tk.bluetree242.advancedplhide.utils.UsedMap;
 import java.util.Arrays;
 import java.util.UUID;
 
-public class PacketListener extends PacketAdapter {
+public class SpigotPacketListener extends PacketAdapter {
 
     private final UsedMap<UUID, String> commandsWaiting = new UsedMap<>();
-    private AdvancedPlHideSpigot core;
+    private final AdvancedPlHideSpigot core;
 
-    public PacketListener(AdvancedPlHideSpigot core) {
+    public SpigotPacketListener(AdvancedPlHideSpigot core) {
         super(core, ListenerPriority.HIGHEST, Arrays.asList(PacketType.Play.Server.TAB_COMPLETE, PacketType.Play.Client.TAB_COMPLETE, PacketType.Play.Server.COMMANDS), ListenerOptions.ASYNC);
         this.core = core;
     }

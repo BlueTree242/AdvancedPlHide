@@ -44,15 +44,13 @@ import tk.bluetree242.advancedplhide.utils.UsedMap;
 
 import java.util.UUID;
 
-public class PacketListener extends AbstractPacketListener<TabCompleteResponse> {
+public class BungeePacketListener extends AbstractPacketListener<TabCompleteResponse> {
     private final UsedMap<UUID, String> commandsWaiting = new UsedMap<>();
-    private final AdvancedPlHideBungee core;
 
-    public PacketListener(AdvancedPlHideBungee core) {
+    public BungeePacketListener() {
         super(TabCompleteResponse.class, Direction.UPSTREAM, 0);
-        this.core = core;
-        Protocolize.listenerProvider().registerListener(new PacketListener.RequestListener());
-        Protocolize.listenerProvider().registerListener(new PacketListener.CommandsListener());
+        Protocolize.listenerProvider().registerListener(new BungeePacketListener.RequestListener());
+        Protocolize.listenerProvider().registerListener(new CommandsListener());
     }
 
 
@@ -112,7 +110,7 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
         }
     }
 
-    public class CommandsListener extends AbstractPacketListener<Commands> {
+    public static class CommandsListener extends AbstractPacketListener<Commands> {
 
         protected CommandsListener() {
             super(Commands.class, Direction.UPSTREAM, 0);

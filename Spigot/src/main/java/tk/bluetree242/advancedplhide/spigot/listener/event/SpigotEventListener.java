@@ -33,10 +33,10 @@ import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.spigot.AdvancedPlHideSpigot;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
-public class EventListener implements Listener {
+public class SpigotEventListener implements Listener {
     private final AdvancedPlHideSpigot core;
 
-    public EventListener(AdvancedPlHideSpigot core) {
+    public SpigotEventListener(AdvancedPlHideSpigot core) {
         this.core = core;
     }
 

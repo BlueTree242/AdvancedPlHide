@@ -37,7 +37,7 @@ import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
 import tk.bluetree242.advancedplhide.velocity.AdvancedPlHideVelocity;
 
-public class EventListener {
+public class VelocityEventListener {
 
     @Subscribe
     public void onPlayerJoin(PostLoginEvent e) {

@@ -31,8 +31,8 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.Platform;
-import tk.bluetree242.advancedplhide.bungee.listener.event.EventListener;
-import tk.bluetree242.advancedplhide.bungee.listener.packet.PacketListener;
+import tk.bluetree242.advancedplhide.bungee.listener.event.BungeeEventListener;
+import tk.bluetree242.advancedplhide.bungee.listener.packet.BungeePacketListener;
 import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
@@ -42,15 +42,12 @@ import tk.bluetree242.advancedplhide.utils.Constants;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class AdvancedPlHideBungee extends Plugin implements Listener {
     public Config config;
     protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
-    private PacketListener listener;
-    private Map<String, String> map = new HashMap<>();
+    private BungeePacketListener listener;
     private List<Group> groups = new ArrayList<>();
 
     public static Group getGroupForPlayer(ProxiedPlayer player) {
@@ -62,15 +59,14 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
                 groups.add(group);
             }
         }
-        Group group = groups.isEmpty() ? core.getGroup("default") : core.mergeGroups(groups);
-        return group;
+        return groups.isEmpty() ? core.getGroup("default") : core.mergeGroups(groups);
     }
 
     public void onEnable() {
         reloadConfig();
-        Protocolize.listenerProvider().registerListener(listener = new PacketListener(this));
+        Protocolize.listenerProvider().registerListener(listener = new BungeePacketListener());
         Platform.setPlatform(new Impl());
-        getProxy().getPluginManager().registerListener(this, new EventListener(this));
+        getProxy().getPluginManager().registerListener(this, new BungeeEventListener(this));
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new AdvancedPlHideCommand(this));
         new Metrics(this, 13709);
         ProxyServer.getInstance().getConsole().sendMessage(ChatColor.translateAlternateColorCodes('&', Constants.startupMessage()));

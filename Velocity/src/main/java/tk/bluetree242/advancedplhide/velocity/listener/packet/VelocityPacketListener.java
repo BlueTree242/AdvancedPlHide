@@ -39,14 +39,14 @@ import tk.bluetree242.advancedplhide.velocity.impl.subcompleter.OfferSubCommandC
 
 import java.util.UUID;
 
-public class PacketListener extends AbstractPacketListener<TabCompleteResponse> {
+public class VelocityPacketListener extends AbstractPacketListener<TabCompleteResponse> {
     private final UsedMap<UUID, String> commandsWaiting = new UsedMap<>();
     private final AdvancedPlHideVelocity core;
 
-    public PacketListener(AdvancedPlHideVelocity core) {
+    public VelocityPacketListener(AdvancedPlHideVelocity core) {
         super(TabCompleteResponse.class, Direction.UPSTREAM, 0);
         this.core = core;
-        Protocolize.listenerProvider().registerListener(new PacketListener.RequestListener());
+        Protocolize.listenerProvider().registerListener(new VelocityPacketListener.RequestListener());
     }
 
 
@@ -59,7 +59,7 @@ public class PacketListener extends AbstractPacketListener<TabCompleteResponse> 
     public void packetSend(PacketSendEvent<TabCompleteResponse> e) {
         boolean legacy = e.player().protocolVersion() <= 340;
         Player player = core.server.getPlayer(e.player().uniqueId()).orElse(null);
-        if (!player.isActive()) {
+        if (player == null || !player.isActive()) {
             e.cancelled(true);
             return;
         }
