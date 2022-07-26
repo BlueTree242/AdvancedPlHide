@@ -52,10 +52,10 @@ import java.util.List;
 
 
 public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
+    private final SpigotPacketListener listener = new SpigotPacketListener(this);
     public Config config;
     protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     private ProtocolManager protocolManager;
-    private final SpigotPacketListener listener = new SpigotPacketListener(this);
     private boolean legacy = false;
     private List<Group> groups;
 

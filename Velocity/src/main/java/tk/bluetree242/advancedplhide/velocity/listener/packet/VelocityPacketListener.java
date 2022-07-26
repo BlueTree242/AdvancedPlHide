@@ -67,7 +67,7 @@ public class VelocityPacketListener extends AbstractPacketListener<TabCompleteRe
         if (notCompleted == null) notCompleted = "/";
         if (!notCompleted.trim().startsWith("/")) notCompleted = "/" + notCompleted;
         if (legacy) {
-            if (!notCompleted.contains(" ") ) {
+            if (!notCompleted.contains(" ")) {
                 OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), true);
                 CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
             } else {

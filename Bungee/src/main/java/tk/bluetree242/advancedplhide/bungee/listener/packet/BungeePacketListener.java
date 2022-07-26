@@ -75,7 +75,7 @@ public class BungeePacketListener extends AbstractPacketListener<TabCompleteResp
             if (!notCompleted.contains(" ")) {
                 StringCommandCompleterList list = new StringCommandCompleterList(packet.getCommands());
                 CompleterModifier.handleCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
-            } else  {
+            } else {
                 StringSubCommandCompleterList list = new StringSubCommandCompleterList(packet.getCommands(), notCompleted);
                 CompleterModifier.handleSubCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 if (list.isCancelled()) e.cancelled(true);
@@ -84,29 +84,11 @@ public class BungeePacketListener extends AbstractPacketListener<TabCompleteResp
             if (!notCompleted.contains(" ")) {
                 SuggestionCommandCompleterList list = new SuggestionCommandCompleterList(packet.getSuggestions());
                 CompleterModifier.handleCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission("plhide.whitelist-mode"));
-            } else  {
+            } else {
                 SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(e.packet().getSuggestions(), notCompleted);
                 CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 if (suggestions.isCancelled()) e.cancelled(true);
             }
-        }
-    }
-
-    public class RequestListener extends AbstractPacketListener<TabCompleteRequest> {
-
-        protected RequestListener() {
-            super(TabCompleteRequest.class, Direction.UPSTREAM, Integer.MAX_VALUE);
-        }
-
-        @Override
-        public void packetReceive(PacketReceiveEvent<TabCompleteRequest> e) {
-            if (!e.cancelled())
-                commandsWaiting.put(e.player().uniqueId(), e.packet().getCursor());
-        }
-
-        @Override
-        public void packetSend(PacketSendEvent<TabCompleteRequest> e) {
-
         }
     }
 
@@ -131,6 +113,24 @@ public class BungeePacketListener extends AbstractPacketListener<TabCompleteResp
             Commands packet = e.packet();
             RootNodeCommandCompleter completer = new RootNodeCommandCompleter(packet.getRoot());
             CompleterModifier.handleCompleter(completer, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+        }
+    }
+
+    public class RequestListener extends AbstractPacketListener<TabCompleteRequest> {
+
+        protected RequestListener() {
+            super(TabCompleteRequest.class, Direction.UPSTREAM, Integer.MAX_VALUE);
+        }
+
+        @Override
+        public void packetReceive(PacketReceiveEvent<TabCompleteRequest> e) {
+            if (!e.cancelled())
+                commandsWaiting.put(e.player().uniqueId(), e.packet().getCursor());
+        }
+
+        @Override
+        public void packetSend(PacketSendEvent<TabCompleteRequest> e) {
+
         }
     }
 }
