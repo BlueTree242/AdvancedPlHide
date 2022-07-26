@@ -67,19 +67,19 @@ public class VelocityPacketListener extends AbstractPacketListener<TabCompleteRe
         if (notCompleted == null) notCompleted = "/";
         if (!notCompleted.trim().startsWith("/")) notCompleted = "/" + notCompleted;
         if (legacy) {
-            if (!notCompleted.contains(" ") && notCompleted.startsWith("/")) {
-                OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
+            if (!notCompleted.contains(" ") ) {
+                OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), true);
                 CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
-            } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+            } else {
                 OfferSubCommandCompleterList list = new OfferSubCommandCompleterList(e.packet().getOffers(), notCompleted);
                 CompleterModifier.handleSubCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 if (list.isCancelled()) e.cancelled(true);
             }
         } else {
-            if ((!notCompleted.contains(" ") && notCompleted.trim().startsWith("/"))) {
-                OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), legacy);
+            if ((!notCompleted.contains(" "))) {
+                OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), false);
                 CompleterModifier.handleCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
-            } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+            } else {
                 OfferSubCommandCompleterList list = new OfferSubCommandCompleterList(e.packet().getOffers(), notCompleted);
                 CompleterModifier.handleSubCompleter(list, AdvancedPlHideVelocity.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 if (list.isCancelled()) e.cancelled(true);
