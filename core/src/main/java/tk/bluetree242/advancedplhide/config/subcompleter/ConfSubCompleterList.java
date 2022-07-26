@@ -54,7 +54,7 @@ public class ConfSubCompleterList extends ArrayList<ConfSubCompleter> {
             if (completer.getArgs().length == args.length) {
                 for (String arg : completer.getArgs()) {
                     if (equal) {
-                        equal = !(arg.equals("~")) && (args[length].equalsIgnoreCase(arg) || arg.equals("*"));
+                        equal = args[length].equalsIgnoreCase(arg) || arg.equals("*");
                     }
                     length++;
                 }

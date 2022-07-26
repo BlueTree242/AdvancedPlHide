@@ -69,7 +69,7 @@ public class CompleterModifier {
     }
 
     public static void applyWhitelist(SubCommandCompleterList list, ConfSubCompleterList originConfList) {
-        if (originConfList.isEmpty()) return;
+        if (list.isEmpty()) return;
         for (SubCommandCompleter completer : new ArrayList<>(list)) {
             ConfSubCompleterList confList = originConfList.ofArgs(list.getArgs(completer));
             if (confList.isEmpty()) {
