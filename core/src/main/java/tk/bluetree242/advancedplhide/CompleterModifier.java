@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -25,10 +25,12 @@ package tk.bluetree242.advancedplhide;
 import tk.bluetree242.advancedplhide.config.subcompleter.ConfSubCompleterList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CompleterModifier {
-    private static final List BAD_COMMANDS = List.of("ver", "version", "plugins", "bukkit:plugins", "bukkit:ver", "bukkit:version", "about", "bukkit:about");
+    private static final List BAD_COMMANDS = Arrays.asList("ver", "version", "plugins", "bukkit:plugins", "bukkit:ver", "bukkit:version", "about", "bukkit:about", "?", "minecraft:?");
+
     public static void removePluginPrefix(CommandCompleterList list) {
         for (CommandCompleter completer : new ArrayList<>(list)) {
             if (completer.getName().contains(":")) completer.remove();
@@ -37,7 +39,7 @@ public class CompleterModifier {
 
 
     public static void handleCompleter(CommandCompleterList list, Group playerGroup, boolean whitelist) {
-        if (Platform.get().getConfig().remove_plugin_prefix())
+        if (PlatformPlugin.get().getConfig().remove_plugin_prefix())
             removePluginPrefix(list);
 
         if (playerGroup != null) {
@@ -67,7 +69,7 @@ public class CompleterModifier {
     }
 
     public static void applyWhitelist(SubCommandCompleterList list, ConfSubCompleterList originConfList) {
-        if (originConfList.isEmpty()) return;
+        if (list.isEmpty()) return;
         for (SubCommandCompleter completer : new ArrayList<>(list)) {
             ConfSubCompleterList confList = originConfList.ofArgs(list.getArgs(completer));
             if (confList.isEmpty()) {
@@ -75,7 +77,6 @@ public class CompleterModifier {
             }
         }
     }
-
 
 
     public static void applyBlacklist(CommandCompleterList list, List<CommandCompleter> toBlacklist) {
@@ -92,7 +93,7 @@ public class CompleterModifier {
         for (CommandCompleter completer : new ArrayList<>(list)) {
             if (commands.contains(completer.getName())) {
                 completer.remove();
-            } else if (plugins.contains(Platform.get().getPluginForCommand(completer.getName()))) {
+            } else if (plugins.contains(PlatformPlugin.get().getPluginForCommand(completer.getName()))) {
                 completer.remove();
             }
         }
@@ -111,7 +112,7 @@ public class CompleterModifier {
         }
         for (CommandCompleter completer : new ArrayList<>(list)) {
             if (!commands.contains(completer.getName())) {
-                if (!plugins.contains(Platform.get().getPluginForCommand(completer.getName())))
+                if (!plugins.contains(PlatformPlugin.get().getPluginForCommand(completer.getName())))
                     completer.remove();
             }
         }

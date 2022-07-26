@@ -48,7 +48,6 @@ repositories {
 
 dependencies {
     implementation project(":core")
-    implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2'
     compileOnly 'com.velocitypowered:velocity-api:3.0.1'
     annotationProcessor 'com.velocitypowered:velocity-api:3.0.1'
     compileOnly 'com.velocitypowered:velocity-proxy:3.0.1'

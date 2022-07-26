@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -33,6 +33,7 @@ public class OfferSubCommandCompleterList extends SubCommandCompleterList {
     private final List<TabCompleteResponse.Offer> suggestions;
     private final String command;
     private final String[] args;
+
     public OfferSubCommandCompleterList(List<TabCompleteResponse.Offer> suggestions, String notCompleted) {
         this.suggestions = suggestions;
         for (TabCompleteResponse.Offer suggestion : suggestions) {
@@ -44,9 +45,9 @@ public class OfferSubCommandCompleterList extends SubCommandCompleterList {
         for (String s : split) {
             if (!s.equalsIgnoreCase("/" + command)) {
                 if (notCompleted.endsWith(" "))
-                list.add(s);
+                    list.add(s);
                 else {
-                    if (!s.equals(split[split.length -1])) {
+                    if (!s.equals(split[split.length - 1])) {
                         list.add(s);
                     }
                 }
@@ -72,7 +73,8 @@ public class OfferSubCommandCompleterList extends SubCommandCompleterList {
 
     @Override
     public boolean remove(Object e) {
-        if (!(e instanceof SubCommandCompleter)) throw new IllegalArgumentException("May only remove a SubCommandCompleter");
+        if (!(e instanceof SubCommandCompleter))
+            throw new IllegalArgumentException("May only remove a SubCommandCompleter");
         SubCommandCompleter completer = (SubCommandCompleter) e;
         for (TabCompleteResponse.Offer suggestion : new ArrayList<>(suggestions)) {
             if (suggestion.getText().equalsIgnoreCase(completer.getText())) {

@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -26,7 +26,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Command;
-import tk.bluetree242.advancedplhide.Platform;
+import tk.bluetree242.advancedplhide.PlatformPlugin;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 
 import java.util.concurrent.TimeUnit;
@@ -45,26 +45,22 @@ public class AdvancedPlHideCommand extends Command {
             sender.sendMessage(ChatColor.GREEN + "Running AdvancedPlHide v." + ChatColor.YELLOW + core.getDescription().getVersion());
             return;
         } else {
-            if (args.length >= 1) {
-                if (args[0].equalsIgnoreCase("reload")) {
-                    if (!sender.hasPermission("plhide.reload")) {
-                        sender.sendMessage(ChatColor.RED + "You don't have permission to run this command");
-                        return;
-                    } else {
-                        ProxyServer.getInstance().getScheduler().schedule(core, () -> {
-                            try {
-                                Platform.get().reloadConfig();
-                                sender.sendMessage(ChatColor.GREEN + "Configuration Reloaded");
-                            } catch (ConfigurationLoadException e) {
-                                sender.sendMessage(ChatColor.RED + "Could not reload " + e.getConfigName());
-                            }
-                        }, 0, TimeUnit.SECONDS);
-                        return;
-                    }
+            if (args[0].equalsIgnoreCase("reload")) {
+                if (!sender.hasPermission("plhide.reload")) {
+                    sender.sendMessage(ChatColor.RED + "You don't have permission to run this command");
+                } else {
+                    ProxyServer.getInstance().getScheduler().schedule(core, () -> {
+                        try {
+                            PlatformPlugin.get().reloadConfig();
+                            sender.sendMessage(ChatColor.GREEN + "Configuration Reloaded");
+                        } catch (ConfigurationLoadException e) {
+                            sender.sendMessage(ChatColor.RED + "Could not reload " + e.getConfigName());
+                        }
+                    }, 0, TimeUnit.SECONDS);
                 }
+                return;
             }
         }
         sender.sendMessage(ChatColor.RED + "SubCommand not found");
-        return;
     }
 }

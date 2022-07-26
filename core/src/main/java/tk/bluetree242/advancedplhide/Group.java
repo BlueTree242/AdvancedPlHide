@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -37,8 +37,9 @@ import java.util.List;
 public class Group {
     private final String name;
     private final List<CommandCompleter> completers;
-    private List<String> originCompleters;
     private final ConfSubCompleterList subCompleters;
+    private final List<String> originCompleters;
+
     public Group(String name, List<String> completers) {
         this.originCompleters = completers;
         this.name = name;

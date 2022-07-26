@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -43,6 +43,7 @@ public abstract class CommandCompleterList extends ArrayList<CommandCompleter> {
 
     /**
      * Never use this method, most likely won't affect the list final result
+     *
      * @deprecated 90% won't affect the list final result
      */
     @Deprecated

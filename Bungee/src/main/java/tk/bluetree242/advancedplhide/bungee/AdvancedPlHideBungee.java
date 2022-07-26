@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -30,47 +30,42 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import tk.bluetree242.advancedplhide.Group;
-import tk.bluetree242.advancedplhide.Platform;
-import tk.bluetree242.advancedplhide.bungee.listener.event.EventListener;
-import tk.bluetree242.advancedplhide.bungee.listener.packet.PacketListener;
-import tk.bluetree242.advancedplhide.config.ConfManager;
-import tk.bluetree242.advancedplhide.config.Config;
-import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
+import tk.bluetree242.advancedplhide.PlatformPlugin;
+import tk.bluetree242.advancedplhide.bungee.listener.event.BungeeEventListener;
+import tk.bluetree242.advancedplhide.bungee.listener.packet.BungeePacketListener;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class AdvancedPlHideBungee extends Plugin implements Listener {
-    public Config config;
-    protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
-    private PacketListener listener;
-    private Map<String, String> map = new HashMap<>();
+    private BungeePacketListener listener;
     private List<Group> groups = new ArrayList<>();
-
-    public static Group getGroupForPlayer(ProxiedPlayer player) {
-        Platform core = Platform.get();
+    private final AdvancedPlHideBungee.Impl platformPlugin = new Impl();
+    public Group getGroupForPlayer(ProxiedPlayer player) {
         if (player.hasPermission("plhide.no-group")) return null;
         List<Group> groups = new ArrayList<>();
-        for (Group group : core.getGroups()) {
+        for (Group group : platformPlugin.getGroups()) {
             if (player.hasPermission("plhide.group." + group.getName())) {
                 groups.add(group);
             }
         }
-        Group group = groups.isEmpty() ? core.getGroup("default") : core.mergeGroups(groups);
-        return group;
+        return groups.isEmpty() ? platformPlugin.getGroup("default") : platformPlugin.mergeGroups(groups);
+    }
+
+    public void onLoad() {
+        PlatformPlugin.setPlatform(new Impl());
+        platformPlugin.initConfigManager();
     }
 
     public void onEnable() {
-        reloadConfig();
-        Protocolize.listenerProvider().registerListener(listener = new PacketListener(this));
-        Platform.setPlatform(new Impl());
-        getProxy().getPluginManager().registerListener(this, new EventListener(this));
+        platformPlugin.reloadConfig();
+        Protocolize.listenerProvider().registerListener(listener = new BungeePacketListener(this));
+        getProxy().getPluginManager().registerListener(this, new BungeeEventListener(this));
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new AdvancedPlHideCommand(this));
         new Metrics(this, 13709);
         ProxyServer.getInstance().getConsole().sendMessage(ChatColor.translateAlternateColorCodes('&', Constants.startupMessage()));
@@ -83,7 +78,7 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
 
     public void loadGroups() {
         groups = new ArrayList<>();
-        config.groups().forEach((name, val) -> {
+        platformPlugin.getConfig().groups().forEach((name, val) -> {
             if (getGroup(name) == null)
                 groups.add(new Group(name, val.tabcomplete()));
             else {
@@ -102,7 +97,8 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
             if (result == null) {
                 getLogger().severe("Could not check for updates");
                 return;
-            }            String msg = result.getVersionsBehind() == 0 ?
+            }
+            String msg = result.getVersionsBehind() == 0 ?
                     ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_UP_TO_DATE) :
                     ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "")
                             .replace("{download}", result.getUpdateUrl()));
@@ -134,24 +130,16 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
         return groups;
     }
 
-    public void reloadConfig() {
-        confManager.reloadConfig();
-        config = confManager.getConfigData();
-        loadGroups();
 
-    }
-
-
-    public class Impl extends Platform {
-
+    public class Impl extends PlatformPlugin {
         @Override
-        public Config getConfig() {
-            return config;
+        public void loadGroups() {
+            AdvancedPlHideBungee.this.loadGroups();
         }
 
         @Override
-        public void reloadConfig() throws ConfigurationLoadException {
-            AdvancedPlHideBungee.this.reloadConfig();
+        public File getDataFolder() {
+            return AdvancedPlHideBungee.this.getDataFolder();
         }
 
         @Override
@@ -166,7 +154,6 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
 
         @Override
         public String getPluginForCommand(String s) {
-
             return null;
         }
 

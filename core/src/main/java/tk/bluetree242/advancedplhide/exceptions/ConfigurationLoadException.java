@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -26,8 +26,8 @@ import space.arim.dazzleconf.error.ConfigFormatSyntaxException;
 
 public class ConfigurationLoadException extends RuntimeException {
 
-    private Throwable cause;
-    private String confname;
+    private final Throwable cause;
+    private final String confname;
 
     public ConfigurationLoadException(Throwable ex, String confname) {
         this.cause = ex;

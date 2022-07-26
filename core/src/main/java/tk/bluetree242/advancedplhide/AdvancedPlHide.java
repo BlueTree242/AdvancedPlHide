@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -25,9 +25,9 @@ package tk.bluetree242.advancedplhide;
 public class AdvancedPlHide {
     /**
      * @return The Plugin main instance core
-     * @see Platform
+     * @see PlatformPlugin
      */
-    public static Platform get() {
-        return Platform.get();
+    public static PlatformPlugin get() {
+        return PlatformPlugin.get();
     }
 }

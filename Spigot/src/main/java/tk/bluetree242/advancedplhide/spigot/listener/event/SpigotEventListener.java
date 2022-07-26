@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -28,15 +28,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import tk.bluetree242.advancedplhide.Platform;
+import tk.bluetree242.advancedplhide.PlatformPlugin;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.spigot.AdvancedPlHideSpigot;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
-public class EventListener implements Listener {
+public class SpigotEventListener implements Listener {
     private final AdvancedPlHideSpigot core;
 
-    public EventListener(AdvancedPlHideSpigot core) {
+    public SpigotEventListener(AdvancedPlHideSpigot core) {
         this.core = core;
     }
 
@@ -46,7 +46,7 @@ public class EventListener implements Listener {
         String cmd = e.getMessage().toLowerCase().split(" ")[0];
         if (cmd.equalsIgnoreCase("/plugins") || cmd.equalsIgnoreCase("/pl") || cmd.equalsIgnoreCase("/bukkit:pl") || cmd.equalsIgnoreCase("/bukkit:plugins")) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', Platform.get().getConfig().pl_message()));
+            e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', PlatformPlugin.get().getConfig().pl_message()));
         }
     }
 
@@ -54,11 +54,11 @@ public class EventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         if (e.getPlayer().hasPermission("plhide.updatechecker")) {
             Bukkit.getScheduler().runTask(core, () -> {
-                UpdateCheckResult result = Platform.get().get().updateCheck();
+                UpdateCheckResult result = PlatformPlugin.get().updateCheck();
                 if (result == null) return;
                 String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Spigot&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
                 if (result.getMessage() != null) {
-                    msg = ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Spigot&e] &c" + result.getMessage());
+                    msg = ChatColor.translateAlternateColorCodes('&', "&e[APH&2Spigot&e] &c" + result.getMessage());
                 }
                 if (msg != null) {
                     e.getPlayer().sendMessage(msg);

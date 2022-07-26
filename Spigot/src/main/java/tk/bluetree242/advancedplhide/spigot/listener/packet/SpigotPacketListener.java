@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -23,6 +23,7 @@
 package tk.bluetree242.advancedplhide.spigot.listener.packet;
 
 import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.ListenerOptions;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
@@ -39,15 +40,16 @@ import tk.bluetree242.advancedplhide.spigot.impl.subcompleter.StringSubCommandCo
 import tk.bluetree242.advancedplhide.utils.Constants;
 import tk.bluetree242.advancedplhide.utils.UsedMap;
 
+import java.util.Arrays;
 import java.util.UUID;
 
-public class PacketListener extends PacketAdapter {
+public class SpigotPacketListener extends PacketAdapter {
 
     private final UsedMap<UUID, String> commandsWaiting = new UsedMap<>();
-    private AdvancedPlHideSpigot core;
+    private final AdvancedPlHideSpigot core;
 
-    public PacketListener(AdvancedPlHideSpigot core) {
-        super(core, ListenerPriority.HIGHEST, PacketType.Play.Server.TAB_COMPLETE, PacketType.Play.Client.TAB_COMPLETE, PacketType.Play.Server.COMMANDS);
+    public SpigotPacketListener(AdvancedPlHideSpigot core) {
+        super(core, ListenerPriority.HIGHEST, Arrays.asList(PacketType.Play.Server.TAB_COMPLETE, PacketType.Play.Client.TAB_COMPLETE, PacketType.Play.Server.COMMANDS), ListenerOptions.ASYNC);
         this.core = core;
     }
 
@@ -61,19 +63,20 @@ public class PacketListener extends PacketAdapter {
     }
 
     private void onTabcomplete(PacketEvent e) {
+        String notCompleted = this.commandsWaiting.get(e.getPlayer().getUniqueId());
+        if (notCompleted == null) notCompleted = "/";
+        if (!notCompleted.trim().startsWith("/")) notCompleted = "/" + notCompleted;
         if (!core.isLegacy()) {
             StructureModifier<Suggestions> matchModifier = e.getPacket().getSpecificModifier(Suggestions.class);
             Suggestions suggestionsOrigin = matchModifier.read(0);
-            String notCompleted = this.commandsWaiting.get(e.getPlayer().getUniqueId());
-            commandsWaiting.remove(e.getPlayer().getUniqueId());
-            if (notCompleted == null) notCompleted = "/";
-            if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+            if (!notCompleted.contains(" ")) {
                 SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
-                CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
+                CompleterModifier.handleCompleter(suggestions, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
                 matchModifier.write(0, suggestions.export());
-            } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")){
+            }
+            {
                 SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(suggestionsOrigin, notCompleted);
-                CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleSubCompleter(suggestions, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
                 if (suggestions.isCancelled()) e.setCancelled(true);
                 matchModifier.write(0, suggestions.export());
             }
@@ -81,18 +84,13 @@ public class PacketListener extends PacketAdapter {
         } else {
             StructureModifier<String[]> matchModifier = e.getPacket().getSpecificModifier(String[].class);
             String[] suggestionsOrigin = matchModifier.read(0);
-            String notCompleted = this.commandsWaiting.get(e.getPlayer().getUniqueId());
-            if (notCompleted == null){
-                notCompleted = "/";
-            }
-            commandsWaiting.remove(e.getPlayer().getUniqueId());
-            if (!notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+            if (!notCompleted.contains(" ")) {
                 StringCommandCompleterList suggestions = new StringCommandCompleterList(suggestionsOrigin);
-                CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleCompleter(suggestions, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
                 matchModifier.write(0, suggestions.export());
-            } else if (notCompleted.contains(" ") && notCompleted.trim().startsWith("/")) {
+            } else {
                 StringSubCommandCompleterList suggestions = new StringSubCommandCompleterList(suggestionsOrigin, notCompleted);
-                CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleSubCompleter(suggestions, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
                 if (suggestions.isCancelled()) e.setCancelled(true);
                 matchModifier.write(0, suggestions.export());
             }
@@ -101,18 +99,23 @@ public class PacketListener extends PacketAdapter {
 
     private void onCommands(PacketEvent e) {
         StructureModifier<RootCommandNode> matchModifier = e.getPacket().getSpecificModifier(RootCommandNode.class);
-        RootCommandNode nodeOrigin = matchModifier.read(0);
+        RootCommandNode nodeOrigin = matchModifier.readSafely(0);
+        if (nodeOrigin == null) {
+            //modern game, 1.19+
+            ModernUtils.handleModern(e, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+            return;
+        }
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(nodeOrigin);
-        CompleterModifier.handleCompleter(node, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+        CompleterModifier.handleCompleter(node, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
         matchModifier.write(0, node.export());
     }
 
     public void onPacketReceiving(PacketEvent e) {
         if (e.isCancelled()) return;
         if (e.getPacketType() == PacketType.Play.Client.TAB_COMPLETE) {
-            String s =  e.getPacket().getStrings()
+            String s = e.getPacket().getStrings()
                     .read(0);
-                this.commandsWaiting.put(e.getPlayer().getUniqueId(),s);
+            this.commandsWaiting.put(e.getPlayer().getUniqueId(), s);
         }
     }
 }

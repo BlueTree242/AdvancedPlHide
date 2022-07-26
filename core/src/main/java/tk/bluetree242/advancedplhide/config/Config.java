@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -31,7 +31,7 @@ import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 import java.util.List;
 import java.util.Map;
 
-@ConfHeader("# https://github.com/BlueTree242/AdvancedPlHide/wiki/")
+@ConfHeader("# You should read this before doing anything with the plugin, to understand how stuff work: https://github.com/BlueTree242/AdvancedPlHide/wiki/")
 public interface Config {
 
     @AnnotationBasedSorter.Order(10)
@@ -45,7 +45,8 @@ public interface Config {
     Boolean remove_plugin_prefix();
 
     @AnnotationBasedSorter.Order(30)
-    @ConfComments("\n# https://github.com/BlueTree242/AdvancedPlHide/wiki/groups") //space between the groups and the conf options up
+    @ConfComments("\n# https://github.com/BlueTree242/AdvancedPlHide/wiki/groups")
+    //space between the groups and the conf options up
     @ConfDefault.DefaultObject("tk.bluetree242.advancedplhide.config.ConfManager.defaultGroups")
     Map<String, @SubSection Group> groups();
 

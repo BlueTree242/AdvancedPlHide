@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -34,18 +34,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import tk.bluetree242.advancedplhide.CommandCompleter;
 import tk.bluetree242.advancedplhide.Group;
-import tk.bluetree242.advancedplhide.Platform;
-import tk.bluetree242.advancedplhide.config.ConfManager;
-import tk.bluetree242.advancedplhide.config.Config;
-import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
-import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
+import tk.bluetree242.advancedplhide.PlatformPlugin;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
-import tk.bluetree242.advancedplhide.spigot.listener.event.EventListener;
-import tk.bluetree242.advancedplhide.spigot.listener.packet.PacketListener;
+import tk.bluetree242.advancedplhide.spigot.listener.event.SpigotEventListener;
+import tk.bluetree242.advancedplhide.spigot.listener.packet.SpigotPacketListener;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Field;
@@ -54,35 +50,33 @@ import java.util.List;
 
 
 public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
-    public Config config;
-    protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
+    private final SpigotPacketListener listener = new SpigotPacketListener(this);
     private ProtocolManager protocolManager;
-    private PacketListener listener = new PacketListener(this);
     private boolean legacy = false;
     private List<Group> groups;
+    private final AdvancedPlHideSpigot.Impl platformPlugin = new Impl();
 
-    public static Group getGroupForPlayer(Player player) {
-        Platform core = Platform.get();
+    public Group getGroupForPlayer(Player player) {
         if (player.hasPermission("plhide.no-group")) return null;
         List<Group> groups = new ArrayList<>();
-        for (Group group : core.getGroups()) {
+        for (Group group : platformPlugin.getGroups()) {
             if (player.hasPermission("plhide.group." + group.getName())) {
                 groups.add(group);
             }
         }
-        Group group = groups.isEmpty() ? core.getGroup("default") : core.mergeGroups(groups);
-        return group;
+        return groups.isEmpty() ? platformPlugin.getGroup("default") : platformPlugin.mergeGroups(groups);
     }
 
     public void onLoad() {
         protocolManager = ProtocolLibrary.getProtocolManager();
-        Platform.setPlatform(new Impl());
+        PlatformPlugin.setPlatform(platformPlugin);
+        platformPlugin.initConfigManager();
     }
 
     public void onEnable() {
-        reloadConfig();
-        protocolManager.addPacketListener(new PacketListener(this));
-        getServer().getPluginManager().registerEvents(new EventListener(this), this);
+        platformPlugin.reloadConfig();
+        protocolManager.addPacketListener(new SpigotPacketListener(this));
+        getServer().getPluginManager().registerEvents(new SpigotEventListener(this), this);
         String str = Bukkit.getServer().getClass().getPackage().getName();
         str = str.substring(str.lastIndexOf("v"));
         legacy = (str.equals("v1_8_R3") || str.contains("v1_9_R") || str.contains("v1_10_R1") || str.contains("v1_11_R1") || str.contains("v1_12_R1"));
@@ -136,11 +130,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
 
     public void loadGroups() {
         groups = new ArrayList<>();
-        config.groups().forEach((name, val) -> {
-            List<CommandCompleter> tabcomplete = new ArrayList<>();
-            for (String s : val.tabcomplete()) {
-                tabcomplete.add(new GroupCompleter(s));
-            }
+        platformPlugin.getConfig().groups().forEach((name, val) -> {
             if (getGroup(name) == null)
                 groups.add(new Group(name, val.tabcomplete()));
             else {
@@ -161,36 +151,28 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         return null;
     }
 
-    @Override
-    public void reloadConfig() throws ConfigurationLoadException {
-        confManager.reloadConfig();
-        config = confManager.getConfigData();
-        loadGroups();
-    }
-
     public CommandMap getCommandMap() {
         try {
             final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
 
             bukkitCommandMap.setAccessible(true);
-            CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
-            return commandMap;
+            return (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
         } catch (Exception e) {
             return null;
         }
     }
 
 
-    public class Impl extends Platform {
+    public class Impl extends PlatformPlugin {
 
         @Override
-        public Config getConfig() {
-            return config;
+        public void loadGroups() {
+            AdvancedPlHideSpigot.this.loadGroups();
         }
 
         @Override
-        public void reloadConfig() throws ConfigurationLoadException {
-            AdvancedPlHideSpigot.this.reloadConfig();
+        public File getDataFolder() {
+            return AdvancedPlHideSpigot.this.getDataFolder();
         }
 
         @Override

@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -22,13 +22,12 @@
 
 package tk.bluetree242.advancedplhide.utils;
 
-import tk.bluetree242.advancedplhide.Platform;
+import tk.bluetree242.advancedplhide.PlatformPlugin;
 
 public class Constants {
     public static final String DEFAULT_UP_TO_DATE = "&aYou are up to date";
     public static final String DEFAULT_BEHIND = "&cYou are {versions} Behind. Please Update ASAP. Download from {download}";
     public static final String WHITELIST_MODE_PERMISSION = "plhide.whitelist-mode";
-    public static final String SUB_WHITELIST_MODE_PERMISSION = "plhide.sub-whitelist-mode";
 
     public static String startupMessage() {
         return "" +
@@ -36,8 +35,9 @@ public class Constants {
                 "| &cInformation:\n&r" +
                 "|   &cName: &rAdvancedPlHide\n&r" +
                 "|   &cDevelopers: &rBlueTree242\n&r" +
-                "|   &cVersion: &r" + Platform.get().getCurrentVersion() + "\n&r" +
-                "|   &cRunning on: &r" + Platform.get().getType().getName() + "\n&r" +
+                "|   &cVersion: &r" + PlatformPlugin.get().getCurrentVersion() + "\n&r" +
+                (!PlatformPlugin.get().getCurrentBuild().equals("NONE") ? "|   &cBuild Number: &r#" + PlatformPlugin.get().getCurrentBuild() + "\n&r" : "") +
+                "|   &cRunning on: &r" + PlatformPlugin.get().getType().getName() + "\n&r" +
                 "| &cSupport:\n&r" +
                 "|   &cGithub: &rhttps://github.com/BlueTree242/AdvancedPlHide/issues\n" +
                 "|   &cDiscord: &rhttps://advancedplhide.ml/support\n" +

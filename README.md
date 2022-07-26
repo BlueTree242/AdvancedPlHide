@@ -3,13 +3,19 @@
 <img alt="AdvancePlHide" src="./.github/banner.png" />
 
 <!-- Shields -->
+
 [Document (not finshed)]:https://img.shields.io/badge/-Document-blue.svg?logo=Wikipedia&style=for-the-badge&logoColor=black
+
 [Discord]:https://img.shields.io/badge/-Discord-5865F2.svg?logo=discord&style=for-the-badge&logoColor=white
+
 [Spigot]:https://img.shields.io/badge/-SpigotMC-ef9023.svg?logo=Accenture&style=for-the-badge&logoColor=grey
 
 [SpigotRating]:https://img.shields.io/spiget/rating/98645?style=flat-square
+
 [GitHubStar]:https://img.shields.io/github/stars/BlueTree242/AdvancedPlHide
+
 [TestedVersion]: https://img.shields.io/spiget/tested-versions/98645?label=Tested%20on&style=flat-square
+
 [CodeSize]:https://img.shields.io/github/languages/code-size/BlueTree242/AdvancedPlHide
 <!-- Shields -->
 [![Discord]](https://discordsrvutils.xyz/support)
@@ -19,9 +25,10 @@
 </div>
 
 ## Table of Contents
+
 * [Introduction](#introduction)
-  * [Reasons](#Reasons)
-  * [Features](#features)
+    * [Reasons](#Reasons)
+    * [Features](#features)
 * [Requirements](#Requirements)
 * [Installation](#Installation)
 
@@ -41,9 +48,10 @@
 ### Requirements
 
 * Java 11 or higher
-* ProtocolLib (Spigot) 
+* ProtocolLib (Spigot)
 * Protocolize (Proxy)
 * Luckperms or some other perm plugin
+
 ### Supported Platforms
 
 * Spigot/Paper or any forks.
@@ -51,6 +59,7 @@
 * Velocity
 
 ### Installation
+
 When you Download AdvancedPlHide Also download ProtocolLib.
 
 When using a proxy AdvancedPlHide needs Protocolize

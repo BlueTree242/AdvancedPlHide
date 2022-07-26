@@ -24,7 +24,6 @@ plugins {
     id 'java'
     id 'maven-publish'
 }
-apply plugin: 'maven'
 apply plugin: 'maven-publish'
 publishing {
     publications {
@@ -41,8 +40,7 @@ rootProject.allprojects {
         relocate 'space.arim.dazzleconf', "tk.bluetree242.advancedplhide.dependencies.dazzleconf"
         relocate 'org.yaml.snakeyaml', "tk.bluetree242.advancedplhide.dependencies.yaml"
         relocate 'org.json', "tk.bluetree242.advancedplhide.dependencies.json"
-        relocate 'okio', "tk.bluetree242.advancedplhide.dependencies.okio"
-        relocate 'okhttp3', "tk.bluetree242.advancedplhide.dependencies.okhttp"
+        relocate 'com.github.kevinsawicki.http', 'tk.bluetree242.advancedplhide.dependencies.http'
     }
 }
 
@@ -58,6 +56,7 @@ repositories {
 dependencies {
     implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2'
     compileOnly 'com.mojang:brigadier:1.0.18'
+    implementation 'com.github.kevinsawicki:http-request:6.0'
     implementation group: 'org.json', name: 'json', version: '20210307'
 }
 

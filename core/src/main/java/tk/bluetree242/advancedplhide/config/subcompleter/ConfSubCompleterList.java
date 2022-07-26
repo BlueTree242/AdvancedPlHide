@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -41,7 +41,8 @@ public class ConfSubCompleterList extends ArrayList<ConfSubCompleter> {
     }
 
     /**
-     * This method tries to find commands with this args, respects *
+     * This method tries to find commands with this args, respects * and ~
+     *
      * @param args args of the command
      * @return list of sub completers that have this args
      */
@@ -52,10 +53,8 @@ public class ConfSubCompleterList extends ArrayList<ConfSubCompleter> {
             int length = 0;
             if (completer.getArgs().length == args.length) {
                 for (String arg : completer.getArgs()) {
-                    if (equal != false) {
-                        if (args[length].equalsIgnoreCase(arg) || arg.equals("*")) {
-                            equal = true;
-                        } else equal = false;
+                    if (equal) {
+                        equal = args[length].equalsIgnoreCase(arg) || arg.equals("*");
                     }
                     length++;
                 }

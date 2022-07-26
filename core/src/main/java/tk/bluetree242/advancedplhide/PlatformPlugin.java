@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -22,38 +22,56 @@
 
 package tk.bluetree242.advancedplhide;
 
+import com.github.kevinsawicki.http.HttpRequest;
 import org.json.JSONObject;
+import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
-import tk.bluetree242.advancedplhide.utils.HttpPostMultipart;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Platform is the platform the plugin runs on, we can also call it the plugin core as it contains some methods related to the plugin itself too
  *
  * @see AdvancedPlHide#get()
- * @see Platform#get()
+ * @see PlatformPlugin#get()
  */
-public abstract class Platform {
-    private static Platform platform = null;
+public abstract class PlatformPlugin {
+    private static PlatformPlugin platformPlugin = null;
 
-    public static Platform get() {
-        return platform;
+    private ConfManager<Config> confManager;
+    private Config config;
+
+
+    public static PlatformPlugin get() {
+        return platformPlugin;
     }
 
-    public static void setPlatform(Platform val) {
-        if (platform != null) throw new IllegalStateException("Platform already set");
-        platform = val;
+    public static void setPlatform(PlatformPlugin val) {
+        if (platformPlugin != null) throw new IllegalStateException("Platform already set");
+        platformPlugin = val;
     }
 
-    public abstract Config getConfig();
+    public Config getConfig() {
+        return config;
+    }
 
-    public abstract void reloadConfig() throws ConfigurationLoadException;
+    public void reloadConfig() throws ConfigurationLoadException {
+        confManager.reloadConfig();
+        config = confManager.getConfigData();
+        loadGroups();
+    }
+
+    public void initConfigManager() {
+        confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
+    }
+
+    public abstract void loadGroups();
+
+    public abstract File getDataFolder();
 
     public abstract List<Group> getGroups();
 
@@ -64,9 +82,7 @@ public abstract class Platform {
     public Group mergeGroups(List<Group> groups) {
         List<String> tabcomplete = new ArrayList<>();
         for (Group group : groups) {
-            for (String completer : group.getOriginCompleters()) {
-                tabcomplete.add(completer);
-            }
+            tabcomplete.addAll(group.getOriginCompleters());
         }
         List<String> names = new ArrayList<>();
         for (Group group : groups) {
@@ -92,17 +108,16 @@ public abstract class Platform {
 
     public UpdateCheckResult updateCheck() {
         try {
-            Map<String, String> headers = new HashMap<>();
-            headers.put("User-Agent", "APH/Java");
-            HttpPostMultipart req = new HttpPostMultipart("https://advancedplhide.ml/updatecheck", "utf-8", headers);
-            req.addFormField("version", getCurrentVersion());
-            req.addFormField("buildNumber", getCurrentBuild());
-            req.addFormField("buildDate", getBuildDate());
-            req.addFormField("devUpdatechecker", getConfig().dev_updatechecker() + "");
-            String response = req.finish();
+            HttpRequest req = HttpRequest.post("https://advancedplhide.ml/updatecheck");
+            req.part("version", getCurrentVersion());
+            req.part("buildNumber", getCurrentBuild());
+            req.part("buildDate", getBuildDate());
+            req.part("devUpdatechecker", getConfig().dev_updatechecker() + "");
+            String response = req.body();
             JSONObject json = new JSONObject(response);
-            return new UpdateCheckResult(json.getInt("versions_behind"), json.isNull("versions_behind") ? null : json.getString("message"), json.isNull("type") ? "INFO" : json.getString("type"), json.getString("downloadUrl"));
+            return new UpdateCheckResult(json.getInt("versions_behind"), json.isNull("message") ? null : json.getString("message"), json.isNull("type") ? "INFO" : json.getString("type"), json.getString("downloadUrl"));
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

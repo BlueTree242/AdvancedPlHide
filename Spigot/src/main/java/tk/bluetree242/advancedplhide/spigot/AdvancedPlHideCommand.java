@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -27,7 +27,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import tk.bluetree242.advancedplhide.Platform;
+import tk.bluetree242.advancedplhide.PlatformPlugin;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 
 import java.util.ArrayList;
@@ -47,22 +47,20 @@ public class AdvancedPlHideCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.GREEN + "Running AdvancedPlHide v." + ChatColor.YELLOW + core.getDescription().getVersion());
             return true;
         } else {
-            if (args.length >= 1) {
-                if (args[0].equalsIgnoreCase("reload")) {
-                    if (!sender.hasPermission("plhide.reload")) {
-                        sender.sendMessage(ChatColor.RED + "You don't have permission to run this command");
-                        return true;
-                    } else {
-                        Bukkit.getScheduler().runTaskAsynchronously(core, () -> {
-                            try {
-                                Platform.get().reloadConfig();
-                                sender.sendMessage(ChatColor.GREEN + "Configuration Reloaded");
-                            } catch (ConfigurationLoadException e) {
-                                sender.sendMessage(ChatColor.RED + "Could not reload " + e.getConfigName());
-                            }
-                        });
-                        return true;
-                    }
+            if (args[0].equalsIgnoreCase("reload")) {
+                if (!sender.hasPermission("plhide.reload")) {
+                    sender.sendMessage(ChatColor.RED + "You don't have permission to run this command");
+                    return true;
+                } else {
+                    Bukkit.getScheduler().runTaskAsynchronously(core, () -> {
+                        try {
+                            PlatformPlugin.get().reloadConfig();
+                            sender.sendMessage(ChatColor.GREEN + "Configuration Reloaded");
+                        } catch (ConfigurationLoadException e) {
+                            sender.sendMessage(ChatColor.RED + "Could not reload " + e.getConfigName());
+                        }
+                    });
+                    return true;
                 }
             }
         }

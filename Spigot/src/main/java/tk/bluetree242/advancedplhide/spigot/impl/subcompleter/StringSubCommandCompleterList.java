@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -31,6 +31,7 @@ import java.util.List;
 public class StringSubCommandCompleterList extends SubCommandCompleterList {
     private final String command;
     private final String[] args;
+
     public StringSubCommandCompleterList(String[] suggestions, String notCompleted) {
         for (String suggestion : suggestions) {
             add(new StringSubCommandCompleter(this, suggestion));
@@ -41,9 +42,9 @@ public class StringSubCommandCompleterList extends SubCommandCompleterList {
         for (String s : split) {
             if (!s.equalsIgnoreCase("/" + command)) {
                 if (notCompleted.endsWith(" "))
-                list.add(s);
+                    list.add(s);
                 else {
-                    if (!s.equals(split[split.length -1])) {
+                    if (!s.equals(split[split.length - 1])) {
                         list.add(s);
                     }
                 }

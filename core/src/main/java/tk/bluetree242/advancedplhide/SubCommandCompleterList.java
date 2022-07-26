@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -48,7 +48,6 @@ public abstract class SubCommandCompleterList extends ArrayList<SubCommandComple
     public abstract String[] getArgs();
 
     /**
-     *
      * @param completer sub completer to use
      * @return {@link SubCommandCompleterList#getArgs()} but ends with the text of the sub completer
      */
@@ -75,6 +74,7 @@ public abstract class SubCommandCompleterList extends ArrayList<SubCommandComple
 
     /**
      * Checks if the packet (or event) should be cancelled
+     *
      * @return if this should be cancelled, currently true only when list is empty
      * @throws IllegalStateException if this isn't supposed to be for a cancellable event/packet
      */
@@ -84,6 +84,7 @@ public abstract class SubCommandCompleterList extends ArrayList<SubCommandComple
 
     /**
      * Never use this method, most likely won't affect the list final result
+     *
      * @deprecated 90% won't affect the list final result
      */
     @Deprecated

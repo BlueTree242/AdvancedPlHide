@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -33,24 +33,19 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import dev.simplix.protocolize.api.Protocolize;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.slf4j.Logger;
-import tk.bluetree242.advancedplhide.CommandCompleter;
 import tk.bluetree242.advancedplhide.Group;
-import tk.bluetree242.advancedplhide.Platform;
-import tk.bluetree242.advancedplhide.config.ConfManager;
-import tk.bluetree242.advancedplhide.config.Config;
-import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
-import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
+import tk.bluetree242.advancedplhide.PlatformPlugin;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
-import tk.bluetree242.advancedplhide.velocity.listener.event.EventListener;
-import tk.bluetree242.advancedplhide.velocity.listener.packet.PacketListener;
+import tk.bluetree242.advancedplhide.velocity.listener.event.VelocityEventListener;
+import tk.bluetree242.advancedplhide.velocity.listener.packet.VelocityPacketListener;
 
 import javax.inject.Inject;
-import java.io.IOException;
-import java.io.UncheckedIOException;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Plugin(id = "advancedplhide",
         name = "AdvancedPlHide",
@@ -58,15 +53,13 @@ import java.util.List;
         version = AdvancedPlHideVelocity.VERSION,
         authors = {"BlueTree242"},
         dependencies = {@Dependency(id = "protocolize")})
-public class AdvancedPlHideVelocity extends Platform {
+public class AdvancedPlHideVelocity extends PlatformPlugin {
     public static final String DESCRIPTION = "{description}";
     public static final String VERSION = "{version}";
     public final ProxyServer server;
     public final Logger logger;
     public final Path dataDirectory;
     private final Metrics.Factory metricsFactory;
-    public Config config;
-    protected ConfManager<Config> confManager;
     private List<Group> groups = new ArrayList<>();
 
     @Inject
@@ -75,30 +68,49 @@ public class AdvancedPlHideVelocity extends Platform {
         this.server = server;
         this.logger = logger;
         this.dataDirectory = dataDirectory;
-        confManager = ConfManager.create(dataDirectory, "config.yml", Config.class);
-        Platform.setPlatform(this);
+        PlatformPlugin.setPlatform(this);
+        initConfigManager();
     }
 
-    public static Group getGroupForPlayer(Player player) {
-        Platform core = Platform.get();
+    @Subscribe
+    public void onProxyInitialization(ProxyInitializeEvent e) {
+        reloadConfig();
+        CommandMeta meta = server.getCommandManager().metaBuilder("advancedplhidevelocity")
+                // Specify other aliases (optional)
+                .aliases("aphv", "apv", "plhidev", "phv")
+                .build();
+        server.getCommandManager().register(meta, new AdvancedPlHideCommand(this));
+        server.getEventManager().register(this, new VelocityEventListener(this));
+        Protocolize.listenerProvider().registerListener(new VelocityPacketListener(this));
+        metricsFactory.make(this, 13708);
+        server.getConsoleCommandSource().sendMessage(LegacyComponentSerializer.legacy('&').deserialize(Constants.startupMessage()));
+        performStartUpdateCheck();
+    }
+
+    public Group getGroupForPlayer(Player player) {
         if (player.hasPermission("plhide.no-group")) return null;
         List<Group> groups = new ArrayList<>();
-        for (Group group : core.getGroups()) {
+        for (Group group : getGroups()) {
             if (player.hasPermission("plhide.group." + group.getName())) {
                 groups.add(group);
             }
         }
-        Group group = groups.isEmpty() ? core.getGroup("default") : core.mergeGroups(groups);
-        return group;
+        return groups.isEmpty() ? getGroup("default") : mergeGroups(groups);
+    }
+
+    private static byte[] readFully(InputStream input) throws IOException {
+        byte[] buffer = new byte[8192];
+        int bytesRead;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        while ((bytesRead = input.read(buffer)) != -1) {
+            output.write(buffer, 0, bytesRead);
+        }
+        return output.toByteArray();
     }
 
     public void loadGroups() {
         groups = new ArrayList<>();
-        config.groups().forEach((name, val) -> {
-            List<CommandCompleter> tabcomplete = new ArrayList<>();
-            for (String s : val.tabcomplete()) {
-                tabcomplete.add(new GroupCompleter(s));
-            }
+        getConfig().groups().forEach((name, val) -> {
             if (getGroup(name) == null)
                 groups.add(new Group(name, val.tabcomplete()));
             else {
@@ -130,7 +142,7 @@ public class AdvancedPlHideVelocity extends Platform {
     @Override
     public String getVersionConfig() {
         try {
-            return new String(getClass().getClassLoader().getResourceAsStream("version-config.json").readAllBytes());
+            return new String(readFully(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("version-config.json"))));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -143,26 +155,6 @@ public class AdvancedPlHideVelocity extends Platform {
 
     public List<Group> getGroups() {
         return groups;
-    }
-
-    @Subscribe
-    public void onProxyInitialization(ProxyInitializeEvent e) {
-        reloadConfig();
-        CommandMeta meta = server.getCommandManager().metaBuilder("advancedplhidevelocity")
-                // Specify other aliases (optional)
-                .aliases("aphv", "apv", "plhidev", "phv")
-                .build();
-        server.getCommandManager().register(meta, new AdvancedPlHideCommand(this));
-        server.getEventManager().register(this, new EventListener());
-        Protocolize.listenerProvider().registerListener(new PacketListener(this));
-        metricsFactory.make(this, 13708);
-        server.getConsoleCommandSource().sendMessage(LegacyComponentSerializer.legacy('&').deserialize(Constants.startupMessage()));
-        performStartUpdateCheck();
-    }
-
-    @Override
-    public Config getConfig() {
-        return config;
     }
 
     public void performStartUpdateCheck() {
@@ -192,12 +184,9 @@ public class AdvancedPlHideVelocity extends Platform {
         }
     }
 
-
     @Override
-    public void reloadConfig() throws ConfigurationLoadException {
-        confManager.reloadConfig();
-        config = confManager.getConfigData();
-        loadGroups();
+    public File getDataFolder() {
+        return dataDirectory.toFile();
     }
 
 
