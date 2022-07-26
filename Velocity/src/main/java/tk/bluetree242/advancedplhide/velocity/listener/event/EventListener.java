@@ -47,7 +47,7 @@ public class EventListener {
                 if (result == null) return;
                 Component msg = result.getVersionsBehind() == 0 ? null : LegacyComponentSerializer.legacy('&').deserialize("&e[APH-&2Velocity&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
                 if (result.getMessage() != null) {
-                    msg = LegacyComponentSerializer.legacy('&').deserialize("&e[APH-&2Velocity&e] &c" + result.getMessage());
+                    msg = LegacyComponentSerializer.legacy('&').deserialize("&e[APH&2Velocity&e] &c" + result.getMessage());
                 }
                 if (msg != null) {
                     msg = msg.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, result.getUpdateUrl()));

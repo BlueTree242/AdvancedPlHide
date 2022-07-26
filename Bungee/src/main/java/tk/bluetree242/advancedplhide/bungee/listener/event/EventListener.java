@@ -65,7 +65,7 @@ public class EventListener implements Listener {
                 if (result == null) return;
                 String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Bungee&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
                 if (result.getMessage() != null) {
-                    msg = ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Bungee&e] &c" + result.getMessage());
+                    msg = ChatColor.translateAlternateColorCodes('&', "&e[APH&2Bungee&e] &c" + result.getMessage());
                 }
                 if (msg != null) {
                     e.getPlayer().sendMessage(msg);
