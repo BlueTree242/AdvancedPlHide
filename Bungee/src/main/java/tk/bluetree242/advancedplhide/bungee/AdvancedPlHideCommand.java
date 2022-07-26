@@ -45,26 +45,22 @@ public class AdvancedPlHideCommand extends Command {
             sender.sendMessage(ChatColor.GREEN + "Running AdvancedPlHide v." + ChatColor.YELLOW + core.getDescription().getVersion());
             return;
         } else {
-            if (args.length >= 1) {
-                if (args[0].equalsIgnoreCase("reload")) {
-                    if (!sender.hasPermission("plhide.reload")) {
-                        sender.sendMessage(ChatColor.RED + "You don't have permission to run this command");
-                        return;
-                    } else {
-                        ProxyServer.getInstance().getScheduler().schedule(core, () -> {
-                            try {
-                                Platform.get().reloadConfig();
-                                sender.sendMessage(ChatColor.GREEN + "Configuration Reloaded");
-                            } catch (ConfigurationLoadException e) {
-                                sender.sendMessage(ChatColor.RED + "Could not reload " + e.getConfigName());
-                            }
-                        }, 0, TimeUnit.SECONDS);
-                        return;
-                    }
+            if (args[0].equalsIgnoreCase("reload")) {
+                if (!sender.hasPermission("plhide.reload")) {
+                    sender.sendMessage(ChatColor.RED + "You don't have permission to run this command");
+                } else {
+                    ProxyServer.getInstance().getScheduler().schedule(core, () -> {
+                        try {
+                            Platform.get().reloadConfig();
+                            sender.sendMessage(ChatColor.GREEN + "Configuration Reloaded");
+                        } catch (ConfigurationLoadException e) {
+                            sender.sendMessage(ChatColor.RED + "Could not reload " + e.getConfigName());
+                        }
+                    }, 0, TimeUnit.SECONDS);
                 }
+                return;
             }
         }
         sender.sendMessage(ChatColor.RED + "SubCommand not found");
-        return;
     }
 }
