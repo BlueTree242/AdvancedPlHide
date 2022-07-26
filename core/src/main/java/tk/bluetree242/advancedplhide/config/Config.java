@@ -31,7 +31,7 @@ import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 import java.util.List;
 import java.util.Map;
 
-@ConfHeader("# https://github.com/BlueTree242/AdvancedPlHide/wiki/")
+@ConfHeader("# You should read this before doing anything with the plugin, to understand how stuff work: https://github.com/BlueTree242/AdvancedPlHide/wiki/")
 public interface Config {
 
     @AnnotationBasedSorter.Order(10)
