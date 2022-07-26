@@ -70,6 +70,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     public void onLoad() {
         protocolManager = ProtocolLibrary.getProtocolManager();
         PlatformPlugin.setPlatform(platformPlugin);
+        platformPlugin.initConfigManager();
     }
 
     public void onEnable() {

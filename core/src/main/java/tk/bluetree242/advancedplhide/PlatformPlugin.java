@@ -42,8 +42,9 @@ import java.util.List;
 public abstract class PlatformPlugin {
     private static PlatformPlugin platformPlugin = null;
 
-    private final ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
+    private ConfManager<Config> confManager;
     private Config config;
+
 
     public static PlatformPlugin get() {
         return platformPlugin;
@@ -62,6 +63,10 @@ public abstract class PlatformPlugin {
         confManager.reloadConfig();
         config = confManager.getConfigData();
         loadGroups();
+    }
+
+    public void initConfigManager() {
+        confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     }
 
     public abstract void loadGroups();

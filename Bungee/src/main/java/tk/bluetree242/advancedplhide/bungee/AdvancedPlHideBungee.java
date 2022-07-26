@@ -57,10 +57,14 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
         return groups.isEmpty() ? platformPlugin.getGroup("default") : platformPlugin.mergeGroups(groups);
     }
 
-    public void onEnable() {
-        PlatformPlugin.get().reloadConfig();
-        Protocolize.listenerProvider().registerListener(listener = new BungeePacketListener(this));
+    public void onLoad() {
         PlatformPlugin.setPlatform(new Impl());
+        platformPlugin.initConfigManager();
+    }
+
+    public void onEnable() {
+        platformPlugin.reloadConfig();
+        Protocolize.listenerProvider().registerListener(listener = new BungeePacketListener(this));
         getProxy().getPluginManager().registerListener(this, new BungeeEventListener(this));
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new AdvancedPlHideCommand(this));
         new Metrics(this, 13709);

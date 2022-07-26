@@ -69,6 +69,7 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
         this.logger = logger;
         this.dataDirectory = dataDirectory;
         PlatformPlugin.setPlatform(this);
+        initConfigManager();
     }
 
     @Subscribe
