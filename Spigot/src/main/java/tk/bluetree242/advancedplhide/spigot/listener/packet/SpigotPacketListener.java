@@ -71,12 +71,12 @@ public class SpigotPacketListener extends PacketAdapter {
             Suggestions suggestionsOrigin = matchModifier.read(0);
             if (!notCompleted.contains(" ")) {
                 SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
-                CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
+                CompleterModifier.handleCompleter(suggestions, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
                 matchModifier.write(0, suggestions.export());
             }
             {
                 SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(suggestionsOrigin, notCompleted);
-                CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleSubCompleter(suggestions, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 if (suggestions.isCancelled()) e.setCancelled(true);
                 matchModifier.write(0, suggestions.export());
             }
@@ -86,11 +86,11 @@ public class SpigotPacketListener extends PacketAdapter {
             String[] suggestionsOrigin = matchModifier.read(0);
             if (!notCompleted.contains(" ")) {
                 StringCommandCompleterList suggestions = new StringCommandCompleterList(suggestionsOrigin);
-                CompleterModifier.handleCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleCompleter(suggestions, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
                 matchModifier.write(0, suggestions.export());
             } else {
                 StringSubCommandCompleterList suggestions = new StringSubCommandCompleterList(suggestionsOrigin, notCompleted);
-                CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleSubCompleter(suggestions, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 if (suggestions.isCancelled()) e.setCancelled(true);
                 matchModifier.write(0, suggestions.export());
             }
@@ -102,11 +102,11 @@ public class SpigotPacketListener extends PacketAdapter {
         RootCommandNode nodeOrigin = matchModifier.readSafely(0);
         if (nodeOrigin == null) {
             //modern game, 1.19+
-            ModernUtils.handleModern(e, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+            ModernUtils.handleModern(e, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
             return;
         }
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(nodeOrigin);
-        CompleterModifier.handleCompleter(node, AdvancedPlHideSpigot.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+        CompleterModifier.handleCompleter(node, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
         matchModifier.write(0, node.export());
     }
 

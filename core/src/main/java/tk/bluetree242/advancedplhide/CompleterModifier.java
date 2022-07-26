@@ -39,7 +39,7 @@ public class CompleterModifier {
 
 
     public static void handleCompleter(CommandCompleterList list, Group playerGroup, boolean whitelist) {
-        if (Platform.get().getConfig().remove_plugin_prefix())
+        if (PlatformPlugin.get().getConfig().remove_plugin_prefix())
             removePluginPrefix(list);
 
         if (playerGroup != null) {
@@ -93,7 +93,7 @@ public class CompleterModifier {
         for (CommandCompleter completer : new ArrayList<>(list)) {
             if (commands.contains(completer.getName())) {
                 completer.remove();
-            } else if (plugins.contains(Platform.get().getPluginForCommand(completer.getName()))) {
+            } else if (plugins.contains(PlatformPlugin.get().getPluginForCommand(completer.getName()))) {
                 completer.remove();
             }
         }
@@ -112,7 +112,7 @@ public class CompleterModifier {
         }
         for (CommandCompleter completer : new ArrayList<>(list)) {
             if (!commands.contains(completer.getName())) {
-                if (!plugins.contains(Platform.get().getPluginForCommand(completer.getName())))
+                if (!plugins.contains(PlatformPlugin.get().getPluginForCommand(completer.getName())))
                     completer.remove();
             }
         }

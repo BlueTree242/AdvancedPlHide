@@ -33,7 +33,6 @@ repositories {
 
 dependencies {
     paperDevBundle("1.19-R0.1-SNAPSHOT")
-    implementation("space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
     compileOnly("org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT")

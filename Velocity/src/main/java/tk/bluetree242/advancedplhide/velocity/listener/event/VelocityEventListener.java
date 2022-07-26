@@ -31,13 +31,17 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import tk.bluetree242.advancedplhide.CompleterModifier;
-import tk.bluetree242.advancedplhide.Platform;
+import tk.bluetree242.advancedplhide.PlatformPlugin;
 import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
 import tk.bluetree242.advancedplhide.velocity.AdvancedPlHideVelocity;
 
 public class VelocityEventListener {
+    private final AdvancedPlHideVelocity core;
+    public VelocityEventListener(AdvancedPlHideVelocity core) {
+        this.core = core;
+    }
 
     @Subscribe
     public void onPlayerJoin(PostLoginEvent e) {
@@ -63,7 +67,7 @@ public class VelocityEventListener {
         String cmd = "/" + e.getCommand().split(" ")[0];
         if (cmd.equalsIgnoreCase("/plugins") || cmd.equalsIgnoreCase("/pl") || cmd.equalsIgnoreCase("/bukkit:pl") || cmd.equalsIgnoreCase("/bukkit:plugins")) {
             if (!e.getCommandSource().hasPermission("plhide.command.use")) {
-                Component response = LegacyComponentSerializer.legacy('&').deserialize(Platform.get().getConfig().pl_message());
+                Component response = LegacyComponentSerializer.legacy('&').deserialize(PlatformPlugin.get().getConfig().pl_message());
                 e.getCommandSource().sendMessage(response);
                 e.setResult(CommandExecuteEvent.CommandResult.denied());
             }
@@ -73,6 +77,6 @@ public class VelocityEventListener {
     @Subscribe
     public void onCommands(PlayerAvailableCommandsEvent e) {
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(e.getRootNode());
-        CompleterModifier.handleCompleter(node, AdvancedPlHideVelocity.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+        CompleterModifier.handleCompleter(node, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
     }
 }

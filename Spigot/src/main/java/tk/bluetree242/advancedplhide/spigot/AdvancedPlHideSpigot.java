@@ -35,15 +35,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import tk.bluetree242.advancedplhide.Group;
-import tk.bluetree242.advancedplhide.Platform;
-import tk.bluetree242.advancedplhide.config.ConfManager;
-import tk.bluetree242.advancedplhide.config.Config;
-import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
+import tk.bluetree242.advancedplhide.PlatformPlugin;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.spigot.listener.event.SpigotEventListener;
 import tk.bluetree242.advancedplhide.spigot.listener.packet.SpigotPacketListener;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Field;
@@ -53,31 +51,29 @@ import java.util.List;
 
 public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     private final SpigotPacketListener listener = new SpigotPacketListener(this);
-    public Config config;
-    protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     private ProtocolManager protocolManager;
     private boolean legacy = false;
     private List<Group> groups;
+    private final AdvancedPlHideSpigot.Impl platformPlugin = new Impl();
 
-    public static Group getGroupForPlayer(Player player) {
-        Platform core = Platform.get();
+    public Group getGroupForPlayer(Player player) {
         if (player.hasPermission("plhide.no-group")) return null;
         List<Group> groups = new ArrayList<>();
-        for (Group group : core.getGroups()) {
+        for (Group group : platformPlugin.getGroups()) {
             if (player.hasPermission("plhide.group." + group.getName())) {
                 groups.add(group);
             }
         }
-        return groups.isEmpty() ? core.getGroup("default") : core.mergeGroups(groups);
+        return groups.isEmpty() ? platformPlugin.getGroup("platformPlugin") : platformPlugin.mergeGroups(groups);
     }
 
     public void onLoad() {
         protocolManager = ProtocolLibrary.getProtocolManager();
-        Platform.setPlatform(new Impl());
+        PlatformPlugin.setPlatform(platformPlugin);
     }
 
     public void onEnable() {
-        reloadConfig();
+        platformPlugin.reloadConfig();
         protocolManager.addPacketListener(new SpigotPacketListener(this));
         getServer().getPluginManager().registerEvents(new SpigotEventListener(this), this);
         String str = Bukkit.getServer().getClass().getPackage().getName();
@@ -133,7 +129,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
 
     public void loadGroups() {
         groups = new ArrayList<>();
-        config.groups().forEach((name, val) -> {
+        platformPlugin.getConfig().groups().forEach((name, val) -> {
             if (getGroup(name) == null)
                 groups.add(new Group(name, val.tabcomplete()));
             else {
@@ -154,13 +150,6 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         return null;
     }
 
-    @Override
-    public void reloadConfig() throws ConfigurationLoadException {
-        confManager.reloadConfig();
-        config = confManager.getConfigData();
-        loadGroups();
-    }
-
     public CommandMap getCommandMap() {
         try {
             final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
@@ -173,16 +162,16 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     }
 
 
-    public class Impl extends Platform {
+    public class Impl extends PlatformPlugin {
 
         @Override
-        public Config getConfig() {
-            return config;
+        public void loadGroups() {
+            AdvancedPlHideSpigot.this.loadGroups();
         }
 
         @Override
-        public void reloadConfig() throws ConfigurationLoadException {
-            AdvancedPlHideSpigot.this.reloadConfig();
+        public File getDataFolder() {
+            return AdvancedPlHideSpigot.this.getDataFolder();
         }
 
         @Override

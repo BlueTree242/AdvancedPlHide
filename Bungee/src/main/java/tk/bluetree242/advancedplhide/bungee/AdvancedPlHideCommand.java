@@ -26,7 +26,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Command;
-import tk.bluetree242.advancedplhide.Platform;
+import tk.bluetree242.advancedplhide.PlatformPlugin;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 
 import java.util.concurrent.TimeUnit;
@@ -51,7 +51,7 @@ public class AdvancedPlHideCommand extends Command {
                 } else {
                     ProxyServer.getInstance().getScheduler().schedule(core, () -> {
                         try {
-                            Platform.get().reloadConfig();
+                            PlatformPlugin.get().reloadConfig();
                             sender.sendMessage(ChatColor.GREEN + "Configuration Reloaded");
                         } catch (ConfigurationLoadException e) {
                             sender.sendMessage(ChatColor.RED + "Could not reload " + e.getConfigName());

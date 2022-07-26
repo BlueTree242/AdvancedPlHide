@@ -34,20 +34,16 @@ import dev.simplix.protocolize.api.Protocolize;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.slf4j.Logger;
 import tk.bluetree242.advancedplhide.Group;
-import tk.bluetree242.advancedplhide.Platform;
+import tk.bluetree242.advancedplhide.PlatformPlugin;
 import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
-import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
 import tk.bluetree242.advancedplhide.velocity.listener.event.VelocityEventListener;
 import tk.bluetree242.advancedplhide.velocity.listener.packet.VelocityPacketListener;
 
 import javax.inject.Inject;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,15 +55,13 @@ import java.util.Objects;
         version = AdvancedPlHideVelocity.VERSION,
         authors = {"BlueTree242"},
         dependencies = {@Dependency(id = "protocolize")})
-public class AdvancedPlHideVelocity extends Platform {
+public class AdvancedPlHideVelocity extends PlatformPlugin {
     public static final String DESCRIPTION = "{description}";
     public static final String VERSION = "{version}";
     public final ProxyServer server;
     public final Logger logger;
     public final Path dataDirectory;
     private final Metrics.Factory metricsFactory;
-    public Config config;
-    protected ConfManager<Config> confManager;
     private List<Group> groups = new ArrayList<>();
 
     @Inject
@@ -77,19 +71,18 @@ public class AdvancedPlHideVelocity extends Platform {
         this.logger = logger;
         this.dataDirectory = dataDirectory;
         confManager = ConfManager.create(dataDirectory, "config.yml", Config.class);
-        Platform.setPlatform(this);
+        PlatformPlugin.setPlatform(this);
     }
 
-    public static Group getGroupForPlayer(Player player) {
-        Platform core = Platform.get();
+    public Group getGroupForPlayer(Player player) {
         if (player.hasPermission("plhide.no-group")) return null;
         List<Group> groups = new ArrayList<>();
-        for (Group group : core.getGroups()) {
+        for (Group group : getGroups()) {
             if (player.hasPermission("plhide.group." + group.getName())) {
                 groups.add(group);
             }
         }
-        return groups.isEmpty() ? core.getGroup("default") : core.mergeGroups(groups);
+        return groups.isEmpty() ? getGroup("default") : mergeGroups(groups);
     }
 
     private static byte[] readFully(InputStream input) throws IOException {
@@ -104,7 +97,7 @@ public class AdvancedPlHideVelocity extends Platform {
 
     public void loadGroups() {
         groups = new ArrayList<>();
-        config.groups().forEach((name, val) -> {
+        getConfig().groups().forEach((name, val) -> {
             if (getGroup(name) == null)
                 groups.add(new Group(name, val.tabcomplete()));
             else {
@@ -159,17 +152,13 @@ public class AdvancedPlHideVelocity extends Platform {
                 .aliases("aphv", "apv", "plhidev", "phv")
                 .build();
         server.getCommandManager().register(meta, new AdvancedPlHideCommand(this));
-        server.getEventManager().register(this, new VelocityEventListener());
+        server.getEventManager().register(this, new VelocityEventListener(this));
         Protocolize.listenerProvider().registerListener(new VelocityPacketListener(this));
         metricsFactory.make(this, 13708);
         server.getConsoleCommandSource().sendMessage(LegacyComponentSerializer.legacy('&').deserialize(Constants.startupMessage()));
         performStartUpdateCheck();
     }
 
-    @Override
-    public Config getConfig() {
-        return config;
-    }
 
     public void performStartUpdateCheck() {
         UpdateCheckResult result = updateCheck();
@@ -198,12 +187,9 @@ public class AdvancedPlHideVelocity extends Platform {
         }
     }
 
-
     @Override
-    public void reloadConfig() throws ConfigurationLoadException {
-        confManager.reloadConfig();
-        config = confManager.getConfigData();
-        loadGroups();
+    public File getDataFolder() {
+        return dataDirectory.toFile();
     }
 
 

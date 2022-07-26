@@ -22,7 +22,7 @@
 
 package tk.bluetree242.advancedplhide.utils;
 
-import tk.bluetree242.advancedplhide.Platform;
+import tk.bluetree242.advancedplhide.PlatformPlugin;
 
 public class Constants {
     public static final String DEFAULT_UP_TO_DATE = "&aYou are up to date";
@@ -36,9 +36,9 @@ public class Constants {
                 "| &cInformation:\n&r" +
                 "|   &cName: &rAdvancedPlHide\n&r" +
                 "|   &cDevelopers: &rBlueTree242\n&r" +
-                "|   &cVersion: &r" + Platform.get().getCurrentVersion() + "\n&r" +
-                (!Platform.get().getCurrentBuild().equals("NONE") ? "|   &cBuild Number: &r#" + Platform.get().getCurrentBuild() + "\n&r" : "") +
-                "|   &cRunning on: &r" + Platform.get().getType().getName() + "\n&r" +
+                "|   &cVersion: &r" + PlatformPlugin.get().getCurrentVersion() + "\n&r" +
+                (!PlatformPlugin.get().getCurrentBuild().equals("NONE") ? "|   &cBuild Number: &r#" + PlatformPlugin.get().getCurrentBuild() + "\n&r" : "") +
+                "|   &cRunning on: &r" + PlatformPlugin.get().getType().getName() + "\n&r" +
                 "| &cSupport:\n&r" +
                 "|   &cGithub: &rhttps://github.com/BlueTree242/AdvancedPlHide/issues\n" +
                 "|   &cDiscord: &rhttps://advancedplhide.ml/support\n" +

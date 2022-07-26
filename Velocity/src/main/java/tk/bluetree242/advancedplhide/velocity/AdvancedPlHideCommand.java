@@ -27,7 +27,7 @@ import com.velocitypowered.api.command.SimpleCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import tk.bluetree242.advancedplhide.Platform;
+import tk.bluetree242.advancedplhide.PlatformPlugin;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class AdvancedPlHideCommand implements SimpleCommand {
                 } else {
                     core.server.getScheduler().buildTask(core, () -> {
                         try {
-                            Platform.get().reloadConfig();
+                            PlatformPlugin.get().reloadConfig();
                             sender.sendMessage(Component.text("Configuration Reloaded").color(NamedTextColor.GREEN));
                         } catch (ConfigurationLoadException ev) {
                             sender.sendMessage(Component.text("Could not reload " + ev.getConfigName()).color(NamedTextColor.RED));

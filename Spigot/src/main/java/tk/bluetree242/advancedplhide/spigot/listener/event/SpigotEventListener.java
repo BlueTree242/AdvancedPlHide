@@ -28,7 +28,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import tk.bluetree242.advancedplhide.Platform;
+import tk.bluetree242.advancedplhide.PlatformPlugin;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.spigot.AdvancedPlHideSpigot;
 import tk.bluetree242.advancedplhide.utils.Constants;
@@ -46,7 +46,7 @@ public class SpigotEventListener implements Listener {
         String cmd = e.getMessage().toLowerCase().split(" ")[0];
         if (cmd.equalsIgnoreCase("/plugins") || cmd.equalsIgnoreCase("/pl") || cmd.equalsIgnoreCase("/bukkit:pl") || cmd.equalsIgnoreCase("/bukkit:plugins")) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', Platform.get().getConfig().pl_message()));
+            e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', PlatformPlugin.get().getConfig().pl_message()));
         }
     }
 
@@ -54,7 +54,7 @@ public class SpigotEventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         if (e.getPlayer().hasPermission("plhide.updatechecker")) {
             Bukkit.getScheduler().runTask(core, () -> {
-                UpdateCheckResult result = Platform.get().updateCheck();
+                UpdateCheckResult result = PlatformPlugin.get().updateCheck();
                 if (result == null) return;
                 String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Spigot&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
                 if (result.getMessage() != null) {

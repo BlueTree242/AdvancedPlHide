@@ -46,9 +46,10 @@ import java.util.UUID;
 
 public class BungeePacketListener extends AbstractPacketListener<TabCompleteResponse> {
     private final UsedMap<UUID, String> commandsWaiting = new UsedMap<>();
-
-    public BungeePacketListener() {
+    private final AdvancedPlHideBungee core;
+    public BungeePacketListener(AdvancedPlHideBungee core) {
         super(TabCompleteResponse.class, Direction.UPSTREAM, 0);
+        this.core = core;
         Protocolize.listenerProvider().registerListener(new BungeePacketListener.RequestListener());
         Protocolize.listenerProvider().registerListener(new CommandsListener());
     }
@@ -74,25 +75,25 @@ public class BungeePacketListener extends AbstractPacketListener<TabCompleteResp
         if (legacy) {
             if (!notCompleted.contains(" ")) {
                 StringCommandCompleterList list = new StringCommandCompleterList(packet.getCommands());
-                CompleterModifier.handleCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleCompleter(list, core.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
             } else {
                 StringSubCommandCompleterList list = new StringSubCommandCompleterList(packet.getCommands(), notCompleted);
-                CompleterModifier.handleSubCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleSubCompleter(list, core.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 if (list.isCancelled()) e.cancelled(true);
             }
         } else {
             if (!notCompleted.contains(" ")) {
                 SuggestionCommandCompleterList list = new SuggestionCommandCompleterList(packet.getSuggestions());
-                CompleterModifier.handleCompleter(list, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission("plhide.whitelist-mode"));
+                CompleterModifier.handleCompleter(list, core.getGroupForPlayer(player), player.hasPermission("plhide.whitelist-mode"));
             } else {
                 SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(e.packet().getSuggestions(), notCompleted);
-                CompleterModifier.handleSubCompleter(suggestions, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleSubCompleter(suggestions, core.getGroupForPlayer(player), player.hasPermission(Constants.SUB_WHITELIST_MODE_PERMISSION));
                 if (suggestions.isCancelled()) e.cancelled(true);
             }
         }
     }
 
-    public static class CommandsListener extends AbstractPacketListener<Commands> {
+    public class CommandsListener extends AbstractPacketListener<Commands> {
 
         protected CommandsListener() {
             super(Commands.class, Direction.UPSTREAM, 0);
@@ -112,7 +113,7 @@ public class BungeePacketListener extends AbstractPacketListener<TabCompleteResp
             }
             Commands packet = e.packet();
             RootNodeCommandCompleter completer = new RootNodeCommandCompleter(packet.getRoot());
-            CompleterModifier.handleCompleter(completer, AdvancedPlHideBungee.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+            CompleterModifier.handleCompleter(completer, core.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
         }
     }
 

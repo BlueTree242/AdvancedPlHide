@@ -24,10 +24,12 @@ package tk.bluetree242.advancedplhide;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import org.json.JSONObject;
+import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,23 +37,36 @@ import java.util.List;
  * Platform is the platform the plugin runs on, we can also call it the plugin core as it contains some methods related to the plugin itself too
  *
  * @see AdvancedPlHide#get()
- * @see Platform#get()
+ * @see PlatformPlugin#get()
  */
-public abstract class Platform {
-    private static Platform platform = null;
+public abstract class PlatformPlugin {
+    private static PlatformPlugin platformPlugin = null;
 
-    public static Platform get() {
-        return platform;
+    protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
+    private Config config;
+
+    public static PlatformPlugin get() {
+        return platformPlugin;
     }
 
-    public static void setPlatform(Platform val) {
-        if (platform != null) throw new IllegalStateException("Platform already set");
-        platform = val;
+    public static void setPlatform(PlatformPlugin val) {
+        if (platformPlugin != null) throw new IllegalStateException("Platform already set");
+        platformPlugin = val;
     }
 
-    public abstract Config getConfig();
+    public Config getConfig() {
+        return config;
+    }
 
-    public abstract void reloadConfig() throws ConfigurationLoadException;
+    public void reloadConfig() throws ConfigurationLoadException {
+        confManager.reloadConfig();
+        config = confManager.getConfigData();
+        loadGroups();
+    }
+
+    public abstract void loadGroups();
+
+    public abstract File getDataFolder();
 
     public abstract List<Group> getGroups();
 
