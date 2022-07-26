@@ -51,7 +51,7 @@ subprojects {
             filter ReplaceTokens, tokens: [version    : version,
                                            build      : buildNumber,
                                            commit     : commit,
-                                           description: description,
+                                           description: project.description,
                                            buildDate  : System.currentTimeMillis() + ""
             ]
         }
