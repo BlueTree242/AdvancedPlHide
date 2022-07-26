@@ -42,7 +42,7 @@ import java.util.List;
 public abstract class PlatformPlugin {
     private static PlatformPlugin platformPlugin = null;
 
-    protected ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
+    private final ConfManager<Config> confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     private Config config;
 
     public static PlatformPlugin get() {

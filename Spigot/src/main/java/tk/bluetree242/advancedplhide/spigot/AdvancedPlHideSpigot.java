@@ -64,7 +64,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
                 groups.add(group);
             }
         }
-        return groups.isEmpty() ? platformPlugin.getGroup("platformPlugin") : platformPlugin.mergeGroups(groups);
+        return groups.isEmpty() ? platformPlugin.getGroup("default") : platformPlugin.mergeGroups(groups);
     }
 
     public void onLoad() {

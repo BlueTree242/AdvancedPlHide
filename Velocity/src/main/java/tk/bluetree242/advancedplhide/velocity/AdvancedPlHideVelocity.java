@@ -35,8 +35,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.slf4j.Logger;
 import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.PlatformPlugin;
-import tk.bluetree242.advancedplhide.config.ConfManager;
-import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
 import tk.bluetree242.advancedplhide.velocity.listener.event.VelocityEventListener;
@@ -70,8 +68,22 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
         this.server = server;
         this.logger = logger;
         this.dataDirectory = dataDirectory;
-        confManager = ConfManager.create(dataDirectory, "config.yml", Config.class);
         PlatformPlugin.setPlatform(this);
+    }
+
+    @Subscribe
+    public void onProxyInitialization(ProxyInitializeEvent e) {
+        reloadConfig();
+        CommandMeta meta = server.getCommandManager().metaBuilder("advancedplhidevelocity")
+                // Specify other aliases (optional)
+                .aliases("aphv", "apv", "plhidev", "phv")
+                .build();
+        server.getCommandManager().register(meta, new AdvancedPlHideCommand(this));
+        server.getEventManager().register(this, new VelocityEventListener(this));
+        Protocolize.listenerProvider().registerListener(new VelocityPacketListener(this));
+        metricsFactory.make(this, 13708);
+        server.getConsoleCommandSource().sendMessage(LegacyComponentSerializer.legacy('&').deserialize(Constants.startupMessage()));
+        performStartUpdateCheck();
     }
 
     public Group getGroupForPlayer(Player player) {
@@ -143,22 +155,6 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
     public List<Group> getGroups() {
         return groups;
     }
-
-    @Subscribe
-    public void onProxyInitialization(ProxyInitializeEvent e) {
-        reloadConfig();
-        CommandMeta meta = server.getCommandManager().metaBuilder("advancedplhidevelocity")
-                // Specify other aliases (optional)
-                .aliases("aphv", "apv", "plhidev", "phv")
-                .build();
-        server.getCommandManager().register(meta, new AdvancedPlHideCommand(this));
-        server.getEventManager().register(this, new VelocityEventListener(this));
-        Protocolize.listenerProvider().registerListener(new VelocityPacketListener(this));
-        metricsFactory.make(this, 13708);
-        server.getConsoleCommandSource().sendMessage(LegacyComponentSerializer.legacy('&').deserialize(Constants.startupMessage()));
-        performStartUpdateCheck();
-    }
-
 
     public void performStartUpdateCheck() {
         UpdateCheckResult result = updateCheck();
