@@ -56,7 +56,8 @@ public class CompleterModifier {
         ConfSubCompleterList originConfList = playerGroup.getSubCompleters();
         List<CommandCompleter> cmds = playerGroup.getCompleteCommands();
         boolean includedConfig = cmds.stream().anyMatch(c -> c.getName().equalsIgnoreCase(list.getName()));
-        if ((whitelist && !includedConfig || (!whitelist && includedConfig))) {
+        if (((whitelist && !includedConfig) || (!whitelist && includedConfig))) {
+            System.out.println(includedConfig);
             list.removeAll(); //this command is not visible to player they might not see it's sub args
             return;
         }
@@ -75,7 +76,7 @@ public class CompleterModifier {
     }
 
     public static void applyWhitelist(SubCommandCompleterList list, ConfSubCompleterList originConfList) {
-        if (list.isEmpty()) return;
+        if (originConfList.isEmpty()) return;
         for (SubCommandCompleter completer : new ArrayList<>(list)) {
             ConfSubCompleterList confList = originConfList.ofArgs(list.getArgs(completer));
             if (confList.isEmpty()) {
