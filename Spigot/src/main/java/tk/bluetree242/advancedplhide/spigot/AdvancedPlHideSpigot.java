@@ -43,7 +43,6 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     private final SpigotPacketListener listener = new SpigotPacketListener(this);
     private ProtocolManager protocolManager;
     private boolean legacy = false;
-    private List<Group> groups;
     private final  SpigotPlatformPlugin platformPlugin = new SpigotPlatformPlugin(this);
 
     public Group getGroupForPlayer(Player player) {
@@ -83,34 +82,5 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     public boolean isLegacy() {
         return legacy;
     }
-
-    public List<Group> getGroups() {
-        return groups;
-    }
-
-    public void loadGroups() {
-        groups = new ArrayList<>();
-        platformPlugin.getConfig().groups().forEach((name, val) -> {
-            if (getGroup(name) == null)
-                groups.add(new Group(name, val.tabcomplete()));
-            else {
-                getLogger().warning("Group " + name + " is repeated.");
-            }
-        });
-        if (getGroup("default") == null) {
-            getLogger().warning("group default was not found. If someone has no permission for any group, no group applies on them");
-
-        }
-
-    }
-
-    public Group getGroup(String name) {
-        for (Group group : groups) {
-            if (group.getName().equals(name)) return group;
-        }
-        return null;
-    }
-
-
 
 }

@@ -39,7 +39,6 @@ import java.util.List;
 
 public class AdvancedPlHideBungee extends Plugin implements Listener {
     private BungeePacketListener listener;
-    private List<Group> groups = new ArrayList<>();
     private final BungeePlatformPlugin platformPlugin = new BungeePlatformPlugin(this);
     public Group getGroupForPlayer(ProxiedPlayer player) {
         if (player.hasPermission("plhide.no-group")) return null;
@@ -68,32 +67,6 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
 
     public void onDisable() {
         Protocolize.listenerProvider().unregisterListener(listener);
-    }
-
-    public void loadGroups() {
-        groups = new ArrayList<>();
-        platformPlugin.getConfig().groups().forEach((name, val) -> {
-            if (getGroup(name) == null)
-                groups.add(new Group(name, val.tabcomplete()));
-            else {
-                getLogger().warning("Group " + name + " is repeated.");
-            }
-        });
-        if (getGroup("default") == null) {
-            getLogger().warning("Group default was not found. If someone has no permission for any group, no group applies on them");
-        }
-
-    }
-
-    public Group getGroup(String name) {
-        for (Group group : groups) {
-            if (group.getName().equals(name)) return group;
-        }
-        return null;
-    }
-
-    public List<Group> getGroups() {
-        return groups;
     }
 
 

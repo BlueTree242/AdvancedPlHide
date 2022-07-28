@@ -25,13 +25,11 @@ package tk.bluetree242.advancedplhide.bungee;
 import com.google.common.io.ByteStreams;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
-import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.PlatformPlugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.List;
 
 public class BungeePlatformPlugin extends PlatformPlugin {
     
@@ -67,23 +65,8 @@ public class BungeePlatformPlugin extends PlatformPlugin {
     }
 
     @Override
-    public void loadGroups() {
-        core.loadGroups();
-    }
-
-    @Override
     public File getDataFolder() {
         return core.getDataFolder();
-    }
-
-    @Override
-    public List<Group> getGroups() {
-        return core.getGroups();
-    }
-
-    @Override
-    public Group getGroup(String name) {
-        return core.getGroup(name);
     }
 
     @Override

@@ -29,14 +29,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.plugin.Plugin;
-import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.PlatformPlugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Field;
-import java.util.List;
 
 public class SpigotPlatformPlugin extends PlatformPlugin{
     private final AdvancedPlHideSpigot core;
@@ -72,23 +70,8 @@ public class SpigotPlatformPlugin extends PlatformPlugin{
     }
 
     @Override
-    public void loadGroups() {
-        core.loadGroups();
-    }
-
-    @Override
     public File getDataFolder() {
         return core.getDataFolder();
-    }
-
-    @Override
-    public List<Group> getGroups() {
-        return core.getGroups();
-    }
-
-    @Override
-    public Group getGroup(String name) {
-        return core.getGroup(name);
     }
 
     @Override

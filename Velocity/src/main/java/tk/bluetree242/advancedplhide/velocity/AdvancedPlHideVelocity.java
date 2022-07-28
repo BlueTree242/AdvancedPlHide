@@ -59,7 +59,6 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
     public final Logger logger;
     public final Path dataDirectory;
     private final Metrics.Factory metricsFactory;
-    private List<Group> groups = new ArrayList<>();
 
     @Inject
     public AdvancedPlHideVelocity(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory, Metrics.Factory metricsFactory) {
@@ -131,32 +130,6 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
         logger.error(s);
     }
 
-    public void loadGroups() {
-        groups = new ArrayList<>();
-        getConfig().groups().forEach((name, val) -> {
-            if (getGroup(name) == null)
-                groups.add(new Group(name, val.tabcomplete()));
-            else {
-                getLogger().warn("Group " + name + " is repeated.");
-            }
-        });
-        if (getGroup("default") == null) {
-            getLogger().warn("Group default was not found. If someone has no permission for any group, no group applies on them");
-        }
-
-    }
-
-    public Logger getLogger() {
-        return logger;
-    }
-
-    public Group getGroup(String name) {
-        for (Group group : groups) {
-            if (group.getName().equals(name)) return group;
-        }
-        return null;
-    }
-
     @Override
     public String getPluginForCommand(String s) {
         return null;
@@ -174,10 +147,6 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
     @Override
     public Type getType() {
         return Type.VELOCITY;
-    }
-
-    public List<Group> getGroups() {
-        return groups;
     }
 
     @Override

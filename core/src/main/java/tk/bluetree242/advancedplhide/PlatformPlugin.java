@@ -45,6 +45,7 @@ public abstract class PlatformPlugin {
 
     private ConfManager<Config> confManager;
     private Config config;
+    private List<Group> groups = new ArrayList<>();
 
 
     public static PlatformPlugin get() {
@@ -69,6 +70,8 @@ public abstract class PlatformPlugin {
     public void start() {
         confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     }
+
+    public abstract File getDataFolder();
 
     public abstract void runSafe(Runnable runnable);
 
@@ -110,14 +113,6 @@ public abstract class PlatformPlugin {
             }
         });
     }
-
-    public abstract void loadGroups();
-
-    public abstract File getDataFolder();
-
-    public abstract List<Group> getGroups();
-
-    public abstract Group getGroup(String name);
 
     public abstract String getPluginForCommand(String s);
 
@@ -165,6 +160,32 @@ public abstract class PlatformPlugin {
     }
 
     public abstract Type getType();
+
+    public void loadGroups() {
+        groups = new ArrayList<>();
+        platformPlugin.getConfig().groups().forEach((name, val) -> {
+            if (getGroup(name) == null)
+                groups.add(new Group(name, val.tabcomplete()));
+            else {
+                logWarning("Group " + name + " is repeated.");
+            }
+        });
+        if (getGroup("default") == null) {
+            logWarning("Group default was not found. If someone has no permission for any group, no group applies on them");
+        }
+
+    }
+
+    public Group getGroup(String name) {
+        for (Group group : groups) {
+            if (group.getName().equals(name)) return group;
+        }
+        return null;
+    }
+
+    public List<Group> getGroups() {
+        return groups;
+    }
 
     public enum Type {
         SPIGOT("Spigot"), VELOCITY("Velocity"), BUNGEE("Bungee");
