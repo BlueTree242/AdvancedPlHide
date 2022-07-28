@@ -150,6 +150,7 @@ public abstract class PlatformPlugin {
             req.part("buildNumber", getCurrentBuild());
             req.part("buildDate", getBuildDate());
             req.part("devUpdatechecker", getConfig().dev_updatechecker() + "");
+            req.part("platform", getType().name());
             String response = req.body();
             JSONObject json = new JSONObject(response);
             return new UpdateCheckResult(json.getInt("versions_behind"), json.isNull("message") ? null : json.getString("message"), json.isNull("type") ? "INFO" : json.getString("type"), json.getString("downloadUrl"));
