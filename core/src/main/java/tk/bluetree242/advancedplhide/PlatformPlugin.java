@@ -28,6 +28,7 @@ import tk.bluetree242.advancedplhide.config.ConfManager;
 import tk.bluetree242.advancedplhide.config.Config;
 import tk.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
+import tk.bluetree242.advancedplhide.utils.Constants;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -65,8 +66,49 @@ public abstract class PlatformPlugin {
         loadGroups();
     }
 
-    public void initConfigManager() {
+    public void start() {
         confManager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
+    }
+
+    public abstract void runSafe(Runnable runnable);
+
+    public abstract String translateColorCodes(String s);
+
+    public String getPrefix() {
+        return translateColorCodes("&7[&eAPH&a" + getType().getName() + "&7]");
+    }
+
+    public abstract void logInfo(String s);
+    public abstract void logWarning(String s);
+    public abstract void logError(String s);
+
+    public void performStartUpdateCheck() {
+        runSafe(() -> {
+            UpdateCheckResult result = updateCheck();
+            if (result == null) {
+                logError("Could not check for updates");
+                return;
+            }
+            String msg = result.getVersionsBehind() == 0 ?
+                    translateColorCodes(Constants.DEFAULT_UP_TO_DATE) :
+                    translateColorCodes(Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "")
+                            .replace("{download}", result.getUpdateUrl()));
+            if (result.getMessage() != null) {
+                msg = translateColorCodes(result.getMessage());
+            }
+
+            switch (result.getLoggerType()) {
+                case "INFO":
+                    logInfo(msg);
+                    break;
+                case "WARNING":
+                    logWarning(msg);
+                    break;
+                case "ERROR":
+                    logError(msg);
+                    break;
+            }
+        });
     }
 
     public abstract void loadGroups();

@@ -24,27 +24,17 @@ package tk.bluetree242.advancedplhide.spigot;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandMap;
-import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.PlatformPlugin;
-import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.spigot.listener.event.SpigotEventListener;
 import tk.bluetree242.advancedplhide.spigot.listener.packet.SpigotPacketListener;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +44,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     private ProtocolManager protocolManager;
     private boolean legacy = false;
     private List<Group> groups;
-    private final AdvancedPlHideSpigot.Impl platformPlugin = new Impl();
+    private final  SpigotPlatformPlugin platformPlugin = new SpigotPlatformPlugin(this);
 
     public Group getGroupForPlayer(Player player) {
         if (player.hasPermission("plhide.no-group")) return null;
@@ -70,7 +60,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     public void onLoad() {
         protocolManager = ProtocolLibrary.getProtocolManager();
         PlatformPlugin.setPlatform(platformPlugin);
-        platformPlugin.initConfigManager();
+        platformPlugin.start();
     }
 
     public void onEnable() {
@@ -84,7 +74,6 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         getServer().getPluginCommand("advancedplhide").setTabCompleter(new AdvancedPlHideCommand.TabCompleter());
         new Metrics(this, 13707);
         Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', Constants.startupMessage()));
-        performStartUpdateCheck();
     }
 
     public void onDisable() {
@@ -93,35 +82,6 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
 
     public boolean isLegacy() {
         return legacy;
-    }
-
-
-    public void performStartUpdateCheck() {
-        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
-            UpdateCheckResult result = Impl.get().updateCheck();
-            if (result == null) {
-                getLogger().severe("Could not check for updates");
-                return;
-            }
-            String msg = result.getVersionsBehind() == 0 ?
-                    ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_UP_TO_DATE) :
-                    ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "")
-                            .replace("{download}", result.getUpdateUrl()));
-            if (result.getMessage() != null) {
-                msg = ChatColor.translateAlternateColorCodes('&', result.getMessage());
-            }
-            switch (result.getLoggerType()) {
-                case "INFO":
-                    getLogger().info(msg);
-                    break;
-                case "WARNING":
-                    getLogger().warning(msg);
-                    break;
-                case "ERROR":
-                    getLogger().severe(msg);
-                    break;
-            }
-        });
     }
 
     public List<Group> getGroups() {
@@ -151,63 +111,6 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         return null;
     }
 
-    public CommandMap getCommandMap() {
-        try {
-            final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-
-            bukkitCommandMap.setAccessible(true);
-            return (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-
-    public class Impl extends PlatformPlugin {
-
-        @Override
-        public void loadGroups() {
-            AdvancedPlHideSpigot.this.loadGroups();
-        }
-
-        @Override
-        public File getDataFolder() {
-            return AdvancedPlHideSpigot.this.getDataFolder();
-        }
-
-        @Override
-        public List<Group> getGroups() {
-            return AdvancedPlHideSpigot.this.getGroups();
-        }
-
-        @Override
-        public Group getGroup(String name) {
-            return AdvancedPlHideSpigot.this.getGroup(name);
-        }
-
-        @Override
-        public String getPluginForCommand(String s) {
-            Command command = getCommandMap().getCommand(s);
-            if (!(command instanceof PluginIdentifiableCommand)) return "minecraft";
-            Plugin plugin = ((PluginIdentifiableCommand) command).getPlugin();
-            if (plugin == null) return null;
-            return plugin.getName();
-        }
-
-        @Override
-        public String getVersionConfig() {
-            try {
-                return new String(ByteStreams.toByteArray(getResource("version-config.json")));
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        @Override
-        public Type getType() {
-            return Type.SPIGOT;
-        }
-    }
 
 
 }

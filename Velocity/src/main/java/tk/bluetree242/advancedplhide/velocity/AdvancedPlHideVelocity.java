@@ -35,7 +35,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.slf4j.Logger;
 import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.PlatformPlugin;
-import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
 import tk.bluetree242.advancedplhide.velocity.listener.event.VelocityEventListener;
 import tk.bluetree242.advancedplhide.velocity.listener.packet.VelocityPacketListener;
@@ -69,7 +68,7 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
         this.logger = logger;
         this.dataDirectory = dataDirectory;
         PlatformPlugin.setPlatform(this);
-        initConfigManager();
+        start();
     }
 
     @Subscribe
@@ -84,7 +83,6 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
         Protocolize.listenerProvider().registerListener(new VelocityPacketListener(this));
         metricsFactory.make(this, 13708);
         server.getConsoleCommandSource().sendMessage(LegacyComponentSerializer.legacy('&').deserialize(Constants.startupMessage()));
-        performStartUpdateCheck();
     }
 
     public Group getGroupForPlayer(Player player) {
@@ -106,6 +104,31 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
             output.write(buffer, 0, bytesRead);
         }
         return output.toByteArray();
+    }
+
+    @Override
+    public void runSafe(Runnable runnable) {
+        runnable.run();
+    }
+
+    @Override
+    public String translateColorCodes(String s) {
+        return LegacyComponentSerializer.legacy('&').deserialize(s).content();
+    }
+
+    @Override
+    public void logInfo(String s) {
+        logger.info(s);
+    }
+
+    @Override
+    public void logWarning(String s) {
+        logger.warn(s);
+    }
+
+    @Override
+    public void logError(String s) {
+        logger.error(s);
     }
 
     public void loadGroups() {
@@ -155,33 +178,6 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
 
     public List<Group> getGroups() {
         return groups;
-    }
-
-    public void performStartUpdateCheck() {
-        UpdateCheckResult result = updateCheck();
-        if (result == null) {
-            getLogger().error("Could not check for updates");
-            return;
-        }
-        String msg = result.getVersionsBehind() == 0 ?
-                LegacyComponentSerializer.legacy('&').deserialize(Constants.DEFAULT_UP_TO_DATE).content() :
-                LegacyComponentSerializer.legacy('&').deserialize(Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "")
-                        .replace("{download}", result.getUpdateUrl())).content();
-        if (result.getMessage() != null) {
-            msg = LegacyComponentSerializer.legacy('&').deserialize(result.getMessage()).content();
-        }
-
-        switch (result.getLoggerType()) {
-            case "INFO":
-                logger.info(msg);
-                break;
-            case "WARNING":
-                logger.warn(msg);
-                break;
-            case "ERROR":
-                logger.error(msg);
-                break;
-        }
     }
 
     @Override
