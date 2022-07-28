@@ -67,7 +67,6 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
         this.logger = logger;
         this.dataDirectory = dataDirectory;
         PlatformPlugin.setPlatform(this);
-        start();
     }
 
     private static byte[] readFully(InputStream input) throws IOException {
@@ -82,6 +81,7 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent e) {
+        start();
         reloadConfig();
         CommandMeta meta = server.getCommandManager().metaBuilder("advancedplhidevelocity")
                 // Specify other aliases (optional)
