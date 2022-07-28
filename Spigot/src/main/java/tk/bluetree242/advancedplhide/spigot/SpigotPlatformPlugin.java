@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Field;
 
-public class SpigotPlatformPlugin extends PlatformPlugin{
+public class SpigotPlatformPlugin extends PlatformPlugin {
     private final AdvancedPlHideSpigot core;
 
     public SpigotPlatformPlugin(AdvancedPlHideSpigot core) {

@@ -41,9 +41,9 @@ import java.util.List;
 
 public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     private final SpigotPacketListener listener = new SpigotPacketListener(this);
+    private final SpigotPlatformPlugin platformPlugin = new SpigotPlatformPlugin(this);
     private ProtocolManager protocolManager;
     private boolean legacy = false;
-    private final  SpigotPlatformPlugin platformPlugin = new SpigotPlatformPlugin(this);
 
     public Group getGroupForPlayer(Player player) {
         if (player.hasPermission("plhide.no-group")) return null;

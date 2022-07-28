@@ -70,6 +70,16 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
         start();
     }
 
+    private static byte[] readFully(InputStream input) throws IOException {
+        byte[] buffer = new byte[8192];
+        int bytesRead;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        while ((bytesRead = input.read(buffer)) != -1) {
+            output.write(buffer, 0, bytesRead);
+        }
+        return output.toByteArray();
+    }
+
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent e) {
         reloadConfig();
@@ -93,16 +103,6 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
             }
         }
         return groups.isEmpty() ? getGroup("default") : mergeGroups(groups);
-    }
-
-    private static byte[] readFully(InputStream input) throws IOException {
-        byte[] buffer = new byte[8192];
-        int bytesRead;
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        while ((bytesRead = input.read(buffer)) != -1) {
-            output.write(buffer, 0, bytesRead);
-        }
-        return output.toByteArray();
     }
 
     @Override

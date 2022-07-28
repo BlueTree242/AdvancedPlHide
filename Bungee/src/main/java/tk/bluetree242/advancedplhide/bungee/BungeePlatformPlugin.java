@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 
 public class BungeePlatformPlugin extends PlatformPlugin {
-    
+
     private final AdvancedPlHideBungee core;
 
     public BungeePlatformPlugin(AdvancedPlHideBungee core) {

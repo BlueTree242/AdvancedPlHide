@@ -82,7 +82,9 @@ public abstract class PlatformPlugin {
     }
 
     public abstract void logInfo(String s);
+
     public abstract void logWarning(String s);
+
     public abstract void logError(String s);
 
     public void performStartUpdateCheck() {
