@@ -55,7 +55,9 @@ public class CompleterModifier {
         if (playerGroup == null) return;
         ConfSubCompleterList originConfList = playerGroup.getSubCompleters();
         List<CommandCompleter> cmds = playerGroup.getCompleteCommands();
-        boolean includedConfig = cmds.stream().anyMatch(c -> c.getName().equalsIgnoreCase(list.getName()));
+        boolean includedConfig = cmds.stream().anyMatch(c -> c.getName().equalsIgnoreCase(list.getName()) ||
+                (c.getName().startsWith("from:") && PlatformPlugin.get().getPluginForCommand(list.getName()) != null &&
+                        PlatformPlugin.get().getPluginForCommand(list.getName()).equalsIgnoreCase(c.getName().replaceFirst("from:", ""))));
         if (((whitelist && !includedConfig) || (!whitelist && includedConfig))) {
             System.out.println(includedConfig);
             list.removeAll(); //this command is not visible to player they might not see it's sub args
