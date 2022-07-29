@@ -41,6 +41,7 @@ public class Group {
     private final ConfSubCompleterList subCompleters;
     private final List<String> originCompleters;
     private final PlatformPlugin core;
+
     public Group(PlatformPlugin core, String name, List<String> completers) {
         this.core = core;
         this.originCompleters = completers;

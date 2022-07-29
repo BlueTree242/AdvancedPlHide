@@ -30,9 +30,13 @@ import java.util.UUID;
 public interface PlatformPlayer {
 
     boolean hasPermission(String s);
+
     void sendMessage(String s);
+
     UUID getUUID();
+
     Group getGroup();
+
     default boolean isWhitelist() {
         return hasPermission(Constants.WHITELIST_MODE_PERMISSION);
     }

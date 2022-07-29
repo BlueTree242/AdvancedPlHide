@@ -67,7 +67,6 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
     }
 
 
-
     public void onDisable() {
         Protocolize.listenerProvider().unregisterListener(listener);
     }
