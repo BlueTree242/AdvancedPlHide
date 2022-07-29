@@ -34,12 +34,12 @@ import net.md_5.bungee.protocol.packet.TabCompleteRequest;
 import net.md_5.bungee.protocol.packet.TabCompleteResponse;
 import tk.bluetree242.advancedplhide.CompleterModifier;
 import tk.bluetree242.advancedplhide.bungee.AdvancedPlHideBungee;
+import tk.bluetree242.advancedplhide.bungee.BungeePlayer;
 import tk.bluetree242.advancedplhide.bungee.impl.completer.StringCommandCompleterList;
 import tk.bluetree242.advancedplhide.bungee.impl.subcompleter.StringSubCommandCompleterList;
 import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.completer.SuggestionCommandCompleterList;
 import tk.bluetree242.advancedplhide.impl.subcompleter.SuggestionSubCommandCompleterList;
-import tk.bluetree242.advancedplhide.utils.Constants;
 import tk.bluetree242.advancedplhide.utils.UsedMap;
 
 import java.util.UUID;
@@ -76,19 +76,19 @@ public class BungeePacketListener extends AbstractPacketListener<TabCompleteResp
         if (legacy) {
             if (!notCompleted.contains(" ")) {
                 StringCommandCompleterList list = new StringCommandCompleterList(packet.getCommands());
-                CompleterModifier.handleCompleter(list, core.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleCompleter(list, new BungeePlayer(core, player));
             } else {
                 StringSubCommandCompleterList list = new StringSubCommandCompleterList(packet.getCommands(), notCompleted);
-                CompleterModifier.handleSubCompleter(list, core.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleSubCompleter(list, new BungeePlayer(core, player));
                 if (list.isCancelled()) e.cancelled(true);
             }
         } else {
             if (!notCompleted.contains(" ")) {
                 SuggestionCommandCompleterList list = new SuggestionCommandCompleterList(packet.getSuggestions());
-                CompleterModifier.handleCompleter(list, core.getGroupForPlayer(player), player.hasPermission("plhide.whitelist-mode"));
+                CompleterModifier.handleCompleter(list, new BungeePlayer(core, player));
             } else {
                 SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(e.packet().getSuggestions(), notCompleted);
-                CompleterModifier.handleSubCompleter(suggestions, core.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleSubCompleter(suggestions, new BungeePlayer(core, player));
                 if (suggestions.isCancelled()) e.cancelled(true);
             }
         }
@@ -114,7 +114,7 @@ public class BungeePacketListener extends AbstractPacketListener<TabCompleteResp
             }
             Commands packet = e.packet();
             RootNodeCommandCompleter completer = new RootNodeCommandCompleter(packet.getRoot());
-            CompleterModifier.handleCompleter(completer, core.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+            CompleterModifier.handleCompleter(completer, new BungeePlayer(core, player));
         }
     }
 

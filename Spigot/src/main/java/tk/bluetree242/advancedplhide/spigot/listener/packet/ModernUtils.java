@@ -30,17 +30,17 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
 import tk.bluetree242.advancedplhide.CompleterModifier;
-import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
+import tk.bluetree242.advancedplhide.spigot.SpigotPlayer;
 
 public class ModernUtils { //utils for modern game, when the RootCommandNode was removed from COMMANDS packet
 
 
-    protected static void handleModern(PacketEvent packetEvent, Group group, boolean whitelist) {
+    protected static void handleModern(PacketEvent packetEvent, SpigotPlayer player) {
         ClientboundCommandsPacket packet = (ClientboundCommandsPacket) packetEvent.getPacket().getHandle();
         RootCommandNode nodeOrigin = packet.getRoot(new CommandBuildContext(RegistryAccess.BUILTIN.get())); //get the command node out
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(nodeOrigin);
-        CompleterModifier.handleCompleter(node, group, whitelist);
+        CompleterModifier.handleCompleter(node, player);
         //noinspection unchecked
         packetEvent.setPacket(new PacketContainer(PacketType.Play.Server.COMMANDS, new ClientboundCommandsPacket(node.export())));//put the modified root node in a new packet because it's not really possible to modify
     }

@@ -128,7 +128,7 @@ public abstract class PlatformPlugin {
             names.add(group.getName());
         }
         String name = "Merged Group: " + String.join(", ", names);
-        return new Group(name, tabcomplete);
+        return new Group(this, name, tabcomplete);
     }
 
     public abstract String getVersionConfig();
@@ -168,7 +168,7 @@ public abstract class PlatformPlugin {
         groups = new ArrayList<>();
         platformPlugin.getConfig().groups().forEach((name, val) -> {
             if (getGroup(name) == null)
-                groups.add(new Group(name, val.tabcomplete()));
+                groups.add(new Group(this, name, val.tabcomplete()));
             else {
                 logWarning("Group " + name + " is repeated.");
             }

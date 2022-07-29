@@ -31,9 +31,9 @@ import dev.simplix.protocolize.api.listener.AbstractPacketListener;
 import dev.simplix.protocolize.api.listener.PacketReceiveEvent;
 import dev.simplix.protocolize.api.listener.PacketSendEvent;
 import tk.bluetree242.advancedplhide.CompleterModifier;
-import tk.bluetree242.advancedplhide.utils.Constants;
 import tk.bluetree242.advancedplhide.utils.UsedMap;
 import tk.bluetree242.advancedplhide.velocity.AdvancedPlHideVelocity;
+import tk.bluetree242.advancedplhide.velocity.VelocityPlayer;
 import tk.bluetree242.advancedplhide.velocity.impl.completer.OfferCompleterList;
 import tk.bluetree242.advancedplhide.velocity.impl.subcompleter.OfferSubCommandCompleterList;
 
@@ -69,19 +69,19 @@ public class VelocityPacketListener extends AbstractPacketListener<TabCompleteRe
         if (legacy) {
             if (!notCompleted.contains(" ")) {
                 OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), true);
-                CompleterModifier.handleCompleter(list, core.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleCompleter(list, new VelocityPlayer(core, player));
             } else {
                 OfferSubCommandCompleterList list = new OfferSubCommandCompleterList(e.packet().getOffers(), notCompleted);
-                CompleterModifier.handleSubCompleter(list, core.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleSubCompleter(list, new VelocityPlayer(core, player));
                 if (list.isCancelled()) e.cancelled(true);
             }
         } else {
             if ((!notCompleted.contains(" "))) {
                 OfferCompleterList list = new OfferCompleterList(e.packet().getOffers(), false);
-                CompleterModifier.handleCompleter(list, core.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleCompleter(list, new VelocityPlayer(core, player));
             } else {
                 OfferSubCommandCompleterList list = new OfferSubCommandCompleterList(e.packet().getOffers(), notCompleted);
-                CompleterModifier.handleSubCompleter(list, core.getGroupForPlayer(player), player.hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+                CompleterModifier.handleSubCompleter(list, new VelocityPlayer(core, player));
                 if (list.isCancelled()) e.cancelled(true);
             }
         }

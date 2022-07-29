@@ -23,6 +23,7 @@
 package tk.bluetree242.advancedplhide;
 
 import tk.bluetree242.advancedplhide.config.subcompleter.ConfSubCompleterList;
+import tk.bluetree242.advancedplhide.platform.PlatformPlayer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,29 +39,26 @@ public class CompleterModifier {
     }
 
 
-    public static void handleCompleter(CommandCompleterList list, Group playerGroup, boolean whitelist) {
+    public static void handleCompleter(CommandCompleterList list, PlatformPlayer player) {
+        Group playerGroup = player.getGroup();
         if (PlatformPlugin.get().getConfig().remove_plugin_prefix())
             removePluginPrefix(list);
 
-        if (playerGroup != null) {
-            if (!whitelist) applyBlacklist(list, playerGroup.getCompleteCommands());
-            else applyWhitelist(list, playerGroup.getCompleteCommands());
+        for (CommandCompleter completer : new ArrayList<>(list)) {
+            if (!playerGroup.canSee(player, completer.getName())) completer.remove();
         }
     }
 
-    public static void handleSubCompleter(SubCommandCompleterList list, Group playerGroup, boolean whitelist) {
+    public static void handleSubCompleter(SubCommandCompleterList list, PlatformPlayer player) {
+        Group playerGroup = player.getGroup();
+        boolean whitelist = player.isWhitelist();
         if (BAD_COMMANDS.contains(list.getName().toLowerCase())) {
             list.removeAll();
         }
         if (playerGroup == null) return;
         ConfSubCompleterList originConfList = playerGroup.getSubCompleters();
-        List<CommandCompleter> cmds = playerGroup.getCompleteCommands();
-        boolean includedConfig = cmds.stream().anyMatch(c -> c.getName().equalsIgnoreCase(list.getName()) ||
-                (c.getName().startsWith("from:") && PlatformPlugin.get().getPluginForCommand(list.getName()) != null &&
-                        PlatformPlugin.get().getPluginForCommand(list.getName()).equalsIgnoreCase(c.getName().replaceFirst("from:", ""))));
-        if (((whitelist && !includedConfig) || (!whitelist && includedConfig))) {
-            System.out.println(includedConfig);
-            list.removeAll(); //this command is not visible to player they might not see it's sub args
+        if (!playerGroup.canSee(player, list.getName())) {
+            list.removeAll(); //they cannot see the actual command, why see the root?
             return;
         }
         ConfSubCompleterList confList = originConfList.ofCommand(list.getName());
@@ -87,43 +85,4 @@ public class CompleterModifier {
         }
     }
 
-
-    public static void applyBlacklist(CommandCompleterList list, List<CommandCompleter> toBlacklist) {
-        List<String> commands = new ArrayList<>();
-        List<String> plugins = new ArrayList<>();
-        for (CommandCompleter completer : toBlacklist) {
-            if (!completer.getName().startsWith("from:"))
-                commands.add(completer.getName());
-            else {
-                String name = completer.getName().replaceFirst("from:", "");
-                plugins.add(name);
-            }
-        }
-        for (CommandCompleter completer : new ArrayList<>(list)) {
-            if (commands.contains(completer.getName())) {
-                completer.remove();
-            } else if (plugins.contains(PlatformPlugin.get().getPluginForCommand(completer.getName()))) {
-                completer.remove();
-            }
-        }
-    }
-
-    public static void applyWhitelist(CommandCompleterList list, List<CommandCompleter> toWhitelist) {
-        List<String> commands = new ArrayList<>();
-        List<String> plugins = new ArrayList<>();
-        for (CommandCompleter completer : toWhitelist) {
-            if (!completer.getName().startsWith("from:"))
-                commands.add(completer.getName());
-            else {
-                String name = completer.getName().replaceFirst("from:", "");
-                plugins.add(name);
-            }
-        }
-        for (CommandCompleter completer : new ArrayList<>(list)) {
-            if (!commands.contains(completer.getName())) {
-                if (!plugins.contains(PlatformPlugin.get().getPluginForCommand(completer.getName())))
-                    completer.remove();
-            }
-        }
-    }
 }

@@ -66,6 +66,8 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
         ProxyServer.getInstance().getConsole().sendMessage(ChatColor.translateAlternateColorCodes('&', Constants.startupMessage()));
     }
 
+
+
     public void onDisable() {
         Protocolize.listenerProvider().unregisterListener(listener);
     }

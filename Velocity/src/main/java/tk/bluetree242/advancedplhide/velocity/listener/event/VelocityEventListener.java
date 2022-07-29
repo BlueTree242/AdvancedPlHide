@@ -36,6 +36,7 @@ import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.utils.Constants;
 import tk.bluetree242.advancedplhide.velocity.AdvancedPlHideVelocity;
+import tk.bluetree242.advancedplhide.velocity.VelocityPlayer;
 
 public class VelocityEventListener {
     private final AdvancedPlHideVelocity core;
@@ -78,6 +79,6 @@ public class VelocityEventListener {
     @Subscribe
     public void onCommands(PlayerAvailableCommandsEvent e) {
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(e.getRootNode());
-        CompleterModifier.handleCompleter(node, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+        CompleterModifier.handleCompleter(node, new VelocityPlayer(core, e.getPlayer()));
     }
 }

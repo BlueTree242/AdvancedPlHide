@@ -25,6 +25,7 @@ package tk.bluetree242.advancedplhide;
 import tk.bluetree242.advancedplhide.config.subcompleter.ConfSubCompleter;
 import tk.bluetree242.advancedplhide.config.subcompleter.ConfSubCompleterList;
 import tk.bluetree242.advancedplhide.impl.group.GroupCompleter;
+import tk.bluetree242.advancedplhide.platform.PlatformPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +40,9 @@ public class Group {
     private final List<CommandCompleter> completers;
     private final ConfSubCompleterList subCompleters;
     private final List<String> originCompleters;
-
-    public Group(String name, List<String> completers) {
+    private final PlatformPlugin core;
+    public Group(PlatformPlugin core, String name, List<String> completers) {
+        this.core = core;
         this.originCompleters = completers;
         this.name = name;
         List<CommandCompleter> completersFinal = new ArrayList<>();
@@ -89,6 +91,21 @@ public class Group {
     @Override
     public String toString() {
         return getName();
+    }
+
+    public boolean canSee(PlatformPlayer player, String cmd) {
+        if (cmd.contains(":") && core.getConfig().remove_plugin_prefix()) return false;
+        boolean whitelist = player.isWhitelist();
+        for (CommandCompleter command : getCompleteCommands()) {
+            String name = command.getName();
+            if (name.startsWith("from:")) {
+                String plugin = name.replaceFirst("from:", "");
+                if (core.getPluginForCommand(name).equals(plugin)) if (whitelist) return true;
+            } else if (name.equalsIgnoreCase(cmd)) {
+                if (whitelist) return true;
+            }
+        }
+        return false;
     }
 
 }
