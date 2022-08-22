@@ -58,7 +58,7 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
     }
 
     public void onLoad() {
-        PlatformPlugin.setPlatform(new Impl());
+        PlatformPlugin.setPlatform(platformPlugin);
         platformPlugin.initConfigManager();
     }
 
