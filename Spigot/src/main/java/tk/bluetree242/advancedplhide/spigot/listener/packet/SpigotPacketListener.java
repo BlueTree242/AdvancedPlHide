@@ -27,6 +27,7 @@ import com.comphenix.protocol.events.ListenerOptions;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.injector.server.TemporaryPlayer;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.tree.RootCommandNode;
@@ -54,7 +55,7 @@ public class SpigotPacketListener extends PacketAdapter {
     }
 
     public void onPacketSending(PacketEvent e) {
-
+        if (e.getPlayer() instanceof TemporaryPlayer) return;
         if (e.getPacketType() == PacketType.Play.Server.TAB_COMPLETE) {
             onTabcomplete(e);
         } else if (e.getPacketType() == PacketType.Play.Server.COMMANDS) {
@@ -111,6 +112,7 @@ public class SpigotPacketListener extends PacketAdapter {
     }
 
     public void onPacketReceiving(PacketEvent e) {
+        if (e.getPlayer() instanceof TemporaryPlayer) return;
         if (e.isCancelled()) return;
         if (e.getPacketType() == PacketType.Play.Client.TAB_COMPLETE) {
             String s = e.getPacket().getStrings()
