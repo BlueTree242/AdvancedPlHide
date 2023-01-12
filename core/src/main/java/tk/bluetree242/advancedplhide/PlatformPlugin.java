@@ -117,7 +117,6 @@ public abstract class PlatformPlugin {
             JSONObject json = new JSONObject(response);
             return new UpdateCheckResult(json.getInt("versions_behind"), json.isNull("message") ? null : json.getString("message"), json.isNull("type") ? "INFO" : json.getString("type"), json.getString("downloadUrl"));
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
