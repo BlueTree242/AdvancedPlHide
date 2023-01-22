@@ -20,25 +20,24 @@
  *  END
  */
 
-package tk.bluetree242.advancedplhide.spigot.listener.packet;
+package tk.bluetree242.advancedplhide.spigot.modern;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.mojang.brigadier.tree.RootCommandNode;
-import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.commands.Commands;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
 import tk.bluetree242.advancedplhide.CompleterModifier;
 import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 
-public class ModernUtils { //utils for modern game, when the RootCommandNode was removed from COMMANDS packet
-
-
-    protected static void handleModern(PacketEvent packetEvent, Group group, boolean whitelist) {
+public class V1_19_3_Handler implements ModernHandler{
+    @Override
+    public void handle(PacketEvent packetEvent, Group group, boolean whitelist) {
         ClientboundCommandsPacket packet = (ClientboundCommandsPacket) packetEvent.getPacket().getHandle();
-        RootCommandNode nodeOrigin = packet.getRoot(new CommandBuildContext(RegistryAccess.BUILTIN.get())); //get the command node out
+        RootCommandNode nodeOrigin = packet.getRoot(Commands.createValidationContext(VanillaRegistries.createLookup())); //get the command node out
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(nodeOrigin);
         CompleterModifier.handleCompleter(node, group, whitelist);
         //noinspection unchecked

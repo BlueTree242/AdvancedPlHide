@@ -103,7 +103,7 @@ public class SpigotPacketListener extends PacketAdapter {
         RootCommandNode nodeOrigin = matchModifier.readSafely(0);
         if (nodeOrigin == null) {
             //modern game, 1.19+
-            ModernUtils.handleModern(e, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+            core.getModernHandler().handle(e, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
             return;
         }
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(nodeOrigin);

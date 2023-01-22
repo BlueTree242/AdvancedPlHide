@@ -20,29 +20,27 @@
  *  END
  */
 plugins {
-    id("io.papermc.paperweight.userdev") version "1.3.7"
+    id("com.github.johnrengelman.shadow")
 }
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://repo.destroystokyo.com/repository/maven-public/")
     maven("https://repo.dmulloy2.net/repository/public/")
+    maven("https://repo.destroystokyo.com/repository/maven-public/")
     maven("https://libraries.minecraft.net")
 }
 
 dependencies {
-    paperDevBundle("1.19-R0.1-SNAPSHOT")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+    implementation(project(":Spigot:Modern"))
+    implementation(project(":Spigot:Modern:V1_19_NMS", "reobf"))
+    implementation(project(":Spigot:Modern:V1_19_3_NMS", "reobf"))
+    compileOnly("com.mojang:brigadier:1.0.18")
     compileOnly("org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
     implementation(project(":core"))
+    compileOnly("com.comphenix.protocol:ProtocolLib:${project.properties["protocolib_version"]}")
 }
 
-tasks.build {
-    dependsOn(tasks.reobfJar)
-}
 
 
 

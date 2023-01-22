@@ -28,7 +28,9 @@ plugins {
 }
 repositories {
     mavenCentral()
-
+    maven {
+        url("https://repo.dmulloy2.net/repository/public/")
+    }
 }
 def buildNumber = project.properties['buildNumber'] == null ? "NONE" : project.properties['buildNumber']
 System.out.println("Build Number is " + buildNumber)
@@ -44,6 +46,9 @@ subprojects {
     }
     dependencies {
         compileOnly 'org.jetbrains:annotations:16.0.2'
+    }
+    repositories {
+        mavenCentral()
     }
     tasks.withType(Copy).all { duplicatesStrategy 'INCLUDE' }
     project.processResources {
@@ -70,7 +75,7 @@ shadowJar {
 }
 
 dependencies {
-    implementation project([path: ':Spigot', configuration: 'reobf'])
+    implementation project(":Spigot")
     implementation project(":Velocity")
     implementation project(":Bungee")
 }

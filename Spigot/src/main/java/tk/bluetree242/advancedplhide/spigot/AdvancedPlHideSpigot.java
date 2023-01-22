@@ -39,6 +39,9 @@ import tk.bluetree242.advancedplhide.PlatformPlugin;
 import tk.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import tk.bluetree242.advancedplhide.spigot.listener.event.SpigotEventListener;
 import tk.bluetree242.advancedplhide.spigot.listener.packet.SpigotPacketListener;
+import tk.bluetree242.advancedplhide.spigot.modern.ModernHandler;
+import tk.bluetree242.advancedplhide.spigot.modern.V1_19_3_Handler;
+import tk.bluetree242.advancedplhide.spigot.modern.V1_19_NMS_Handler;
 import tk.bluetree242.advancedplhide.utils.Constants;
 
 import java.io.File;
@@ -55,6 +58,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     private boolean legacy = false;
     private List<Group> groups;
     private final AdvancedPlHideSpigot.Impl platformPlugin = new Impl();
+    private ModernHandler modernHandler;
 
     public Group getGroupForPlayer(Player player) {
         if (player.hasPermission("plhide.no-group")) return null;
@@ -80,6 +84,16 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         String str = Bukkit.getServer().getClass().getPackage().getName();
         str = str.substring(str.lastIndexOf("v"));
         legacy = (str.equals("v1_8_R3") || str.contains("v1_9_R") || str.contains("v1_10_R1") || str.contains("v1_11_R1") || str.contains("v1_12_R1"));
+        if (!legacy) {
+            switch (Bukkit.getServer().getVersion()) {
+                case "v1_19_R1":
+                    modernHandler = new V1_19_NMS_Handler();
+                    break;
+                default:
+                    //expect 1.19.3+
+                    modernHandler = new V1_19_3_Handler();
+            }
+        }
         getServer().getPluginCommand("advancedplhide").setExecutor(new AdvancedPlHideCommand(this));
         getServer().getPluginCommand("advancedplhide").setTabCompleter(new AdvancedPlHideCommand.TabCompleter());
         new Metrics(this, 13707);
@@ -95,6 +109,9 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         return legacy;
     }
 
+    public ModernHandler getModernHandler() {
+        return modernHandler;
+    }
 
     public void performStartUpdateCheck() {
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
