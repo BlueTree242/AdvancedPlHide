@@ -33,7 +33,7 @@ import tk.bluetree242.advancedplhide.CompleterModifier;
 import tk.bluetree242.advancedplhide.Group;
 import tk.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 
-public class V1_19_3_Handler implements ModernHandler{
+public class V1_19_3_Handler implements ModernHandler {
     @Override
     public void handle(PacketEvent packetEvent, Group group, boolean whitelist) {
         ClientboundCommandsPacket packet = (ClientboundCommandsPacket) packetEvent.getPacket().getHandle();

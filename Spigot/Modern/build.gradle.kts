@@ -1,7 +1,6 @@
 repositories {
     mavenCentral()
     maven("https://repo.dmulloy2.net/repository/public/")
-    maven("https://repo.destroystokyo.com/repository/maven-public/")
 }
 
 subprojects {

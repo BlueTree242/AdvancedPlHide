@@ -39,6 +39,7 @@ import tk.bluetree242.advancedplhide.velocity.AdvancedPlHideVelocity;
 
 public class VelocityEventListener {
     private final AdvancedPlHideVelocity core;
+
     public VelocityEventListener(AdvancedPlHideVelocity core) {
         this.core = core;
     }

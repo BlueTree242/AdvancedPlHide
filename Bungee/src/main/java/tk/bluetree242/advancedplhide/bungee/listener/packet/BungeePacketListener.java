@@ -47,6 +47,7 @@ import java.util.UUID;
 public class BungeePacketListener extends AbstractPacketListener<TabCompleteResponse> {
     private final UsedMap<UUID, String> commandsWaiting = new UsedMap<>();
     private final AdvancedPlHideBungee core;
+
     public BungeePacketListener(AdvancedPlHideBungee core) {
         super(TabCompleteResponse.class, Direction.UPSTREAM, 0);
         this.core = core;

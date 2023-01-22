@@ -54,10 +54,10 @@ import java.util.List;
 
 public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     private final SpigotPacketListener listener = new SpigotPacketListener(this);
+    private final AdvancedPlHideSpigot.Impl platformPlugin = new Impl();
     private ProtocolManager protocolManager;
     private boolean legacy = false;
     private List<Group> groups;
-    private final AdvancedPlHideSpigot.Impl platformPlugin = new Impl();
     private ModernHandler modernHandler;
 
     public Group getGroupForPlayer(Player player) {

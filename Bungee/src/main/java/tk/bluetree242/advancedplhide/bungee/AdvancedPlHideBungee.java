@@ -43,9 +43,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AdvancedPlHideBungee extends Plugin implements Listener {
+    private final AdvancedPlHideBungee.Impl platformPlugin = new Impl();
     private BungeePacketListener listener;
     private List<Group> groups = new ArrayList<>();
-    private final AdvancedPlHideBungee.Impl platformPlugin = new Impl();
+
     public Group getGroupForPlayer(ProxiedPlayer player) {
         if (player.hasPermission("plhide.no-group")) return null;
         List<Group> groups = new ArrayList<>();
