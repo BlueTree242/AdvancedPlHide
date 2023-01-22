@@ -47,7 +47,6 @@
 
 ### Requirements
 
-* Java 11 or higher
 * ProtocolLib (Spigot)
 * Protocolize (Proxy)
 * Luckperms or some other perm plugin

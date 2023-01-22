@@ -46,7 +46,9 @@ public class SpigotEventListener implements Listener {
         String cmd = e.getMessage().toLowerCase().split(" ")[0];
         if (cmd.equalsIgnoreCase("/plugins") || cmd.equalsIgnoreCase("/pl") || cmd.equalsIgnoreCase("/bukkit:pl") || cmd.equalsIgnoreCase("/bukkit:plugins")) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', PlatformPlugin.get().getConfig().pl_message()));
+            if (!PlatformPlugin.get().getConfig().pl_message().isEmpty()) {
+                e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', PlatformPlugin.get().getConfig().pl_message()));
+            }
         }
     }
 
