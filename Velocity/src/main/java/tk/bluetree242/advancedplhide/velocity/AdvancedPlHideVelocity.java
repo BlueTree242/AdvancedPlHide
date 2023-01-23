@@ -94,7 +94,7 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
         Protocolize.listenerProvider().registerListener(new VelocityPacketListener(this));
         metricsFactory.make(this, 13708);
         server.getConsoleCommandSource().sendMessage(LegacyComponentSerializer.legacy('&').deserialize(Constants.startupMessage()));
-        performStartUpdateCheck();
+        server.getScheduler().buildTask(this, this::performStartUpdateCheck).schedule();
     }
 
     public Group getGroupForPlayer(Player player) {

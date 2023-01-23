@@ -47,7 +47,7 @@ public class VelocityEventListener {
     @Subscribe
     public void onPlayerJoin(PostLoginEvent e) {
         if (e.getPlayer().hasPermission("plhide.updatechecker")) {
-            new Thread(() -> {
+            core.server.getScheduler().buildTask(core, () -> {
                 UpdateCheckResult result = AdvancedPlHideVelocity.get().updateCheck();
                 if (result == null) return;
                 Component msg = result.getVersionsBehind() == 0 ? null : LegacyComponentSerializer.legacy('&').deserialize("&e[APH-&2Velocity&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
@@ -58,7 +58,7 @@ public class VelocityEventListener {
                     msg = msg.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, result.getUpdateUrl()));
                     e.getPlayer().sendMessage(msg);
                 }
-            }).start();
+            }).schedule();
         }
     }
 
