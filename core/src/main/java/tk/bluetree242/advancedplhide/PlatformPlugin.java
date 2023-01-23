@@ -108,7 +108,7 @@ public abstract class PlatformPlugin {
 
     public UpdateCheckResult updateCheck() {
         try {
-            HttpRequest req = HttpRequest.post("https://advancedplhide.ml/updatecheck");
+            HttpRequest req = HttpRequest.post("https://advancedplhide.bluetree242.ml/updatecheck");
             req.part("version", getCurrentVersion());
             req.part("buildNumber", getCurrentBuild());
             req.part("buildDate", getBuildDate());
