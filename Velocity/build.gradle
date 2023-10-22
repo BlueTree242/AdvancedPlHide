@@ -48,9 +48,9 @@ repositories {
 
 dependencies {
     implementation project(":core")
-    compileOnly 'com.velocitypowered:velocity-api:3.0.1'
-    annotationProcessor 'com.velocitypowered:velocity-api:3.0.1'
-    compileOnly 'com.velocitypowered:velocity-proxy:3.0.1'
+    compileOnly 'com.velocitypowered:velocity-api:3.2.0-SNAPSHOT'
+    annotationProcessor 'com.velocitypowered:velocity-api:3.2.0-SNAPSHOT'
+    compileOnly 'com.velocitypowered:velocity-proxy:3.2.0-SNAPSHOT'
     compileOnly 'dev.simplix:protocolize-api:2.1.0'
 }
 
