@@ -59,7 +59,6 @@ public class CompleterModifier {
                 (c.getName().startsWith("from:") && PlatformPlugin.get().getPluginForCommand(list.getName()) != null &&
                         PlatformPlugin.get().getPluginForCommand(list.getName()).equalsIgnoreCase(c.getName().replaceFirst("from:", ""))));
         if (((whitelist && !includedConfig) || (!whitelist && includedConfig))) {
-            System.out.println(includedConfig);
             list.removeAll(); //this command is not visible to player they might not see it's sub args
             return;
         }
