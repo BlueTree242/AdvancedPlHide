@@ -36,7 +36,7 @@ repositories {
     mavenCentral()
     maven {
         name 'velocity'
-        url 'https://nexus.velocitypowered.com/repository/maven-public/'
+        url 'https://papermc.io/repo/repository/maven-public/'
     }
     maven {
         url 'https://mvn.exceptionflug.de/repository/exceptionflug-public/'
