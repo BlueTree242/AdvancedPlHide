@@ -39,6 +39,9 @@ repositories {
         url 'https://papermc.io/repo/repository/maven-public/'
     }
     maven {
+        url 'https://maven.elytrium.net/repo/'
+    }
+    maven {
         url 'https://mvn.exceptionflug.de/repository/exceptionflug-public/'
     }
     maven {
