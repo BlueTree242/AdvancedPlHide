@@ -1,0 +1,12 @@
+name: AdvancedPlHide
+depend:
+  - ProtocolLib
+version: @version@
+description: @description@
+authors:
+  - BlueTree242
+main: dev.bluetree242.advancedplhide.spigot.AdvancedPlHideSpigot
+
+commands:
+  advancedplhide:
+    aliases: [ aph, plhide, ph ]
