@@ -72,9 +72,9 @@ shadowJar {
 }
 
 dependencies {
-    implementation project(":Spigot")
-    implementation project(":Velocity")
-    implementation project(":Bungee")
+    implementation project(":spigot")
+    implementation project(":velocity")
+    implementation project(":bungee")
 }
 publishing {
     publications {

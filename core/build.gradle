@@ -37,10 +37,10 @@ rootProject.allprojects {
     plugins.apply("com.github.johnrengelman.shadow")
     project.shadowJar {
         classifier ''
-        relocate 'space.arim.dazzleconf', "tk.bluetree242.advancedplhide.dependencies.dazzleconf"
-        relocate 'org.yaml.snakeyaml', "tk.bluetree242.advancedplhide.dependencies.yaml"
-        relocate 'org.json', "tk.bluetree242.advancedplhide.dependencies.json"
-        relocate 'com.github.kevinsawicki.http', 'tk.bluetree242.advancedplhide.dependencies.http'
+        relocate 'space.arim.dazzleconf', "dev.bluetree242.advancedplhide.dependencies.dazzleconf"
+        relocate 'org.yaml.snakeyaml', "dev.bluetree242.advancedplhide.dependencies.yaml"
+        relocate 'org.json', "dev.bluetree242.advancedplhide.dependencies.json"
+        relocate 'com.github.kevinsawicki.http', 'dev.bluetree242.advancedplhide.dependencies.http'
     }
 }
 
