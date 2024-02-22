@@ -23,7 +23,6 @@ import org.apache.tools.ant.filters.ReplaceTokens
  */
 plugins {
     id 'java'
-    id 'maven-publish'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 repositories {
@@ -75,13 +74,6 @@ dependencies {
     implementation project(":spigot")
     implementation project(":velocity")
     implementation project(":bungee")
-}
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from(components.java)
-        }
-    }
 }
 
 
