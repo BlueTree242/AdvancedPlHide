@@ -36,7 +36,7 @@ dependencies {
     implementation(project(":spigot:modern:V1_19_NMS", "reobf"))
     implementation(project(":spigot:modern:V1_19_3_NMS", "reobf"))
     compileOnly(libs.brigadier)
-    compileOnly("org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT")
+    compileOnly(libs.spigot)
     implementation(project(":core"))
     compileOnly(libs.protocolLib)
 }
