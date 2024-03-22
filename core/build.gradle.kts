@@ -24,7 +24,8 @@ rootProject.allprojects {
     plugins.apply("java")
     plugins.apply("com.github.johnrengelman.shadow")
     tasks.shadowJar {
-        archiveClassifier.set("")
+        if (project != rootProject) archiveBaseName = "AdvancedPlHide-" + project.name
+        if (project != project(":core")) archiveClassifier.set("")
         val prefix = "dev.bluetree242.advancedplhide.dependencies"
         relocate("space.arim.dazzleconf", "$prefix.dazzleconf")
         relocate("org.yaml.snakeyaml", "$prefix.yaml")

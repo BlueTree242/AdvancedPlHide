@@ -26,8 +26,8 @@ repositories {
 
 subprojects {
     dependencies {
-        implementation(project(":spigot:modern"))
-        implementation(project(":core"))
+        compileOnly(project(":spigot:modern"))
+        compileOnly(project(":core"))
         compileOnly(rootProject.libs.protocolLib)
     }
     repositories {
@@ -36,6 +36,6 @@ subprojects {
 }
 
 dependencies {
-    implementation(project(":core"))
+    compileOnly(project(":core"))
     compileOnly(libs.protocolLib)
 }
