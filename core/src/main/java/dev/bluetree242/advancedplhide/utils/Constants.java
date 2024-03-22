@@ -23,20 +23,21 @@
 package dev.bluetree242.advancedplhide.utils;
 
 import dev.bluetree242.advancedplhide.PlatformPlugin;
+import dev.bluetree242.advancedplhide.PluginInfo;
 
 public class Constants {
     public static final String DEFAULT_UP_TO_DATE = "&aYou are up to date";
     public static final String DEFAULT_BEHIND = "&cYou are {versions} Behind. Please Update ASAP. Download from {download}";
     public static final String WHITELIST_MODE_PERMISSION = "plhide.whitelist-mode";
 
+    @SuppressWarnings({"ConstantValue", "MismatchedStringCase"})
     public static String startupMessage() {
-        return "" +
-                "\n[]=====[&2Enabling AdvancedPlHide&r]=====[]\n" +
+        return "\n[]=====[&2Enabling AdvancedPlHide&r]=====[]\n" +
                 "| &cInformation:\n&r" +
                 "|   &cName: &rAdvancedPlHide\n&r" +
                 "|   &cDevelopers: &rBlueTree242\n&r" +
-                "|   &cVersion: &r" + PlatformPlugin.get().getCurrentVersion() + "\n&r" +
-                (!PlatformPlugin.get().getCurrentBuild().equals("NONE") ? "|   &cBuild Number: &r#" + PlatformPlugin.get().getCurrentBuild() + "\n&r" : "") +
+                "|   &cVersion: &r" + PluginInfo.VERSION + "\n&r" +
+                (!PluginInfo.BUILD_NUMBER.equals("NONE") ? "|   &cBuild Number: &r#" + PluginInfo.BUILD_NUMBER + "\n&r" : "") +
                 "|   &cRunning on: &r" + PlatformPlugin.get().getType().getName() + "\n&r" +
                 "| &cSupport:\n&r" +
                 "|   &cGithub: &rhttps://github.com/BlueTree242/AdvancedPlHide/issues\n" +

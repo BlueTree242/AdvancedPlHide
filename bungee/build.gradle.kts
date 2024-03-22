@@ -19,11 +19,27 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  *  END
  */
-
 plugins {
-    id("io.papermc.paperweight.userdev") version "1.3.7"
+    id("net.minecrell.plugin-yml.bungee") version "0.6.0"
+}
+
+repositories {
+    maven("https://oss.sonatype.org/content/repositories/snapshots")
+    maven("https://mvn.exceptionflug.de/repository/exceptionflug-public/")
+    maven("https://libraries.minecraft.net")
 }
 
 dependencies {
-    paperDevBundle("1.19.3-R0.1-SNAPSHOT")
+    implementation(project(":core"))
+    compileOnly(libs.protocolize)
+    compileOnly(libs.bungee)
+}
+
+bungee {
+    name = rootProject.name
+    description = rootProject.description
+    version = project.version.toString()
+    main = "dev.bluetree242.advancedplhide.bungee.AdvancedPlHideBungee"
+    author = "BlueTree242"
+    depends = setOf("Protocolize")
 }

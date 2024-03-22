@@ -56,14 +56,17 @@ public class SpigotEventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         if (e.getPlayer().hasPermission("plhide.updatechecker")) {
             Bukkit.getScheduler().runTaskAsynchronously(core, () -> {
-                UpdateCheckResult result = PlatformPlugin.get().updateCheck();
-                if (result == null) return;
-                String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Spigot&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
-                if (result.getMessage() != null) {
-                    msg = ChatColor.translateAlternateColorCodes('&', "&e[APH&2Spigot&e] &c" + result.getMessage());
-                }
-                if (msg != null) {
-                    e.getPlayer().sendMessage(msg);
+                try {
+                    UpdateCheckResult result = PlatformPlugin.get().updateCheck();
+                    String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Spigot&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
+                    if (result.getMessage() != null) {
+                        msg = ChatColor.translateAlternateColorCodes('&', "&e[APH&2Spigot&e] &c" + result.getMessage());
+                    }
+                    if (msg != null) {
+                        e.getPlayer().sendMessage(msg);
+                    }
+                } catch (Exception ex) {
+                    core.getLogger().severe(String.format("Could not check for updates: %s", ex.getMessage()));
                 }
             });
         }

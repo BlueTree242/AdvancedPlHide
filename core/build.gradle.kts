@@ -20,33 +20,28 @@
  *  END
  */
 
-plugins {
-    id 'java'
-}
 rootProject.allprojects {
-    plugins.apply('java')
+    plugins.apply("java")
     plugins.apply("com.github.johnrengelman.shadow")
-    project.shadowJar {
-        classifier ''
-        relocate 'space.arim.dazzleconf', "dev.bluetree242.advancedplhide.dependencies.dazzleconf"
-        relocate 'org.yaml.snakeyaml', "dev.bluetree242.advancedplhide.dependencies.yaml"
-        relocate 'org.json', "dev.bluetree242.advancedplhide.dependencies.json"
-        relocate 'com.github.kevinsawicki.http', 'dev.bluetree242.advancedplhide.dependencies.http'
+    tasks.shadowJar {
+        val prefix = "dev.bluetree242.advancedplhide.dependencies"
+        relocate("space.arim.dazzleconf", "$prefix.dazzleconf")
+        relocate("org.yaml.snakeyaml", "$prefix.yaml")
+        relocate("org.json", "$prefix.json")
+        relocate("com.intellectualsites.http", "$prefix.http4j")
     }
 }
 
 repositories {
-    mavenCentral()
-    maven {
-        url = uri("https://repo.destroystokyo.com/repository/maven-public/")
-    }
-    maven {
-        url "https://libraries.minecraft.net"
-    }
+    maven("https://repo.destroystokyo.com/repository/maven-public/")
+    maven("https://libraries.minecraft.net")
 }
+
 dependencies {
-    implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2'
-    compileOnly 'com.mojang:brigadier:1.0.18'
-    implementation 'com.github.kevinsawicki:http-request:6.0'
-    implementation 'org.json:json:20240205'
+    implementation(libs.dazzleconf)
+    compileOnly(libs.brigadier)
+    implementation(libs.http4j) {
+        exclude(group = "org.jetbrains") // It keeps shading it.
+    }
+    implementation(libs.json)
 }

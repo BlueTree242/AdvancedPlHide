@@ -22,16 +22,21 @@
 
 package dev.bluetree242.advancedplhide;
 
-import com.github.kevinsawicki.http.HttpRequest;
+import com.intellectualsites.http.EntityMapper;
+import com.intellectualsites.http.HttpClient;
+import com.intellectualsites.http.HttpResponse;
 import dev.bluetree242.advancedplhide.config.ConfManager;
 import dev.bluetree242.advancedplhide.config.Config;
 import dev.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import dev.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
+import dev.bluetree242.advancedplhide.utils.HTTPRequestMultipartBody;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Platform is the platform the plugin runs on, we can also call it the plugin core as it contains some methods related to the plugin itself too
@@ -92,32 +97,27 @@ public abstract class PlatformPlugin {
         return new Group(name, tabcomplete);
     }
 
-    public abstract String getVersionConfig();
-
-    public String getCurrentBuild() {
-        return new JSONObject(getVersionConfig()).getString("buildNumber");
-    }
-
-    public String getCurrentVersion() {
-        return new JSONObject(getVersionConfig()).getString("version");
-    }
-
-    public String getBuildDate() {
-        return new JSONObject(getVersionConfig()).getString("buildDate");
-    }
-
     public UpdateCheckResult updateCheck() {
         try {
-            HttpRequest req = HttpRequest.post("https://advancedplhide.bluetree242.ml/updatecheck");
-            req.part("version", getCurrentVersion());
-            req.part("buildNumber", getCurrentBuild());
-            req.part("buildDate", getBuildDate());
-            req.part("devUpdatechecker", getConfig().dev_updatechecker() + "");
-            String response = req.body();
-            JSONObject json = new JSONObject(response);
+            HttpClient client = HttpClient.newBuilder()
+                    .withBaseURL("https://advancedplhide.bluetree242.dev")
+                    .build();
+            HTTPRequestMultipartBody multipartBody = new HTTPRequestMultipartBody.Builder()
+                    .addPart("version", PluginInfo.VERSION)
+                    .addPart("buildNumber", PluginInfo.BUILD_NUMBER)
+                    .addPart("buildDate", PluginInfo.BUILD_DATE)
+                    .addPart("commit", PluginInfo.COMMIT)
+                    .addPart("devUpdatechecker", String.valueOf(getConfig().dev_updatechecker()))
+                    .build();
+            HttpResponse response = client.post("/updatecheck")
+                    .withMapper(EntityMapper.newInstance())
+                    .withHeader("Content-Type", multipartBody.getContentType())
+                    .withInput(() -> new String(multipartBody.getBody(), StandardCharsets.UTF_8))
+                    .execute();
+            JSONObject json = new JSONObject(new String(Objects.requireNonNull(response).getRawResponse(), StandardCharsets.UTF_8));
             return new UpdateCheckResult(json.getInt("versions_behind"), json.isNull("message") ? null : json.getString("message"), json.isNull("type") ? "INFO" : json.getString("type"), json.getString("downloadUrl"));
         } catch (Exception e) {
-            return null;
+            throw new RuntimeException(e);
         }
     }
 

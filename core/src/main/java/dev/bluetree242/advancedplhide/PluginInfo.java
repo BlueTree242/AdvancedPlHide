@@ -20,10 +20,12 @@
  *  END
  */
 
-plugins {
-    id("io.papermc.paperweight.userdev") version "1.3.7"
-}
+package dev.bluetree242.advancedplhide;
 
-dependencies {
-    paperDevBundle("1.19.3-R0.1-SNAPSHOT")
+public class PluginInfo {
+    public static final String DESCRIPTION = "{description}";
+    public static final String VERSION = "{version}";
+    public static final String BUILD_NUMBER = "{build_number}";
+    public static final String BUILD_DATE = "{build_date}";
+    public static final String COMMIT = "{commit}";
 }

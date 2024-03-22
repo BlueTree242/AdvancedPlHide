@@ -48,15 +48,18 @@ public class VelocityEventListener {
     public void onPlayerJoin(PostLoginEvent e) {
         if (e.getPlayer().hasPermission("plhide.updatechecker")) {
             core.server.getScheduler().buildTask(core, () -> {
-                UpdateCheckResult result = AdvancedPlHideVelocity.get().updateCheck();
-                if (result == null) return;
-                Component msg = result.getVersionsBehind() == 0 ? null : LegacyComponentSerializer.legacy('&').deserialize("&e[APH-&2Velocity&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
-                if (result.getMessage() != null) {
-                    msg = LegacyComponentSerializer.legacy('&').deserialize("&e[APH&2Velocity&e] &c" + result.getMessage());
-                }
-                if (msg != null) {
-                    msg = msg.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, result.getUpdateUrl()));
-                    e.getPlayer().sendMessage(msg);
+                try {
+                    UpdateCheckResult result = AdvancedPlHideVelocity.get().updateCheck();
+                    Component msg = result.getVersionsBehind() == 0 ? null : LegacyComponentSerializer.legacy('&').deserialize("&e[APH-&2Velocity&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
+                    if (result.getMessage() != null) {
+                        msg = LegacyComponentSerializer.legacy('&').deserialize("&e[APH&2Velocity&e] &c" + result.getMessage());
+                    }
+                    if (msg != null) {
+                        msg = msg.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, result.getUpdateUrl()));
+                        e.getPlayer().sendMessage(msg);
+                    }
+                } catch (Exception ex) {
+                    core.getLogger().error(String.format("Could not check for updates: %s", ex.getMessage()));
                 }
             }).schedule();
         }

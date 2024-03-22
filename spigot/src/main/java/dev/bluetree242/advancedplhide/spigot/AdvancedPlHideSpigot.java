@@ -24,7 +24,6 @@ package dev.bluetree242.advancedplhide.spigot;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.google.common.io.ByteStreams;
 import dev.bluetree242.advancedplhide.Group;
 import dev.bluetree242.advancedplhide.PlatformPlugin;
 import dev.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
@@ -45,8 +44,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,13 +82,10 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         str = str.substring(str.lastIndexOf("v"));
         legacy = (str.equals("v1_8_R3") || str.contains("v1_9_R") || str.contains("v1_10_R1") || str.contains("v1_11_R1") || str.contains("v1_12_R1"));
         if (!legacy) {
-            switch (Bukkit.getServer().getVersion()) {
-                case "v1_19_R1":
-                    modernHandler = new V1_19_NMS_Handler();
-                    break;
-                default:
-                    //expect 1.19.3+
-                    modernHandler = new V1_19_3_Handler();
+            if (Bukkit.getServer().getVersion().equals("v1_19_R1")) {
+                modernHandler = new V1_19_NMS_Handler();
+            } else { // Expect 1.19.3+
+                modernHandler = new V1_19_3_Handler();
             }
         }
         getServer().getPluginCommand("advancedplhide").setExecutor(new AdvancedPlHideCommand(this));
@@ -115,28 +109,28 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
 
     public void performStartUpdateCheck() {
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
-            UpdateCheckResult result = Impl.get().updateCheck();
-            if (result == null) {
-                getLogger().severe("Could not check for updates");
-                return;
-            }
-            String msg = result.getVersionsBehind() == 0 ?
-                    ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_UP_TO_DATE) :
-                    ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "")
-                            .replace("{download}", result.getUpdateUrl()));
-            if (result.getMessage() != null) {
-                msg = ChatColor.translateAlternateColorCodes('&', result.getMessage());
-            }
-            switch (result.getLoggerType()) {
-                case "INFO":
-                    getLogger().info(msg);
-                    break;
-                case "WARNING":
-                    getLogger().warning(msg);
-                    break;
-                case "ERROR":
-                    getLogger().severe(msg);
-                    break;
+            try {
+                UpdateCheckResult result = Impl.get().updateCheck();
+                String msg = result.getVersionsBehind() == 0 ?
+                        ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_UP_TO_DATE) :
+                        ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "")
+                                .replace("{download}", result.getUpdateUrl()));
+                if (result.getMessage() != null) {
+                    msg = ChatColor.translateAlternateColorCodes('&', result.getMessage());
+                }
+                switch (result.getLoggerType()) {
+                    case "INFO":
+                        getLogger().info(msg);
+                        break;
+                    case "WARNING":
+                        getLogger().warning(msg);
+                        break;
+                    case "ERROR":
+                        getLogger().severe(msg);
+                        break;
+                }
+            } catch (Exception ex) {
+                getLogger().severe(String.format("Could not check for updates: %s", ex.getMessage()));
             }
         });
     }
@@ -209,15 +203,6 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
             Plugin plugin = ((PluginIdentifiableCommand) command).getPlugin();
             if (plugin == null) return null;
             return plugin.getName();
-        }
-
-        @Override
-        public String getVersionConfig() {
-            try {
-                return new String(ByteStreams.toByteArray(getResource("version-config.json")));
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
         }
 
         @Override

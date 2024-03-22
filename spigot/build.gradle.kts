@@ -21,9 +21,9 @@
  */
 plugins {
     id("com.github.johnrengelman.shadow")
+    id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
 }
 repositories {
-    mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://repo.dmulloy2.net/repository/public/")
@@ -35,13 +35,22 @@ dependencies {
     implementation(project(":spigot:modern"))
     implementation(project(":spigot:modern:V1_19_NMS", "reobf"))
     implementation(project(":spigot:modern:V1_19_3_NMS", "reobf"))
-    compileOnly("com.mojang:brigadier:1.0.18")
+    compileOnly(libs.brigadier)
     compileOnly("org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT")
     implementation(project(":core"))
-    compileOnly("com.comphenix.protocol:ProtocolLib:${project.properties["protocolLib_version"]}")
+    compileOnly(libs.protocolLib)
 }
 
-
-
-
-
+bukkit {
+    name = rootProject.name
+    description = rootProject.description
+    version = project.version.toString()
+    main = "dev.bluetree242.advancedplhide.spigot.AdvancedPlHideSpigot"
+    author = "BlueTree242"
+    depend = listOf("ProtocolLib")
+    commands {
+        register("advancedplhide") {
+            aliases = listOf("aph", "plhide", "ph")
+        }
+    }
+}

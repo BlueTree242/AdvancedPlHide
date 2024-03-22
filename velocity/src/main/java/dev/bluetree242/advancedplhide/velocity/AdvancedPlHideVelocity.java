@@ -32,6 +32,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.bluetree242.advancedplhide.Group;
 import dev.bluetree242.advancedplhide.PlatformPlugin;
+import dev.bluetree242.advancedplhide.PluginInfo;
 import dev.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import dev.bluetree242.advancedplhide.utils.Constants;
 import dev.bluetree242.advancedplhide.velocity.listener.event.VelocityEventListener;
@@ -41,21 +42,18 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.io.*;
+import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Plugin(id = "advancedplhide",
         name = "AdvancedPlHide",
-        description = AdvancedPlHideVelocity.DESCRIPTION,
-        version = AdvancedPlHideVelocity.VERSION,
+        description = PluginInfo.DESCRIPTION,
+        version = PluginInfo.VERSION,
         authors = {"BlueTree242"},
         dependencies = {@Dependency(id = "protocolize")})
 public class AdvancedPlHideVelocity extends PlatformPlugin {
-    public static final String DESCRIPTION = "{description}";
-    public static final String VERSION = "{version}";
     public final ProxyServer server;
     public final Logger logger;
     public final Path dataDirectory;
@@ -70,16 +68,6 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
         this.dataDirectory = dataDirectory;
         PlatformPlugin.setPlatform(this);
         initConfigManager();
-    }
-
-    private static byte[] readFully(InputStream input) throws IOException {
-        byte[] buffer = new byte[8192];
-        int bytesRead;
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        while ((bytesRead = input.read(buffer)) != -1) {
-            output.write(buffer, 0, bytesRead);
-        }
-        return output.toByteArray();
     }
 
     @Subscribe
@@ -140,15 +128,6 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
     }
 
     @Override
-    public String getVersionConfig() {
-        try {
-            return new String(readFully(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("version-config.json"))));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    @Override
     public Type getType() {
         return Type.VELOCITY;
     }
@@ -158,29 +137,29 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
     }
 
     public void performStartUpdateCheck() {
-        UpdateCheckResult result = updateCheck();
-        if (result == null) {
-            getLogger().error("Could not check for updates");
-            return;
-        }
-        String msg = result.getVersionsBehind() == 0 ?
-                LegacyComponentSerializer.legacy('&').deserialize(Constants.DEFAULT_UP_TO_DATE).content() :
-                LegacyComponentSerializer.legacy('&').deserialize(Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "")
-                        .replace("{download}", result.getUpdateUrl())).content();
-        if (result.getMessage() != null) {
-            msg = LegacyComponentSerializer.legacy('&').deserialize(result.getMessage()).content();
-        }
+        try {
+            UpdateCheckResult result = updateCheck();
+            String msg = result.getVersionsBehind() == 0 ?
+                    LegacyComponentSerializer.legacy('&').deserialize(Constants.DEFAULT_UP_TO_DATE).content() :
+                    LegacyComponentSerializer.legacy('&').deserialize(Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "")
+                            .replace("{download}", result.getUpdateUrl())).content();
+            if (result.getMessage() != null) {
+                msg = LegacyComponentSerializer.legacy('&').deserialize(result.getMessage()).content();
+            }
 
-        switch (result.getLoggerType()) {
-            case "INFO":
-                logger.info(msg);
-                break;
-            case "WARNING":
-                logger.warn(msg);
-                break;
-            case "ERROR":
-                logger.error(msg);
-                break;
+            switch (result.getLoggerType()) {
+                case "INFO":
+                    logger.info(msg);
+                    break;
+                case "WARNING":
+                    logger.warn(msg);
+                    break;
+                case "ERROR":
+                    logger.error(msg);
+                    break;
+            }
+        } catch (Exception ex) {
+            logger.error(String.format("Could not check for updates: %s", ex.getMessage()));
         }
     }
 

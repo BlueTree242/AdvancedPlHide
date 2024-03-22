@@ -22,7 +22,6 @@
 
 package dev.bluetree242.advancedplhide.bungee;
 
-import com.google.common.io.ByteStreams;
 import dev.bluetree242.advancedplhide.Group;
 import dev.bluetree242.advancedplhide.PlatformPlugin;
 import dev.bluetree242.advancedplhide.bungee.listener.event.BungeeEventListener;
@@ -37,8 +36,6 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,28 +91,28 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
 
     public void performStartUpdateCheck() {
         ProxyServer.getInstance().getScheduler().runAsync(this, () -> {
-            UpdateCheckResult result = Impl.get().updateCheck();
-            if (result == null) {
-                getLogger().severe("Could not check for updates");
-                return;
-            }
-            String msg = result.getVersionsBehind() == 0 ?
-                    ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_UP_TO_DATE) :
-                    ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "")
-                            .replace("{download}", result.getUpdateUrl()));
-            if (result.getMessage() != null) {
-                msg = ChatColor.translateAlternateColorCodes('&', result.getMessage());
-            }
-            switch (result.getLoggerType()) {
-                case "INFO":
-                    getLogger().info(msg);
-                    break;
-                case "WARNING":
-                    getLogger().warning(msg);
-                    break;
-                case "ERROR":
-                    getLogger().severe(msg);
-                    break;
+            try {
+                UpdateCheckResult result = Impl.get().updateCheck();
+                String msg = result.getVersionsBehind() == 0 ?
+                        ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_UP_TO_DATE) :
+                        ChatColor.translateAlternateColorCodes('&', Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "")
+                                .replace("{download}", result.getUpdateUrl()));
+                if (result.getMessage() != null) {
+                    msg = ChatColor.translateAlternateColorCodes('&', result.getMessage());
+                }
+                switch (result.getLoggerType()) {
+                    case "INFO":
+                        getLogger().info(msg);
+                        break;
+                    case "WARNING":
+                        getLogger().warning(msg);
+                        break;
+                    case "ERROR":
+                        getLogger().severe(msg);
+                        break;
+                }
+            } catch (Exception ex) {
+                getLogger().severe(String.format("Could not check for updates: %s", ex.getMessage()));
             }
         });
     }
@@ -156,15 +153,6 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
         @Override
         public String getPluginForCommand(String s) {
             return null;
-        }
-
-        @Override
-        public String getVersionConfig() {
-            try {
-                return new String(ByteStreams.toByteArray(getResourceAsStream("version-config.json")));
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
         }
 
         @Override

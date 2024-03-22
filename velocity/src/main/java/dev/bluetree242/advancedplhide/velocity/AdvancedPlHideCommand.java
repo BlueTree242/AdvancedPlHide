@@ -25,6 +25,7 @@ package dev.bluetree242.advancedplhide.velocity;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import dev.bluetree242.advancedplhide.PlatformPlugin;
+import dev.bluetree242.advancedplhide.PluginInfo;
 import dev.bluetree242.advancedplhide.exceptions.ConfigurationLoadException;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -46,7 +47,7 @@ public class AdvancedPlHideCommand implements SimpleCommand {
         String[] args = e.arguments();
         CommandSource sender = e.source();
         if (args.length == 0) {
-            sender.sendMessage(LegacyComponentSerializer.legacy('&').deserialize("&aRunning AdvancedPlHide v.&e" + AdvancedPlHideVelocity.VERSION));
+            sender.sendMessage(LegacyComponentSerializer.legacy('&').deserialize("&aRunning AdvancedPlHide v.&e" + PluginInfo.VERSION));
             return;
         } else {
             if (args[0].equalsIgnoreCase("reload")) {

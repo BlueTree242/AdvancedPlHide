@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2024 BlueTree242
+ * Copyright (C) 2021 - 2021 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -21,9 +21,21 @@
  */
 
 plugins {
-    id("io.papermc.paperweight.userdev") version "1.3.7"
+    id("com.github.johnrengelman.shadow")
+}
+
+
+repositories {
+    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://maven.elytrium.net/repo/")
+    maven("https://mvn.exceptionflug.de/repository/exceptionflug-public/")
+    maven("https://libraries.minecraft.net")
 }
 
 dependencies {
-    paperDevBundle("1.19.3-R0.1-SNAPSHOT")
+    implementation(project(":core"))
+    compileOnly(libs.velocity.api)
+    annotationProcessor(libs.velocity.api)
+    compileOnly(libs.velocity.proxy)
+    compileOnly(libs.protocolize)
 }
