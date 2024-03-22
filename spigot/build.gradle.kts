@@ -48,6 +48,7 @@ bukkit {
     main = "dev.bluetree242.advancedplhide.spigot.AdvancedPlHideSpigot"
     author = "BlueTree242"
     depend = listOf("ProtocolLib")
+    apiVersion = "1.13"
     commands {
         register("advancedplhide") {
             aliases = listOf("aph", "plhide", "ph")
