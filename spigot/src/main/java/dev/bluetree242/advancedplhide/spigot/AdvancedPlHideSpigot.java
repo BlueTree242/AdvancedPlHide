@@ -79,7 +79,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         protocolManager.addPacketListener(new SpigotPacketListener(this));
         getServer().getPluginManager().registerEvents(new SpigotEventListener(this), this);
         String mv = Bukkit.getServer().getBukkitVersion();
-        legacy = (mv.startsWith("1.8") || mv.startsWith("1.9") || mv.startsWith("1.10") || mv.startsWith("1.11") || mv .startsWith("1.12"));
+        legacy = (mv.startsWith("1.8") || mv.startsWith("1.9") || mv.startsWith("1.10") || mv.startsWith("1.11") || mv.startsWith("1.12"));
         if (!legacy) {
             if (Bukkit.getServer().getVersion().equals("v1_19_R1")) {
                 modernHandler = new V1_19_NMS_Handler();
