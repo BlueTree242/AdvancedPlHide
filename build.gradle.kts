@@ -63,9 +63,6 @@ subprojects {
         finalizedBy(tasks.shadowJar)
     }
 }
-tasks.shadowJar {
-    archiveClassifier.set("")
-}
 
 subprojects {
     if (name == "core") {
