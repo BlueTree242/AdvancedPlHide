@@ -50,8 +50,3 @@ dependencies {
     implementation 'com.github.kevinsawicki:http-request:6.0'
     implementation 'org.json:json:20240205'
 }
-
-
-test {
-    useJUnitPlatform()
-}
