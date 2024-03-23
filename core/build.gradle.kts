@@ -22,17 +22,18 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
  *  END
  */
 
-rootProject.allprojects {
-    plugins.apply("java")
-    if (plugins.hasPlugin("com.github.johnrengelman.shadow")) {
-        tasks.withType(ShadowJar::class.java) {
-            if (project != rootProject) archiveBaseName = "AdvancedPlHide-" + project.name
-            if (project != project(":core")) archiveClassifier.set("")
-            val prefix = "dev.bluetree242.advancedplhide.dependencies"
-            relocate("space.arim.dazzleconf", "$prefix.dazzleconf")
-            relocate("org.yaml.snakeyaml", "$prefix.yaml")
-            relocate("org.json", "$prefix.json")
-            relocate("com.intellectualsites.http", "$prefix.http4j")
+gradle.projectsEvaluated {
+    rootProject.allprojects {
+        if (plugins.hasPlugin("com.github.johnrengelman.shadow")) {
+            tasks.withType(ShadowJar::class.java) {
+                if (project != rootProject) archiveBaseName = "AdvancedPlHide-" + project.name
+                if (project != project(":core")) archiveClassifier.set("")
+                val prefix = "dev.bluetree242.advancedplhide.dependencies"
+                relocate("space.arim.dazzleconf", "$prefix.dazzleconf")
+                relocate("org.yaml.snakeyaml", "$prefix.yaml")
+                relocate("org.json", "$prefix.json")
+                relocate("com.intellectualsites.http", "$prefix.http4j")
+            }
         }
     }
 }
