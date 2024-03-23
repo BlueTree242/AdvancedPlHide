@@ -21,7 +21,7 @@
  */
 
 plugins {
-    id("io.papermc.paperweight.userdev") version "1.3.7"
+    id("io.papermc.paperweight.userdev")
 }
 
 dependencies {

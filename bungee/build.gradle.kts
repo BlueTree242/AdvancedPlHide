@@ -21,6 +21,7 @@
  */
 plugins {
     id("net.minecrell.plugin-yml.bungee") version "0.6.0"
+    id("com.github.johnrengelman.shadow")
 }
 
 repositories {

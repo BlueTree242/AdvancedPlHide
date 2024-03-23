@@ -25,6 +25,7 @@ plugins {
     id("java")
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("net.kyori.blossom") version "1.3.1" apply false
+    id("io.papermc.paperweight.userdev") version "1.3.7" apply false
 }
 repositories {
     mavenCentral()
@@ -34,14 +35,13 @@ val commit = System.getenv("GIT_COMMIT") ?: System.getProperty("GIT_COMMIT") ?: 
 println("Build number is $buildNumber")
 println("Commit hash is $commit")
 
-
 tasks.build {
     finalizedBy(tasks.shadowJar)
+
 }
 subprojects {
     apply(plugin = "java")
     apply(plugin = "maven-publish")
-    apply(plugin = "com.github.johnrengelman.shadow")
     tasks.jar {
         archiveBaseName = "AdvancedPlHide-" + project.name
         archiveClassifier.set("")
@@ -59,8 +59,12 @@ subprojects {
     tasks.compileJava {
         options.release.set(8)
     }
-    tasks.build {
-        finalizedBy(tasks.shadowJar)
+    afterEvaluate {
+        if (plugins.hasPlugin("com.github.johnrengelman.shadow")) {
+            tasks.build {
+                finalizedBy(tasks.shadowJar)
+            }
+        }
     }
 }
 

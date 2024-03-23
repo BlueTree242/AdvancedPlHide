@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 /*
  *  LICENSE
  * AdvancedPlHide
@@ -22,15 +24,16 @@
 
 rootProject.allprojects {
     plugins.apply("java")
-    plugins.apply("com.github.johnrengelman.shadow")
-    tasks.shadowJar {
-        if (project != rootProject) archiveBaseName = "AdvancedPlHide-" + project.name
-        if (project != project(":core")) archiveClassifier.set("")
-        val prefix = "dev.bluetree242.advancedplhide.dependencies"
-        relocate("space.arim.dazzleconf", "$prefix.dazzleconf")
-        relocate("org.yaml.snakeyaml", "$prefix.yaml")
-        relocate("org.json", "$prefix.json")
-        relocate("com.intellectualsites.http", "$prefix.http4j")
+    if (plugins.hasPlugin("com.github.johnrengelman.shadow")) {
+        tasks.withType(ShadowJar::class.java) {
+            if (project != rootProject) archiveBaseName = "AdvancedPlHide-" + project.name
+            if (project != project(":core")) archiveClassifier.set("")
+            val prefix = "dev.bluetree242.advancedplhide.dependencies"
+            relocate("space.arim.dazzleconf", "$prefix.dazzleconf")
+            relocate("org.yaml.snakeyaml", "$prefix.yaml")
+            relocate("org.json", "$prefix.json")
+            relocate("com.intellectualsites.http", "$prefix.http4j")
+        }
     }
 }
 

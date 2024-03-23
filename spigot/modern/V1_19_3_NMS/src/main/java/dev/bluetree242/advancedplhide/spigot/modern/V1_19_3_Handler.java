@@ -37,10 +37,10 @@ public class V1_19_3_Handler implements ModernHandler {
     @Override
     public void handle(PacketEvent packetEvent, Group group, boolean whitelist) {
         ClientboundCommandsPacket packet = (ClientboundCommandsPacket) packetEvent.getPacket().getHandle();
-        RootCommandNode nodeOrigin = packet.getRoot(Commands.createValidationContext(VanillaRegistries.createLookup())); // get the command node out
+        RootCommandNode nodeOrigin = packet.getRoot(Commands.createValidationContext(VanillaRegistries.createLookup())); // Get the command node out
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(nodeOrigin);
         CompleterModifier.handleCompleter(node, group, whitelist);
         //noinspection unchecked
-        packetEvent.setPacket(new PacketContainer(PacketType.Play.Server.COMMANDS, new ClientboundCommandsPacket(node.export()))); // put the modified root node in a new packet because it's not really possible to modify
+        packetEvent.setPacket(new PacketContainer(PacketType.Play.Server.COMMANDS, new ClientboundCommandsPacket(node.export()))); // Put the modified root node in a new packet because it's not really possible to modify
     }
 }

@@ -20,8 +20,8 @@
  *  END
  */
 plugins {
-    id("com.github.johnrengelman.shadow")
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
+    id("com.github.johnrengelman.shadow")
 }
 repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
