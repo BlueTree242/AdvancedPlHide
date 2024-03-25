@@ -158,7 +158,7 @@ public class AdvancedPlHideVelocity extends PlatformPlugin {
                     logger.error(msg);
                     break;
             }
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             logger.error(String.format("Could not check for updates: %s", ex.getMessage()));
         }
     }

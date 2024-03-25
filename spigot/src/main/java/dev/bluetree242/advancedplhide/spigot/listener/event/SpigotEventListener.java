@@ -65,7 +65,7 @@ public class SpigotEventListener implements Listener {
                     if (msg != null) {
                         e.getPlayer().sendMessage(msg);
                     }
-                } catch (Exception ex) {
+                } catch (Throwable ex) {
                     core.getLogger().severe(String.format("Could not check for updates: %s", ex.getMessage()));
                 }
             });

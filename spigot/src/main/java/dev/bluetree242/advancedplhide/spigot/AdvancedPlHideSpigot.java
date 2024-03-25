@@ -128,7 +128,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
                         getLogger().severe(msg);
                         break;
                 }
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 getLogger().severe(String.format("Could not check for updates: %s", ex.getMessage()));
             }
         });

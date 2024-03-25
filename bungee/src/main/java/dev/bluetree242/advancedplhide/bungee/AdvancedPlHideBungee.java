@@ -111,7 +111,7 @@ public class AdvancedPlHideBungee extends Plugin implements Listener {
                         getLogger().severe(msg);
                         break;
                 }
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 getLogger().severe(String.format("Could not check for updates: %s", ex.getMessage()));
             }
         });

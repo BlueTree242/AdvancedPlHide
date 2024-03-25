@@ -58,7 +58,7 @@ public class VelocityEventListener {
                         msg = msg.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, result.getUpdateUrl()));
                         e.getPlayer().sendMessage(msg);
                     }
-                } catch (Exception ex) {
+                } catch (Throwable ex) {
                     core.getLogger().error(String.format("Could not check for updates: %s", ex.getMessage()));
                 }
             }).schedule();

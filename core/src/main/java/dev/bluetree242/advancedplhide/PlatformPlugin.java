@@ -97,7 +97,7 @@ public abstract class PlatformPlugin {
         return new Group(name, tabcomplete);
     }
 
-    public UpdateCheckResult updateCheck() {
+    public UpdateCheckResult updateCheck() throws Throwable {
         try {
             HttpClient client = HttpClient.newBuilder()
                     .withBaseURL("https://advancedplhide.bluetree242.dev")
@@ -116,8 +116,8 @@ public abstract class PlatformPlugin {
                     .execute();
             JSONObject json = new JSONObject(new String(Objects.requireNonNull(response).getRawResponse(), StandardCharsets.UTF_8));
             return new UpdateCheckResult(json.getInt("versions_behind"), json.isNull("message") ? null : json.getString("message"), json.isNull("type") ? "INFO" : json.getString("type"), json.getString("downloadUrl"));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (RuntimeException e) {
+            throw e.getCause();
         }
     }
 
