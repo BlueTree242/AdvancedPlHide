@@ -29,7 +29,7 @@ public abstract class CommandCompleterList extends ArrayList<CommandCompleter> {
 
 
     @Override
-    public void forEach(Consumer e) {
+    public void forEach(Consumer<? super CommandCompleter> e) {
         for (CommandCompleter commandCompleter : new ArrayList<>(this)) {
             e.accept(commandCompleter);
         }
@@ -44,9 +44,7 @@ public abstract class CommandCompleterList extends ArrayList<CommandCompleter> {
     /**
      * Never use this method, most likely won't affect the list final result
      *
-     * @deprecated 90% won't affect the list final result
      */
-    @Deprecated
     public final boolean add(CommandCompleter s) {
         return super.add(s);
     }

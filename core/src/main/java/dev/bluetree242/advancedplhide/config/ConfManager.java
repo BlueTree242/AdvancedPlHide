@@ -53,7 +53,7 @@ public class ConfManager<C> extends ConfigurationHelper<C> {
                 .commentMode(CommentMode.alternativeWriter("%s"))
                 // Enables writing YAML comments
                 .build();
-        ConfManager val = new ConfManager<>(configFolder, fileName,
+        ConfManager<C> val = new ConfManager<>(configFolder, fileName,
                 new SnakeYamlConfigurationFactory<>(configClass, new ConfigurationOptions.Builder().sorter(new AnnotationBasedSorter()).build(), yamlOptions));
         val.confname = fileName;
         return val;
@@ -84,7 +84,7 @@ public class ConfManager<C> extends ConfigurationHelper<C> {
     }
 
     public C getConfigData() {
-        C configData = (C) this.configData;
+        C configData = this.configData;
         if (configData == null) {
             throw new IllegalStateException("Configuration has not been loaded yet");
         }

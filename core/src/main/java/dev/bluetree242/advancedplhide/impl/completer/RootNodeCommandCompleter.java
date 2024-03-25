@@ -29,7 +29,7 @@ import dev.bluetree242.advancedplhide.CommandCompleterList;
 import java.util.ArrayList;
 
 public class RootNodeCommandCompleter extends CommandCompleterList {
-    private final RootCommandNode node;
+    private final RootCommandNode<?> node;
 
     public RootNodeCommandCompleter(RootCommandNode root) {
         for (Object child : root.getChildren()) {

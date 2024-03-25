@@ -26,10 +26,10 @@ import com.mojang.brigadier.tree.CommandNode;
 import dev.bluetree242.advancedplhide.CommandCompleter;
 
 public class RootCommandCompleter implements CommandCompleter {
-    private final CommandNode node;
+    private final CommandNode<?> node;
     private final RootNodeCommandCompleter list;
 
-    public RootCommandCompleter(CommandNode node, RootNodeCommandCompleter list) {
+    public RootCommandCompleter(CommandNode<?> node, RootNodeCommandCompleter list) {
         this.list = list;
         this.node = node;
     }

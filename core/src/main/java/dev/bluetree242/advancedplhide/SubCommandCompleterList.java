@@ -23,13 +23,14 @@
 package dev.bluetree242.advancedplhide;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
 public abstract class SubCommandCompleterList extends ArrayList<SubCommandCompleter> {
 
     @Override
-    public void forEach(Consumer e) {
+    public void forEach(Consumer<? super SubCommandCompleter> e) {
         for (SubCommandCompleter commandCompleter : new ArrayList<>(this)) {
             e.accept(commandCompleter);
         }
@@ -53,9 +54,7 @@ public abstract class SubCommandCompleterList extends ArrayList<SubCommandComple
      */
     public String[] getArgs(SubCommandCompleter completer) {
         List<String> result = new ArrayList<>();
-        for (String arg : getArgs()) {
-            result.add(arg);
-        }
+        Collections.addAll(result, getArgs());
         result.add(completer.getText());
         return result.toArray(new String[0]);
     }

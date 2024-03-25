@@ -30,6 +30,7 @@ import dev.bluetree242.advancedplhide.CompleterModifier;
 import dev.bluetree242.advancedplhide.Group;
 import dev.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
 
@@ -37,7 +38,7 @@ public class V1_19_NMS_Handler implements ModernHandler {
     @Override
     public void handle(PacketEvent packetEvent, Group group, boolean whitelist) {
         ClientboundCommandsPacket packet = (ClientboundCommandsPacket) packetEvent.getPacket().getHandle();
-        RootCommandNode nodeOrigin = packet.getRoot(new CommandBuildContext(RegistryAccess.BUILTIN.get())); // Get the command node out
+        RootCommandNode<SharedSuggestionProvider> nodeOrigin = packet.getRoot(new CommandBuildContext(RegistryAccess.BUILTIN.get())); // Get the command node out
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(nodeOrigin);
         CompleterModifier.handleCompleter(node, group, whitelist);
         //noinspection unchecked

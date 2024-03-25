@@ -99,8 +99,9 @@ public class SpigotPacketListener extends PacketAdapter {
     }
 
     private void onCommands(PacketEvent e) {
+        //noinspection rawtypes
         StructureModifier<RootCommandNode> matchModifier = e.getPacket().getSpecificModifier(RootCommandNode.class);
-        RootCommandNode nodeOrigin = matchModifier.readSafely(0);
+        RootCommandNode<?> nodeOrigin = matchModifier.readSafely(0);
         if (nodeOrigin == null) {
             //modern game, 1.19+
             core.getModernHandler().handle(e, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));

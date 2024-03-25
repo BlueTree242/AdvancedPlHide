@@ -35,7 +35,7 @@ import java.util.List;
 
 public class HTTPRequestMultipartBody {
     // From https://varaprasadh.medium.com/how-to-send-multipart-form-data-requests-using-java-native-httpclient-989f6921dbfa
-    private byte[] bytes;
+    private final byte[] bytes;
     private String boundary;
 
     private HTTPRequestMultipartBody(byte[] bytes, String boundary) {
