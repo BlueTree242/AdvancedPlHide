@@ -25,7 +25,7 @@ plugins {
     id("java")
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("net.kyori.blossom") version "1.3.1" apply false
-    id("io.papermc.paperweight.userdev") version "1.5.12" apply false
+    id("io.papermc.paperweight.userdev") version "1.6.0" apply false
 }
 repositories {
     mavenCentral()
