@@ -40,4 +40,6 @@ include 'spigot:modern:V1_19_NMS'
 findProject(':spigot:modern:V1_19_NMS')?.name = 'V1_19_NMS'
 include 'spigot:modern:V1_19_3_NMS'
 findProject(':spigot:modern:V1_19_3_NMS')?.name = 'V1_19_3_NMS'
+include 'spigot:modern:V1_20_5_NMS'
+findProject(':spigot:modern:V1_20_5_NMS')?.name = 'V1_20_5_NMS'
 

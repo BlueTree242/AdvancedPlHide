@@ -35,6 +35,7 @@ dependencies {
     implementation(project(":spigot:modern"))
     implementation(project(":spigot:modern:V1_19_NMS", "reobf"))
     implementation(project(":spigot:modern:V1_19_3_NMS", "reobf"))
+    implementation(project(":spigot:modern:V1_20_5_NMS", "reobf"))
     compileOnly(libs.brigadier)
     compileOnly(libs.spigot)
     implementation(project(":core"))

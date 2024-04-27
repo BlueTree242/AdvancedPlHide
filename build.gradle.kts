@@ -37,7 +37,6 @@ println("Commit hash is $commit")
 
 tasks.build {
     finalizedBy(tasks.shadowJar)
-
 }
 subprojects {
     apply(plugin = "java")
@@ -53,7 +52,6 @@ subprojects {
         mavenCentral()
     }
     java {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
         disableAutoTargetJvm()
     }
     tasks.compileJava {

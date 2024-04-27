@@ -22,6 +22,7 @@
 
 repositories {
     maven("https://repo.dmulloy2.net/repository/public/")
+    maven("https://libraries.minecraft.net")
 }
 
 subprojects {
@@ -38,4 +39,5 @@ subprojects {
 dependencies {
     compileOnly(project(":core"))
     compileOnly(libs.protocolLib)
+    compileOnly(libs.brigadier)
 }

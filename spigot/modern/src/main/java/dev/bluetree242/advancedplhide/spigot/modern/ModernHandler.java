@@ -23,9 +23,19 @@
 package dev.bluetree242.advancedplhide.spigot.modern;
 
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.reflect.StructureModifier;
+import com.mojang.brigadier.suggestion.Suggestions;
 import dev.bluetree242.advancedplhide.Group;
 
 public interface ModernHandler {
 
-    void handle(PacketEvent packetEvent, Group group, boolean whitelist);
+    void handleCommands(PacketEvent packetEvent, Group group, boolean whitelist);
+
+    default Suggestions getSuggestions(PacketEvent packetEvent) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void writeSuggestions(PacketEvent packetEvent, StructureModifier<Suggestions> modifier, Suggestions suggestions) {
+        modifier.write(0, suggestions);
+    }
 }

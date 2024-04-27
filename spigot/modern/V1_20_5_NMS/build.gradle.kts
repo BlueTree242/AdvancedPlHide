@@ -25,9 +25,13 @@ plugins {
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+}
+
+tasks.compileJava {
+    options.release.set(17) // So that it compiles, otherwise it thinks Record class doesn't exist
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.19-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.20.5-R0.1-SNAPSHOT")
 }

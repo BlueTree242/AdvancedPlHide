@@ -43,7 +43,6 @@ public abstract class CommandCompleterList extends ArrayList<CommandCompleter> {
 
     /**
      * Never use this method, most likely won't affect the list final result
-     *
      */
     public final boolean add(CommandCompleter s) {
         return super.add(s);

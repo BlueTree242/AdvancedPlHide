@@ -31,7 +31,8 @@ import dev.bluetree242.advancedplhide.spigot.listener.event.SpigotEventListener;
 import dev.bluetree242.advancedplhide.spigot.listener.packet.SpigotPacketListener;
 import dev.bluetree242.advancedplhide.spigot.modern.ModernHandler;
 import dev.bluetree242.advancedplhide.spigot.modern.V1_19_3_Handler;
-import dev.bluetree242.advancedplhide.spigot.modern.V1_19_NMS_Handler;
+import dev.bluetree242.advancedplhide.spigot.modern.V1_19_Handler;
+import dev.bluetree242.advancedplhide.spigot.modern.V1_20_5_Handler;
 import dev.bluetree242.advancedplhide.utils.Constants;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -80,11 +81,14 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new SpigotEventListener(this), this);
         String mv = Bukkit.getServer().getBukkitVersion();
         legacy = (mv.startsWith("1.8") || mv.startsWith("1.9") || mv.startsWith("1.10") || mv.startsWith("1.11") || mv.startsWith("1.12"));
-        if (!legacy) {
-            if (Bukkit.getServer().getVersion().equals("v1_19_R1")) {
-                modernHandler = new V1_19_NMS_Handler();
-            } else { // Expect 1.19.3+
+        boolean modernNeeded = !(mv.startsWith("1.13") || mv.startsWith("1.14") || mv.startsWith("1.15") || mv.startsWith("1.16") || mv.startsWith("1.17") || mv.startsWith("1.18"));
+        if (!legacy && modernNeeded) {
+            if (mv.startsWith("1.19.1")) {
+                modernHandler = new V1_19_Handler();
+            } else if (mv.startsWith("1.19.3") || mv.startsWith("1.19.4") || (mv.startsWith("1.20") && Integer.parseInt(mv.substring(5, 6)) <= 4)) { // Expect 1.19.3+
                 modernHandler = new V1_19_3_Handler();
+            } else {
+                modernHandler = new V1_20_5_Handler();
             }
         }
         getServer().getPluginCommand("advancedplhide").setExecutor(new AdvancedPlHideCommand(this));

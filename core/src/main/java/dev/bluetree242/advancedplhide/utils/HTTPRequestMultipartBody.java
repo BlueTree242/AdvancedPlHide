@@ -60,7 +60,6 @@ public class HTTPRequestMultipartBody {
     }
 
     public static class Builder {
-        private final String DEFAULT_MIMETYPE = "text/plain";
         List<MultiPartRecord> parts;
 
         public Builder() {
@@ -71,6 +70,7 @@ public class HTTPRequestMultipartBody {
             MultiPartRecord part = new MultiPartRecord();
             part.setFieldName(fieldName);
             part.setContent(fieldValue);
+            String DEFAULT_MIMETYPE = "text/plain";
             part.setContentType(DEFAULT_MIMETYPE);
             this.parts.add(part);
             return this;
@@ -100,9 +100,9 @@ public class HTTPRequestMultipartBody {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             for (MultiPartRecord record : parts) {
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("--" + boundary + "\r\n" + "Content-Disposition: form-data; name=\"" + record.getFieldName());
+                stringBuilder.append("--").append(boundary).append("\r\n").append("Content-Disposition: form-data; name=\"").append(record.getFieldName());
                 if (record.getFilename() != null) {
-                    stringBuilder.append("\"; filename=\"" + record.getFilename());
+                    stringBuilder.append("\"; filename=\"").append(record.getFilename());
                 }
                 out.write(stringBuilder.toString().getBytes(StandardCharsets.UTF_8));
                 out.write(("\"\r\n").getBytes(StandardCharsets.UTF_8));

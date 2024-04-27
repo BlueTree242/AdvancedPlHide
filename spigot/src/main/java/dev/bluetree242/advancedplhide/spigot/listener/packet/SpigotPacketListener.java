@@ -69,19 +69,18 @@ public class SpigotPacketListener extends PacketAdapter {
         if (!notCompleted.trim().startsWith("/")) notCompleted = "/" + notCompleted;
         if (!core.isLegacy()) {
             StructureModifier<Suggestions> matchModifier = e.getPacket().getSpecificModifier(Suggestions.class);
-            Suggestions suggestionsOrigin = matchModifier.read(0);
+            Suggestions suggestionsOrigin = matchModifier.readSafely(0);
+            if (suggestionsOrigin == null) suggestionsOrigin = core.getModernHandler().getSuggestions(e);
             if (!notCompleted.contains(" ")) {
                 SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
                 CompleterModifier.handleCompleter(suggestions, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
-                matchModifier.write(0, suggestions.export());
-            }
-            {
+                core.getModernHandler().writeSuggestions(e, matchModifier, suggestions.export());
+            } else {
                 SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(suggestionsOrigin, notCompleted);
                 CompleterModifier.handleSubCompleter(suggestions, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
                 if (suggestions.isCancelled()) e.setCancelled(true);
-                matchModifier.write(0, suggestions.export());
+                core.getModernHandler().writeSuggestions(e, matchModifier, suggestions.export());
             }
-
         } else {
             StructureModifier<String[]> matchModifier = e.getPacket().getSpecificModifier(String[].class);
             String[] suggestionsOrigin = matchModifier.read(0);
@@ -103,8 +102,8 @@ public class SpigotPacketListener extends PacketAdapter {
         StructureModifier<RootCommandNode> matchModifier = e.getPacket().getSpecificModifier(RootCommandNode.class);
         RootCommandNode<?> nodeOrigin = matchModifier.readSafely(0);
         if (nodeOrigin == null) {
-            //modern game, 1.19+
-            core.getModernHandler().handle(e, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+            // Modern game, 1.19.1+
+            core.getModernHandler().handleCommands(e, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
             return;
         }
         RootNodeCommandCompleter node = new RootNodeCommandCompleter(nodeOrigin);
