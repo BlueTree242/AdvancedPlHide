@@ -50,9 +50,9 @@ public class VelocityEventListener {
             core.server.getScheduler().buildTask(core, () -> {
                 try {
                     UpdateCheckResult result = AdvancedPlHideVelocity.get().updateCheck();
-                    Component msg = result.getVersionsBehind() == 0 ? null : LegacyComponentSerializer.legacy('&').deserialize("&e[APH-&2Velocity&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
+                    Component msg = result.getVersionsBehind() == 0 ? null : LegacyComponentSerializer.legacy('&').deserialize("&e[APH&r-&2Velocity&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
                     if (result.getMessage() != null) {
-                        msg = LegacyComponentSerializer.legacy('&').deserialize("&e[APH&2Velocity&e] &c" + result.getMessage());
+                        msg = LegacyComponentSerializer.legacy('&').deserialize("&e[APH&r-&2Velocity&e] &c" + result.getMessage());
                     }
                     if (msg != null) {
                         msg = msg.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, result.getUpdateUrl()));

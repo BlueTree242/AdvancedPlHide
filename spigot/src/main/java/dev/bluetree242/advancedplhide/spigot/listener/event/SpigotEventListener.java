@@ -58,9 +58,9 @@ public class SpigotEventListener implements Listener {
             Bukkit.getScheduler().runTaskAsynchronously(core, () -> {
                 try {
                     UpdateCheckResult result = PlatformPlugin.get().updateCheck();
-                    String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH-&2Spigot&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
+                    String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH&r-&2Spigot&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
                     if (result.getMessage() != null) {
-                        msg = ChatColor.translateAlternateColorCodes('&', "&e[APH&2Spigot&e] &c" + result.getMessage());
+                        msg = ChatColor.translateAlternateColorCodes('&', "&e[APH&r-&2Spigot&e] &c" + result.getMessage());
                     }
                     if (msg != null) {
                         e.getPlayer().sendMessage(msg);
