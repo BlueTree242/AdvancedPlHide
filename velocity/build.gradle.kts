@@ -19,27 +19,23 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  *  END
  */
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        maven {
-            url 'https://repo.papermc.io/repository/maven-public/'
-        }
-    }
-}
-rootProject.name = 'AdvancedPlHide'
-include 'core'
-include 'spigot'
-include 'velocity'
-include 'bungee'
-include 'spigot:modern'
-findProject(':spigot:modern')?.name = 'modern'
-include 'spigot:modern'
-findProject(':spigot:modern')?.name = 'modern'
-include 'spigot:modern:V1_19_NMS'
-findProject(':spigot:modern:V1_19_NMS')?.name = 'V1_19_NMS'
-include 'spigot:modern:V1_19_3_NMS'
-findProject(':spigot:modern:V1_19_3_NMS')?.name = 'V1_19_3_NMS'
-include 'spigot:modern:V1_20_5_NMS'
-findProject(':spigot:modern:V1_20_5_NMS')?.name = 'V1_20_5_NMS'
 
+plugins {
+    id("com.github.johnrengelman.shadow")
+}
+
+
+repositories {
+    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://maven.elytrium.net/repo/")
+    maven("https://mvn.exceptionflug.de/repository/exceptionflug-public/")
+    maven("https://libraries.minecraft.net")
+}
+
+dependencies {
+    implementation(project(":core"))
+    compileOnly(libs.velocity.api)
+    annotationProcessor(libs.velocity.api)
+    compileOnly(libs.velocity.proxy)
+    compileOnly(libs.protocolize)
+}

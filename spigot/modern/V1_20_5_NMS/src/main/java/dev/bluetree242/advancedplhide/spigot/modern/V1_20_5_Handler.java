@@ -1,0 +1,65 @@
+/*
+ *  LICENSE
+ * AdvancedPlHide
+ * -------------
+ * Copyright (C) 2021 - 2024 BlueTree242
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ *  END
+ */
+
+package dev.bluetree242.advancedplhide.spigot.modern;
+
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.reflect.StructureModifier;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.tree.RootCommandNode;
+import dev.bluetree242.advancedplhide.CompleterModifier;
+import dev.bluetree242.advancedplhide.Group;
+import dev.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.data.registries.VanillaRegistries;
+import net.minecraft.network.protocol.game.ClientboundCommandSuggestionsPacket;
+import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
+
+import java.util.ArrayList;
+
+public class V1_20_5_Handler implements ModernHandler {
+    @Override
+    public void handleCommands(PacketEvent packetEvent, Group group, boolean whitelist) {
+        ClientboundCommandsPacket packet = (ClientboundCommandsPacket) packetEvent.getPacket().getHandle();
+        RootCommandNode<SharedSuggestionProvider> nodeOrigin = packet.getRoot(Commands.createValidationContext(VanillaRegistries.createLookup())); // Get the command node out
+        RootNodeCommandCompleter node = new RootNodeCommandCompleter(nodeOrigin);
+        CompleterModifier.handleCompleter(node, group, whitelist);
+        //noinspection unchecked
+        packetEvent.setPacket(new PacketContainer(PacketType.Play.Server.COMMANDS, new ClientboundCommandsPacket(node.export()))); // Put the modified root node in a new packet because it's not really possible to modify
+    }
+
+    @Override
+    public Suggestions getSuggestions(PacketEvent packetEvent) {
+        ClientboundCommandSuggestionsPacket packet = (ClientboundCommandSuggestionsPacket) packetEvent.getPacket().getHandle();
+        Suggestions suggestions = packet.toSuggestions();
+        return new Suggestions(suggestions.getRange(), new ArrayList<>(suggestions.getList()));
+    }
+
+    @Override
+    public void writeSuggestions(PacketEvent packetEvent, StructureModifier<Suggestions> modifier, Suggestions suggestions) {
+        ClientboundCommandSuggestionsPacket packet = (ClientboundCommandSuggestionsPacket) packetEvent.getPacket().getHandle();
+        packetEvent.setPacket(new PacketContainer(PacketType.Play.Server.TAB_COMPLETE, new ClientboundCommandSuggestionsPacket(packet.id(), suggestions)));
+    }
+}

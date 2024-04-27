@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2024 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,27 +19,28 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  *  END
  */
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        maven {
-            url 'https://repo.papermc.io/repository/maven-public/'
-        }
+
+package dev.bluetree242.advancedplhide.impl.completer;
+
+import com.mojang.brigadier.suggestion.Suggestion;
+import dev.bluetree242.advancedplhide.CommandCompleter;
+
+public class SuggestionCommandCompleter implements CommandCompleter {
+    private final Suggestion suggestion;
+    private final SuggestionCommandCompleterList list;
+
+    public SuggestionCommandCompleter(Suggestion suggestion, SuggestionCommandCompleterList list) {
+        this.list = list;
+        this.suggestion = suggestion;
+    }
+
+    @Override
+    public String getName() {
+        return suggestion.getText();
+    }
+
+    @Override
+    public void remove() {
+        list.remove(this);
     }
 }
-rootProject.name = 'AdvancedPlHide'
-include 'core'
-include 'spigot'
-include 'velocity'
-include 'bungee'
-include 'spigot:modern'
-findProject(':spigot:modern')?.name = 'modern'
-include 'spigot:modern'
-findProject(':spigot:modern')?.name = 'modern'
-include 'spigot:modern:V1_19_NMS'
-findProject(':spigot:modern:V1_19_NMS')?.name = 'V1_19_NMS'
-include 'spigot:modern:V1_19_3_NMS'
-findProject(':spigot:modern:V1_19_3_NMS')?.name = 'V1_19_3_NMS'
-include 'spigot:modern:V1_20_5_NMS'
-findProject(':spigot:modern:V1_20_5_NMS')?.name = 'V1_20_5_NMS'
-

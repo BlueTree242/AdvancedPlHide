@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2024 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,27 +19,34 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  *  END
  */
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        maven {
-            url 'https://repo.papermc.io/repository/maven-public/'
-        }
-    }
-}
-rootProject.name = 'AdvancedPlHide'
-include 'core'
-include 'spigot'
-include 'velocity'
-include 'bungee'
-include 'spigot:modern'
-findProject(':spigot:modern')?.name = 'modern'
-include 'spigot:modern'
-findProject(':spigot:modern')?.name = 'modern'
-include 'spigot:modern:V1_19_NMS'
-findProject(':spigot:modern:V1_19_NMS')?.name = 'V1_19_NMS'
-include 'spigot:modern:V1_19_3_NMS'
-findProject(':spigot:modern:V1_19_3_NMS')?.name = 'V1_19_3_NMS'
-include 'spigot:modern:V1_20_5_NMS'
-findProject(':spigot:modern:V1_20_5_NMS')?.name = 'V1_20_5_NMS'
 
+package dev.bluetree242.advancedplhide;
+
+import java.util.ArrayList;
+import java.util.function.Consumer;
+
+public abstract class CommandCompleterList extends ArrayList<CommandCompleter> {
+
+
+    @Override
+    public void forEach(Consumer<? super CommandCompleter> e) {
+        for (CommandCompleter commandCompleter : new ArrayList<>(this)) {
+            e.accept(commandCompleter);
+        }
+
+    }
+
+    /**
+     * @return Exported value of the original completer list
+     */
+    public abstract Object export();
+
+    /**
+     * Never use this method, most likely won't affect the list final result
+     */
+    public final boolean add(CommandCompleter s) {
+        return super.add(s);
+    }
+
+
+}

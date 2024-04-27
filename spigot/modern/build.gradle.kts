@@ -2,7 +2,7 @@
  *  LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2024 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,27 +19,25 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  *  END
  */
-pluginManagement {
+
+repositories {
+    maven("https://repo.dmulloy2.net/repository/public/")
+    maven("https://libraries.minecraft.net")
+}
+
+subprojects {
+    dependencies {
+        compileOnly(project(":spigot:modern"))
+        compileOnly(project(":core"))
+        compileOnly(rootProject.libs.protocolLib)
+    }
     repositories {
-        gradlePluginPortal()
-        maven {
-            url 'https://repo.papermc.io/repository/maven-public/'
-        }
+        maven("https://repo.dmulloy2.net/repository/public/")
     }
 }
-rootProject.name = 'AdvancedPlHide'
-include 'core'
-include 'spigot'
-include 'velocity'
-include 'bungee'
-include 'spigot:modern'
-findProject(':spigot:modern')?.name = 'modern'
-include 'spigot:modern'
-findProject(':spigot:modern')?.name = 'modern'
-include 'spigot:modern:V1_19_NMS'
-findProject(':spigot:modern:V1_19_NMS')?.name = 'V1_19_NMS'
-include 'spigot:modern:V1_19_3_NMS'
-findProject(':spigot:modern:V1_19_3_NMS')?.name = 'V1_19_3_NMS'
-include 'spigot:modern:V1_20_5_NMS'
-findProject(':spigot:modern:V1_20_5_NMS')?.name = 'V1_20_5_NMS'
 
+dependencies {
+    compileOnly(project(":core"))
+    compileOnly(libs.protocolLib)
+    compileOnly(libs.brigadier)
+}
