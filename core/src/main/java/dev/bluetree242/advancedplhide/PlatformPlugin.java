@@ -97,28 +97,24 @@ public abstract class PlatformPlugin {
         return new Group(name, tabcomplete);
     }
 
+    private static final HttpClient client = HttpClient.newBuilder()
+            .withBaseURL("https://advancedplhide.bluetree242.dev")
+            .withEntityMapper(new EntityMapper().registerSerializer(HTTPRequestMultipartBody.class, new HTTPRequestMultipartBody.MultiPartSerializer()))
+            .build();
     public UpdateCheckResult updateCheck() throws Throwable {
-        try {
-            HttpClient client = HttpClient.newBuilder()
-                    .withBaseURL("https://advancedplhide.bluetree242.dev")
-                    .build();
-            HTTPRequestMultipartBody multipartBody = new HTTPRequestMultipartBody.Builder()
-                    .addPart("version", PluginInfo.VERSION)
-                    .addPart("buildNumber", PluginInfo.BUILD_NUMBER)
-                    .addPart("buildDate", PluginInfo.BUILD_DATE)
-                    .addPart("commit", PluginInfo.COMMIT)
-                    .addPart("devUpdatechecker", String.valueOf(getConfig().dev_updatechecker()))
-                    .build();
-            HttpResponse response = client.post("/updatecheck")
-                    .withMapper(EntityMapper.newInstance())
-                    .withHeader("Content-Type", multipartBody.getContentType())
-                    .withInput(() -> new String(multipartBody.getBody(), StandardCharsets.UTF_8))
-                    .execute();
-            JSONObject json = new JSONObject(new String(Objects.requireNonNull(response).getRawResponse(), StandardCharsets.UTF_8));
-            return new UpdateCheckResult(json.getInt("versions_behind"), json.isNull("message") ? null : json.getString("message"), json.isNull("type") ? "INFO" : json.getString("type"), json.getString("downloadUrl"));
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
+        HTTPRequestMultipartBody multipartBody = new HTTPRequestMultipartBody.Builder()
+                .addPart("version", PluginInfo.VERSION)
+                .addPart("buildNumber", PluginInfo.BUILD_NUMBER)
+                .addPart("buildDate", PluginInfo.BUILD_DATE)
+                .addPart("commit", PluginInfo.COMMIT)
+                .addPart("devUpdatechecker", String.valueOf(getConfig().dev_updatechecker()))
+                .build();
+        HttpResponse response = client.post("/updatecheck")
+                .withHeader("Content-Type", multipartBody.getContentType())
+                .withInput(() -> multipartBody)
+                .execute();
+        JSONObject json = new JSONObject(new String(Objects.requireNonNull(response).getRawResponse(), StandardCharsets.UTF_8));
+        return new UpdateCheckResult(json.getInt("versions_behind"), json.isNull("message") ? null : json.getString("message"), json.isNull("type") ? "INFO" : json.getString("type"), json.getString("downloadUrl"));
     }
 
     public abstract Type getType();
