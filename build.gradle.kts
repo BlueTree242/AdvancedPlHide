@@ -25,7 +25,7 @@ plugins {
     id("java")
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("net.kyori.blossom") version "1.3.1" apply false
-    id("io.papermc.paperweight.userdev") version "1.3.7" apply false
+    id("io.papermc.paperweight.userdev") version "1.5.12" apply false
 }
 repositories {
     mavenCentral()
@@ -47,7 +47,7 @@ subprojects {
         archiveClassifier.set("")
     }
     dependencies {
-        compileOnly("org.jetbrains:annotations:16.0.2")
+        compileOnly("org.jetbrains:annotations:24.1.0")
     }
     repositories {
         mavenCentral()
