@@ -24,7 +24,6 @@ plugins {
     id("com.github.johnrengelman.shadow")
 }
 repositories {
-    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://repo.dmulloy2.net/repository/public/")
     maven("https://repo.destroystokyo.com/repository/maven-public/")
@@ -36,6 +35,7 @@ dependencies {
     implementation(project(":spigot:modern:V1_19_NMS", "reobf"))
     implementation(project(":spigot:modern:V1_19_3_NMS", "reobf"))
     implementation(project(":spigot:modern:V1_20_5_NMS", "reobf"))
+    implementation(project(":spigot:paper"))
     compileOnly(libs.brigadier)
     compileOnly(libs.spigot)
     implementation(project(":core"))
@@ -48,7 +48,7 @@ bukkit {
     version = project.version.toString()
     main = "dev.bluetree242.advancedplhide.spigot.AdvancedPlHideSpigot"
     author = "BlueTree242"
-    depend = listOf("ProtocolLib")
+    softDepend = listOf("ProtocolLib")
     apiVersion = "1.13"
     commands {
         register("advancedplhide") {

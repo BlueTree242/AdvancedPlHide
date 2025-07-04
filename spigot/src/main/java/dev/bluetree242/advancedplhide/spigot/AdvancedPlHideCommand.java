@@ -29,11 +29,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdvancedPlHideCommand implements CommandExecutor {
+public class AdvancedPlHideCommand implements CommandExecutor, TabCompleter {
     private final AdvancedPlHideSpigot core;
 
     public AdvancedPlHideCommand(AdvancedPlHideSpigot core) {
@@ -68,22 +69,19 @@ public class AdvancedPlHideCommand implements CommandExecutor {
         return true;
     }
 
-    public static class TabCompleter implements org.bukkit.command.TabCompleter {
-
-        @Override
-        public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-            List<String> result = new ArrayList<>();
-            List<String> arg1 = new ArrayList<>();
-            if (args.length == 1)
-                if (sender.hasPermission("plhide.reload")) {
-                    arg1.add("reload");
-                }
-            for (String s : arg1) {
-                if (s.startsWith(args[0])) {
-                    result.add(s);
-                }
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        List<String> result = new ArrayList<>();
+        List<String> arg1 = new ArrayList<>();
+        if (args.length == 1)
+            if (sender.hasPermission("plhide.reload")) {
+                arg1.add("reload");
             }
-            return result;
+        for (String s : arg1) {
+            if (s.startsWith(args[0])) {
+                result.add(s);
+            }
         }
+        return result;
     }
 }
