@@ -73,7 +73,7 @@ public class SpigotPacketListener extends PacketAdapter {
             if (suggestionsOrigin == null) suggestionsOrigin = core.getModernHandler().getSuggestions(e);
             if (!notCompleted.contains(" ")) {
                 SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
-                CompleterModifier.handleCompleter(suggestions, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
+                CompleterModifier.handleCompleter(suggestions, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
                 core.getModernHandler().writeSuggestions(e, matchModifier, suggestions.export());
             } else {
                 SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(suggestionsOrigin, notCompleted);

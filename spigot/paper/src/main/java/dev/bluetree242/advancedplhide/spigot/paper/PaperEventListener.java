@@ -28,6 +28,8 @@ import dev.bluetree242.advancedplhide.CompleterModifier;
 import dev.bluetree242.advancedplhide.Group;
 import dev.bluetree242.advancedplhide.impl.completer.RootNodeCommandCompleter;
 import dev.bluetree242.advancedplhide.impl.completer.SuggestionCommandCompleterList;
+import dev.bluetree242.advancedplhide.impl.subcompleter.SuggestionSubCommandCompleterList;
+import dev.bluetree242.advancedplhide.utils.Constants;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -56,15 +58,29 @@ public class PaperEventListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onSuggestions(AsyncPlayerSendSuggestionsEvent e) {
+
         Group group = getGroup.apply(e.getPlayer());
-        SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(e.getSuggestions());
-        CompleterModifier.handleCompleter(suggestions, group, e.getPlayer().hasPermission("plhide.whitelist-mode"));
+        String notCompleted = e.getBuffer();
+
+        if (!notCompleted.trim().startsWith("/")) notCompleted = "/" + notCompleted;
+
+        if (!notCompleted.contains(" ")) {
+            SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(e.getSuggestions());
+            CompleterModifier.handleCompleter(suggestions, getGroup.apply(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+            suggestions.export();
+        } else {
+            SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(e.getSuggestions(), notCompleted);
+            CompleterModifier.handleSubCompleter(suggestions, getGroup.apply(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
+            if (suggestions.isCancelled()) e.setCancelled(true);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onCommands(AsyncPlayerSendCommandsEvent<?> e) {
+        if (!e.isAsynchronous()) return;
+
         Group group = getGroup.apply(e.getPlayer());
         RootNodeCommandCompleter suggestions = new RootNodeCommandCompleter(e.getCommandNode());
-        CompleterModifier.handleCompleter(suggestions, group, e.getPlayer().hasPermission("plhide.whitelist-mode"));
+        CompleterModifier.handleCompleter(suggestions, group, e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
     }
 }
