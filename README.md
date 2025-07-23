@@ -1,69 +1,72 @@
-<!--suppress HtmlDeprecatedAttribute -->
-<div align="center">
-<img alt="AdvancePlHide" src="./.github/banner.png" />
+![AdvancePlHide](./.github/banner.png)
 
-<!-- Shields -->
+# Table of Contents
 
-[Document (not finshed)]:https://img.shields.io/badge/-Document-blue.svg?logo=Wikipedia&style=for-the-badge&logoColor=black
+- [Introduction](#introduction)
+    - [What is this plugin?](#what-is-this-plugin)
+    - [Features](#features)
+- [Requirements](#requirements)
+- [How to Use](#how-to-use)
+- [Notes](#notes)
+- [License](#license)
 
-[Discord]:https://img.shields.io/badge/-Discord-5865F2.svg?logo=discord&style=for-the-badge&logoColor=white
+# Introduction
 
-[Spigot]:https://img.shields.io/badge/-SpigotMC-ef9023.svg?logo=Accenture&style=for-the-badge&logoColor=grey
+## What is this plugin?
 
-[SpigotRating]:https://img.shields.io/spiget/rating/98645?style=flat-square
+**AdvancePlHide** is a plugin designed to control what the client can see when using tab-completion.
 
-[GitHubStar]:https://img.shields.io/github/stars/BlueTree242/AdvancedPlHide
+This kind of functionality isn’t widely available in the plugin ecosystem—so this plugin was created to fill that gap.
 
-[TestedVersion]: https://img.shields.io/spiget/tested-versions/98645?label=Tested%20on&style=flat-square
+It doesn’t just hide `plugin:command` entries from the tab list; it also blocks plugin completions from showing up after
+commands like `/ver` (try it on your server without this plugin and watch your plugin list!).
 
-[CodeSize]:https://img.shields.io/github/languages/code-size/BlueTree242/AdvancedPlHide
-<!-- Shields -->
-[![Discord]](https://discordsrvutils.xyz/support)
-[![Spigot]](https://spigotmc.org/resources/98645)
-<br><br>[![TestedVersion]](https://spigotmc.org/resources/98645) ![SpigotRating]
-<br> ![GitHubStar] ![CodeSize]
-</div>
+The plugin also gives you full control over which commands are visible to clients, so your plugins don’t accidentally
+expose themselves.  
+You can specify a list of visible commands or block specific ones from showing up.
+> **Note:** This only affects tab-completion—it does **not** prevent commands from being executed.
 
-## Table of Contents
+## Features
 
-* [Introduction](#introduction)
-    * [Reasons](#Reasons)
-    * [Features](#features)
-* [Requirements](#Requirements)
-* [Installation](#Installation)
+- Group-based architecture; compatible with any permission manager.
+- Hides plugin lists from common commands available on all servers.
+- Removes `plugin:command` from the client’s visible command list.
+- Automatically blocks commands like `/plugins` and similar.
+- Gives you full control over tab-completion behavior.
+- Lightweight and performance-focused.
+- Cannot be bypassed by custom clients using special commands to reveal plugins.
+- Supports **Minecraft versions 1.8 to 1.21.8**, with more coming soon.
+- Works on Spigot, Paper (and forks), BungeeCord, and Velocity.
+- 100% free and open-source.
 
-## Introduction
+# Requirements
 
-### Reasons
+### Spigot & Paper
 
-* This plugin was made to replace any paid plugin hiding
+- Supported versions: **1.8 – 1.21.5**
+- Requires: [ProtocolLib](https://github.com/dmulloy2/ProtocolLib)
 
-### Features
+### Paper 1.20.6+
 
-* Group merging.
-* Hides /pl (/plugins).
-* blacklist or whitelist tab commands.
-* Others.
+- Supported versions: **1.20.6 – 1.21.8** (and newer)
+- No dependencies required — it works out of the box.
 
-### Requirements
+### BungeeCord & Velocity
 
-* ProtocolLib (Spigot)
-* Protocolize (Proxy)
-* Luckperms or some other perm plugin
+- Requires: [Protocolize](https://github.com/Exceptionflug/protocolize)
 
-### Supported Platforms
+# How to Use
 
-* Spigot/Paper or any forks.
-* BungeeCord
-* Velocity
+Check out the [documentation](https://github.com/BlueTree242/AdvancedPlHide/wiki) to get started.
 
-### Installation
+# Notes
 
-When you Download AdvancedPlHide Also download ProtocolLib.
+- This plugin is actively updated for the latest Minecraft versions until v3 is released.
+- No new features will be added to v2 — only bug fixes and compatibility updates.
+- The plugin works immediately after installation, but advanced features require configuration.
 
-When using a proxy AdvancedPlHide needs Protocolize
+> It is recommended to set the permission `bukkit.command.*` to `false` for all players.
 
-### License
+# License
 
-[License]:https://img.shields.io/github/license/Bluetree242/AdvancedPlHide?color=e
-[![License]](https://github.com/Bluetree242/AdvancedPlHide/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/Bluetree242/AdvancedPlHide?color=e)](https://github.com/Bluetree242/AdvancedPlHide/blob/master/LICENSE)
