@@ -1,4 +1,7 @@
-![AdvancePlHide](./.github/banner.png)
+<p align="center">
+  <img src="./.github/banner.png" alt="AdvancePlHide" />
+</p>
+
 
 # Table of Contents
 
