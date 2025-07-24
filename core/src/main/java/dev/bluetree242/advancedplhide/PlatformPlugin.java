@@ -1,8 +1,8 @@
 /*
- *  LICENSE
+ * LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2024 BlueTree242
+ * Copyright (C) 2021 - 2025 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -14,10 +14,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
+ * You should have received a copy of the GNU General
+ * Public License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * END
  */
 
 package dev.bluetree242.advancedplhide;
@@ -45,11 +45,13 @@ import java.util.Objects;
  * @see PlatformPlugin#get()
  */
 public abstract class PlatformPlugin {
+    private static final HttpClient client = HttpClient.newBuilder()
+            .withBaseURL("https://advancedplhide.bluetree242.dev")
+            .withEntityMapper(new EntityMapper().registerSerializer(HTTPRequestMultipartBody.class, new HTTPRequestMultipartBody.MultiPartSerializer()))
+            .build();
     private static PlatformPlugin platformPlugin = null;
-
     private ConfManager<Config> confManager;
     private Config config;
-
 
     public static PlatformPlugin get() {
         return platformPlugin;
@@ -97,10 +99,6 @@ public abstract class PlatformPlugin {
         return new Group(name, tabcomplete);
     }
 
-    private static final HttpClient client = HttpClient.newBuilder()
-            .withBaseURL("https://advancedplhide.bluetree242.dev")
-            .withEntityMapper(new EntityMapper().registerSerializer(HTTPRequestMultipartBody.class, new HTTPRequestMultipartBody.MultiPartSerializer()))
-            .build();
     public UpdateCheckResult updateCheck() throws Throwable {
         HTTPRequestMultipartBody multipartBody = new HTTPRequestMultipartBody.Builder()
                 .addPart("version", PluginInfo.VERSION)

@@ -1,8 +1,8 @@
 /*
- *  LICENSE
+ * LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2024 BlueTree242
+ * Copyright (C) 2021 - 2025 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -14,10 +14,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
+ * You should have received a copy of the GNU General
+ * Public License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * END
  */
 
 package dev.bluetree242.advancedplhide.spigot;
@@ -29,11 +29,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdvancedPlHideCommand implements CommandExecutor {
+public class AdvancedPlHideCommand implements CommandExecutor, TabCompleter {
     private final AdvancedPlHideSpigot core;
 
     public AdvancedPlHideCommand(AdvancedPlHideSpigot core) {
@@ -68,22 +69,19 @@ public class AdvancedPlHideCommand implements CommandExecutor {
         return true;
     }
 
-    public static class TabCompleter implements org.bukkit.command.TabCompleter {
-
-        @Override
-        public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-            List<String> result = new ArrayList<>();
-            List<String> arg1 = new ArrayList<>();
-            if (args.length == 1)
-                if (sender.hasPermission("plhide.reload")) {
-                    arg1.add("reload");
-                }
-            for (String s : arg1) {
-                if (s.startsWith(args[0])) {
-                    result.add(s);
-                }
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        List<String> result = new ArrayList<>();
+        List<String> arg1 = new ArrayList<>();
+        if (args.length == 1)
+            if (sender.hasPermission("plhide.reload")) {
+                arg1.add("reload");
             }
-            return result;
+        for (String s : arg1) {
+            if (s.startsWith(args[0])) {
+                result.add(s);
+            }
         }
+        return result;
     }
 }

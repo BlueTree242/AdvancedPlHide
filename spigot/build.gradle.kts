@@ -1,8 +1,8 @@
 /*
- *  LICENSE
+ * LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2024 BlueTree242
+ * Copyright (C) 2021 - 2025 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -14,11 +14,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
+ * You should have received a copy of the GNU General
+ * Public License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * END
  */
+
 plugins {
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
     id("com.github.johnrengelman.shadow")
@@ -36,6 +37,8 @@ dependencies {
     implementation(project(":spigot:modern:V1_19_NMS", "reobf"))
     implementation(project(":spigot:modern:V1_19_3_NMS", "reobf"))
     implementation(project(":spigot:modern:V1_20_5_NMS", "reobf"))
+    implementation(project(":spigot:modern:V1_21_6_NMS", "reobf"))
+    implementation(project(":spigot:paper"))
     compileOnly(libs.brigadier)
     compileOnly(libs.spigot)
     implementation(project(":core"))
@@ -48,7 +51,7 @@ bukkit {
     version = project.version.toString()
     main = "dev.bluetree242.advancedplhide.spigot.AdvancedPlHideSpigot"
     author = "BlueTree242"
-    depend = listOf("ProtocolLib")
+    softDepend = listOf("ProtocolLib")
     apiVersion = "1.13"
     commands {
         register("advancedplhide") {

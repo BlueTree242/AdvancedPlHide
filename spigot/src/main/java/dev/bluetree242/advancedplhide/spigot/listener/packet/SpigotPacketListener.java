@@ -1,8 +1,8 @@
 /*
- *  LICENSE
+ * LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2024 BlueTree242
+ * Copyright (C) 2021 - 2025 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -14,10 +14,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
+ * You should have received a copy of the GNU General
+ * Public License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * END
  */
 
 package dev.bluetree242.advancedplhide.spigot.listener.packet;
@@ -73,7 +73,7 @@ public class SpigotPacketListener extends PacketAdapter {
             if (suggestionsOrigin == null) suggestionsOrigin = core.getModernHandler().getSuggestions(e);
             if (!notCompleted.contains(" ")) {
                 SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(suggestionsOrigin);
-                CompleterModifier.handleCompleter(suggestions, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission("plhide.whitelist-mode"));
+                CompleterModifier.handleCompleter(suggestions, core.getGroupForPlayer(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
                 core.getModernHandler().writeSuggestions(e, matchModifier, suggestions.export());
             } else {
                 SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(suggestionsOrigin, notCompleted);

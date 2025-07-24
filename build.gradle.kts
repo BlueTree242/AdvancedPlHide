@@ -1,10 +1,8 @@
-import net.kyori.blossom.BlossomExtension
-
 /*
- *  LICENSE
+ * LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2021 BlueTree242
+ * Copyright (C) 2021 - 2025 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -16,16 +14,19 @@ import net.kyori.blossom.BlossomExtension
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
+ * You should have received a copy of the GNU General
+ * Public License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * END
  */
+
+import net.kyori.blossom.BlossomExtension
+
 plugins {
     id("java")
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("net.kyori.blossom") version "1.3.1" apply false
-    id("io.papermc.paperweight.userdev") version "1.6.0" apply false
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.17" apply false
 }
 repositories {
     mavenCentral()

@@ -1,8 +1,8 @@
 /*
- *  LICENSE
+ * LICENSE
  * AdvancedPlHide
  * -------------
- * Copyright (C) 2021 - 2024 BlueTree242
+ * Copyright (C) 2021 - 2025 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -14,25 +14,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
+ * You should have received a copy of the GNU General
+ * Public License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * END
  */
 
 package dev.bluetree242.advancedplhide.spigot;
 
 import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import dev.bluetree242.advancedplhide.Group;
 import dev.bluetree242.advancedplhide.PlatformPlugin;
 import dev.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import dev.bluetree242.advancedplhide.spigot.listener.event.SpigotEventListener;
 import dev.bluetree242.advancedplhide.spigot.listener.packet.SpigotPacketListener;
-import dev.bluetree242.advancedplhide.spigot.modern.ModernHandler;
-import dev.bluetree242.advancedplhide.spigot.modern.V1_19_3_Handler;
-import dev.bluetree242.advancedplhide.spigot.modern.V1_19_Handler;
-import dev.bluetree242.advancedplhide.spigot.modern.V1_20_5_Handler;
+import dev.bluetree242.advancedplhide.spigot.modern.*;
+import dev.bluetree242.advancedplhide.spigot.paper.PaperEventListener;
 import dev.bluetree242.advancedplhide.utils.Constants;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -40,7 +37,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -50,10 +46,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
-    private final SpigotPacketListener listener = new SpigotPacketListener(this);
+public class AdvancedPlHideSpigot extends JavaPlugin {
     private final AdvancedPlHideSpigot.Impl platformPlugin = new Impl();
-    private ProtocolManager protocolManager;
+    private ProtocolLibHookHandler protocolLibHookHandler;
     private boolean legacy = false;
     private List<Group> groups;
     private ModernHandler modernHandler;
@@ -70,36 +65,74 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
     }
 
     public void onLoad() {
-        protocolManager = ProtocolLibrary.getProtocolManager();
         PlatformPlugin.setPlatform(platformPlugin);
         platformPlugin.initConfigManager();
     }
 
     public void onEnable() {
         platformPlugin.reloadConfig();
-        protocolManager.addPacketListener(new SpigotPacketListener(this));
-        getServer().getPluginManager().registerEvents(new SpigotEventListener(this), this);
-        String mv = Bukkit.getServer().getBukkitVersion();
-        legacy = (mv.startsWith("1.8") || mv.startsWith("1.9") || mv.startsWith("1.10") || mv.startsWith("1.11") || mv.startsWith("1.12"));
-        boolean modernNeeded = !(mv.startsWith("1.13") || mv.startsWith("1.14") || mv.startsWith("1.15") || mv.startsWith("1.16") || mv.startsWith("1.17") || mv.startsWith("1.18"));
-        if (!legacy && modernNeeded) {
-            if (mv.startsWith("1.19.1")) {
-                modernHandler = new V1_19_Handler();
-            } else if (mv.startsWith("1.19.3") || mv.startsWith("1.19.4") || (mv.startsWith("1.20") && Integer.parseInt(mv.substring(5, 6)) <= 4)) { // Expect 1.19.3+
-                modernHandler = new V1_19_3_Handler();
-            } else {
-                modernHandler = new V1_20_5_Handler();
-            }
-        }
-        getServer().getPluginCommand("advancedplhide").setExecutor(new AdvancedPlHideCommand(this));
-        getServer().getPluginCommand("advancedplhide").setTabCompleter(new AdvancedPlHideCommand.TabCompleter());
-        new Metrics(this, 13707);
         Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', Constants.startupMessage()));
+
+        if (!PaperEventListener.isAvailable() && !getServer().getPluginManager().isPluginEnabled("ProtocolLib")) {
+            getLogger().severe("Plugin could not be enabled because ProtocolLib is not enabled/installed and this is not a Paper 1.20.6+ server.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        } else if (!PaperEventListener.isAvailable()) {
+            useProtocolLib();
+        } else {
+            getLogger().info("This server supports Paper's dedicated events for tab-completion and ProtocolLib will not be used.");
+            getServer().getPluginManager().registerEvents(new PaperEventListener(this::getGroupForPlayer), this);
+        }
+
+        getServer().getPluginManager().registerEvents(new SpigotEventListener(this), this);
+
+        AdvancedPlHideCommand command = new AdvancedPlHideCommand(this);
+        getServer().getPluginCommand("advancedplhide").setExecutor(command);
+        getServer().getPluginCommand("advancedplhide").setTabCompleter(command);
+
+        new Metrics(this, 13707);
         performStartUpdateCheck();
     }
 
+    public void useProtocolLib() {
+        String mv = Bukkit.getServer().getBukkitVersion();
+        legacy = isLegacyVersion(mv);
+        if (!legacy) {
+            modernHandler = resolveModernHandler(mv);
+        }
+        protocolLibHookHandler = new ProtocolLibHookHandler();
+        protocolLibHookHandler.hook();
+    }
+
+    private boolean isLegacyVersion(String mv) {
+        return mv.startsWith("1.8") || mv.startsWith("1.9") || mv.startsWith("1.10") ||
+                mv.startsWith("1.11") || mv.startsWith("1.12");
+    }
+
+    private ModernHandler resolveModernHandler(String mv) {
+        if (!isModernNeeded(mv)) {
+            return (packetEvent, group, whitelist) -> {
+                throw new UnsupportedOperationException();
+            };
+        } else if (mv.startsWith("1.19.1")) {
+            return new V1_19_Handler();
+        } else if (mv.startsWith("1.19.3") || mv.startsWith("1.19.4") ||
+                (mv.startsWith("1.20") && Integer.parseInt(mv.substring(5, 6)) <= 4)) {
+            return new V1_19_3_Handler();
+        } else if (mv.startsWith("1.21") && Integer.parseInt(mv.substring(5, 6)) <= 5) {
+            return new V1_20_5_Handler();
+        } else {
+            return new V1_21_6_Handler();
+        }
+    }
+
+    private boolean isModernNeeded(String mv) {
+        return !(mv.startsWith("1.13") || mv.startsWith("1.14") || mv.startsWith("1.15") ||
+                mv.startsWith("1.16") || mv.startsWith("1.17") || mv.startsWith("1.18"));
+    }
+
     public void onDisable() {
-        protocolManager.removePacketListener(listener);
+        if (protocolLibHookHandler != null) protocolLibHookHandler.unhook();
     }
 
     public boolean isLegacy() {
@@ -176,6 +209,17 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
         }
     }
 
+    private class ProtocolLibHookHandler {
+        private final SpigotPacketListener listener = new SpigotPacketListener(AdvancedPlHideSpigot.this);
+
+        public void hook() {
+            ProtocolLibrary.getProtocolManager().addPacketListener(listener);
+        }
+
+        public void unhook() {
+            ProtocolLibrary.getProtocolManager().removePacketListener(listener);
+        }
+    }
 
     public class Impl extends PlatformPlugin {
 
@@ -213,6 +257,4 @@ public class AdvancedPlHideSpigot extends JavaPlugin implements Listener {
             return Type.SPIGOT;
         }
     }
-
-
 }
