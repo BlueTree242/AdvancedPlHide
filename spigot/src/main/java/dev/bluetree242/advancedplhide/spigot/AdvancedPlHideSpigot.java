@@ -28,10 +28,7 @@ import dev.bluetree242.advancedplhide.PlatformPlugin;
 import dev.bluetree242.advancedplhide.impl.version.UpdateCheckResult;
 import dev.bluetree242.advancedplhide.spigot.listener.event.SpigotEventListener;
 import dev.bluetree242.advancedplhide.spigot.listener.packet.SpigotPacketListener;
-import dev.bluetree242.advancedplhide.spigot.modern.ModernHandler;
-import dev.bluetree242.advancedplhide.spigot.modern.V1_19_3_Handler;
-import dev.bluetree242.advancedplhide.spigot.modern.V1_19_Handler;
-import dev.bluetree242.advancedplhide.spigot.modern.V1_20_5_Handler;
+import dev.bluetree242.advancedplhide.spigot.modern.*;
 import dev.bluetree242.advancedplhide.spigot.paper.PaperEventListener;
 import dev.bluetree242.advancedplhide.utils.Constants;
 import org.bukkit.Bukkit;
@@ -99,23 +96,39 @@ public class AdvancedPlHideSpigot extends JavaPlugin {
 
     public void useProtocolLib() {
         String mv = Bukkit.getServer().getBukkitVersion();
-        legacy = (mv.startsWith("1.8") || mv.startsWith("1.9") || mv.startsWith("1.10") || mv.startsWith("1.11") || mv.startsWith("1.12"));
+        legacy = isLegacyVersion(mv);
         if (!legacy) {
-            boolean modernNeeded = !(mv.startsWith("1.13") || mv.startsWith("1.14") || mv.startsWith("1.15") || mv.startsWith("1.16") || mv.startsWith("1.17") || mv.startsWith("1.18"));
-            if (!modernNeeded) {
-                modernHandler = (packetEvent, group, whitelist) -> {
-                    throw new UnsupportedOperationException();
-                };
-            } else if (mv.startsWith("1.19.1")) {
-                modernHandler = new V1_19_Handler();
-            } else if (mv.startsWith("1.19.3") || mv.startsWith("1.19.4") || (mv.startsWith("1.20") && Integer.parseInt(mv.substring(5, 6)) <= 4)) { // Expect 1.19.3+
-                modernHandler = new V1_19_3_Handler();
-            } else {
-                modernHandler = new V1_20_5_Handler();
-            }
+            modernHandler = resolveModernHandler(mv);
         }
         protocolLibHookHandler = new ProtocolLibHookHandler();
         protocolLibHookHandler.hook();
+    }
+
+    private boolean isLegacyVersion(String mv) {
+        return mv.startsWith("1.8") || mv.startsWith("1.9") || mv.startsWith("1.10") ||
+                mv.startsWith("1.11") || mv.startsWith("1.12");
+    }
+
+    private ModernHandler resolveModernHandler(String mv) {
+        if (!isModernNeeded(mv)) {
+            return (packetEvent, group, whitelist) -> {
+                throw new UnsupportedOperationException();
+            };
+        } else if (mv.startsWith("1.19.1")) {
+            return new V1_19_Handler();
+        } else if (mv.startsWith("1.19.3") || mv.startsWith("1.19.4") ||
+                (mv.startsWith("1.20") && Integer.parseInt(mv.substring(5, 6)) <= 4)) {
+            return new V1_19_3_Handler();
+        } else if (mv.startsWith("1.21") && Integer.parseInt(mv.substring(5, 6)) <= 5) {
+            return new V1_20_5_Handler();
+        } else {
+            return new V1_21_6_Handler();
+        }
+    }
+
+    private boolean isModernNeeded(String mv) {
+        return !(mv.startsWith("1.13") || mv.startsWith("1.14") || mv.startsWith("1.15") ||
+                mv.startsWith("1.16") || mv.startsWith("1.17") || mv.startsWith("1.18"));
     }
 
     public void onDisable() {

@@ -43,7 +43,7 @@ You can specify a list of visible commands or block specific ones from showing u
 
 ### Spigot & Paper
 
-- Supported versions: **1.8 – 1.21.5**
+- Supported versions: **1.8 – 1.21.8**+
 - Requires: [ProtocolLib](https://github.com/dmulloy2/ProtocolLib)
 
 ### Paper 1.20.6+
@@ -64,6 +64,11 @@ Check out the [documentation](https://github.com/BlueTree242/AdvancedPlHide/wiki
 - This plugin is actively updated for the latest Minecraft versions until v3 is released.
 - No new features will be added to v2 — only bug fixes and compatibility updates.
 - The plugin works immediately after installation, but advanced features require configuration.
+- Sometimes Mojang does some breaking changes and plugin has to be updated to support those newer versions, this is not very common so you should test if plugin works before opening an issue. This is strictly for **Spigot** only (even Paper is unaffected).
+
+
+> Occasionally, Mojang introduces breaking changes that may require the plugin to be updated for compatibility with newer versions. While this is relatively rare, you should always test the plugin on the target version before reporting any issues.  
+> This notice applies **strictly to Spigot**—Paper, Bungee and Velocity are unaffected.
 
 > It is recommended to set the permission `bukkit.command.*` to `false` for all players.
 

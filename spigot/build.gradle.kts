@@ -19,11 +19,13 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * END
  */
+
 plugins {
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
     id("com.github.johnrengelman.shadow")
 }
 repositories {
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://repo.dmulloy2.net/repository/public/")
     maven("https://repo.destroystokyo.com/repository/maven-public/")
@@ -35,6 +37,7 @@ dependencies {
     implementation(project(":spigot:modern:V1_19_NMS", "reobf"))
     implementation(project(":spigot:modern:V1_19_3_NMS", "reobf"))
     implementation(project(":spigot:modern:V1_20_5_NMS", "reobf"))
+    implementation(project(":spigot:modern:V1_21_6_NMS", "reobf"))
     implementation(project(":spigot:paper"))
     compileOnly(libs.brigadier)
     compileOnly(libs.spigot)

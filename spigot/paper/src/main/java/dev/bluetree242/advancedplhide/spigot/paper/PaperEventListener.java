@@ -67,7 +67,6 @@ public class PaperEventListener implements Listener {
         if (!notCompleted.contains(" ")) {
             SuggestionCommandCompleterList suggestions = new SuggestionCommandCompleterList(e.getSuggestions());
             CompleterModifier.handleCompleter(suggestions, getGroup.apply(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
-            suggestions.export();
         } else {
             SuggestionSubCommandCompleterList suggestions = new SuggestionSubCommandCompleterList(e.getSuggestions(), notCompleted);
             CompleterModifier.handleSubCompleter(suggestions, getGroup.apply(e.getPlayer()), e.getPlayer().hasPermission(Constants.WHITELIST_MODE_PERMISSION));
