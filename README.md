@@ -48,7 +48,7 @@ You can specify a list of visible commands or block specific ones from showing u
 
 ### Paper 1.20.6+
 
-- Supported versions: **1.20.6 – 1.21.8** (and newer)
+- Supported versions: **1.20.6 – 1.21.8**+
 - No dependencies required — it works out of the box.
 
 ### BungeeCord & Velocity
