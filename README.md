@@ -64,9 +64,6 @@ Check out the [documentation](https://github.com/BlueTree242/AdvancedPlHide/wiki
 - This plugin is actively updated for the latest Minecraft versions until v3 is released.
 - No new features will be added to v2 — only bug fixes and compatibility updates.
 - The plugin works immediately after installation, but advanced features require configuration.
-- Sometimes Mojang does some breaking changes and plugin has to be updated to support those newer versions, this is not
-  very common so you should test if plugin works before opening an issue. This is strictly for **Spigot** only (even
-  Paper is unaffected).
 
 > Occasionally, Mojang introduces breaking changes that may require the plugin to be updated for compatibility with
 > newer versions. While this is relatively rare, you should always test the plugin on the target version before
