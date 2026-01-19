@@ -53,6 +53,7 @@ bukkit {
     author = "BlueTree242"
     softDepend = listOf("ProtocolLib")
     apiVersion = "1.13"
+    foliaSupported = true
     commands {
         register("advancedplhide") {
             aliases = listOf("aph", "plhide", "ph")
