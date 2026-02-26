@@ -53,7 +53,7 @@ public class AdvancedPlHideCommand implements CommandExecutor, TabCompleter {
                     sender.sendMessage(ChatColor.RED + "You don't have permission to run this command");
                     return true;
                 } else {
-                    Bukkit.getScheduler().runTaskAsynchronously(core, () -> {
+                    core.getExecutor().execute(() -> {
                         try {
                             PlatformPlugin.get().reloadConfig();
                             sender.sendMessage(ChatColor.GREEN + "Configuration Reloaded");

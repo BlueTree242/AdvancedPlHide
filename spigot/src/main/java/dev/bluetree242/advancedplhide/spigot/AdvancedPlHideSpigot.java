@@ -44,6 +44,10 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 
 public class AdvancedPlHideSpigot extends JavaPlugin {
@@ -52,6 +56,7 @@ public class AdvancedPlHideSpigot extends JavaPlugin {
     private boolean legacy = false;
     private List<Group> groups;
     private ModernHandler modernHandler;
+    private ThreadPoolExecutor executor;
 
     public Group getGroupForPlayer(Player player) {
         if (player.hasPermission("plhide.no-group")) return null;
@@ -83,6 +88,14 @@ public class AdvancedPlHideSpigot extends JavaPlugin {
             getLogger().info("This server supports Paper's dedicated events for tab-completion and ProtocolLib will not be used.");
             getServer().getPluginManager().registerEvents(new PaperEventListener(this::getGroupForPlayer), this);
         }
+
+        executor  = new ThreadPoolExecutor(
+                0,
+                3,
+                10L, TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>()
+        );
+        executor.allowCoreThreadTimeOut(true);
 
         getServer().getPluginManager().registerEvents(new SpigotEventListener(this), this);
 
@@ -132,6 +145,18 @@ public class AdvancedPlHideSpigot extends JavaPlugin {
     }
 
     public void onDisable() {
+        if (executor != null) {
+            executor.shutdown();
+            try {
+                if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                    getLogger().severe("Executor took too long to terminate; forcing shutdown.");
+                    executor.shutdownNow();
+                    Thread.currentThread().interrupt(); // Restore interrupt flag
+                }
+            } catch (InterruptedException e) {
+                getLogger().log(Level.SEVERE, "Interrupted while waiting for executor termination", e);
+            }
+        }
         if (protocolLibHookHandler != null) protocolLibHookHandler.unhook();
     }
 
@@ -143,8 +168,12 @@ public class AdvancedPlHideSpigot extends JavaPlugin {
         return modernHandler;
     }
 
+    public ThreadPoolExecutor getExecutor() {
+        return executor;
+    }
+
     public void performStartUpdateCheck() {
-        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+        executor.execute(() -> {
             try {
                 UpdateCheckResult result = Impl.get().updateCheck();
                 String msg = result.getVersionsBehind() == 0 ?

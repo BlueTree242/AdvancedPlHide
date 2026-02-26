@@ -55,7 +55,7 @@ public class SpigotEventListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         if (e.getPlayer().hasPermission("plhide.updatechecker")) {
-            Bukkit.getScheduler().runTaskAsynchronously(core, () -> {
+            core.getExecutor().execute(() -> {
                 try {
                     UpdateCheckResult result = PlatformPlugin.get().updateCheck();
                     String msg = result.getVersionsBehind() == 0 ? null : ChatColor.translateAlternateColorCodes('&', "&e[APH&r-&2Spigot&e] " + Constants.DEFAULT_BEHIND.replace("{versions}", result.getVersionsBehind() + "").replace("{download}", result.getUpdateUrl()));
