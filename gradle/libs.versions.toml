@@ -14,7 +14,7 @@ http4j = "1.8"
 # Server Software
 spigot = "1.13-R0.1-SNAPSHOT"
 paper = '1.20.6-R0.1-SNAPSHOT'
-velocity = "3.4.0-SNAPSHOT"
+velocity = "3.5.0-SNAPSHOT"
 bungee = "1.20-R0.2"
 
 # Common

@@ -27,7 +27,7 @@ plugins {
 
 repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://maven.elytrium.net/repo/")
+    maven("https://repo.bluetree242.dev/snapshots")
     maven("https://mvn.exceptionflug.de/repository/exceptionflug-public/")
     maven("https://libraries.minecraft.net")
 }
